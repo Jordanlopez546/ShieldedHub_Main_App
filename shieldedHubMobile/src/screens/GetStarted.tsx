@@ -4,6 +4,7 @@ import GetStartedAndLoginImageView from "../components/GetStartedAndLoginImageVi
 import TheDoubleCircles from "../components/TheDoubleCircles";
 import CustomButton from "../components/CustomButton";
 
+// Get Started Screen
 const GetStarted = () => {
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
@@ -14,9 +15,11 @@ const GetStarted = () => {
     height: height * 0.1, // 10% of the screen
   };
   const secondContainerStyles = {
-    width: width * 0.74, // 57% of the screen
+    width: width * 0.74, // 74% of the screen
     height: height * 0.1, // 10% of the screen
   };
+
+  const handleGetStarted = () => {};
 
   return (
     <View style={styles.container}>
@@ -36,7 +39,7 @@ const GetStarted = () => {
         </Text>
       </View>
       <View style={styles.CustomBtnContainer}>
-        <CustomButton text="Get Started" />
+        <CustomButton onPress={handleGetStarted} text="Get Started" />
       </View>
     </View>
   );

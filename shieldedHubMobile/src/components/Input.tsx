@@ -1,9 +1,9 @@
 import { StyleSheet, TextInput, useWindowDimensions } from "react-native";
 import React from "react";
-import { InputBtnProps } from "../../types/types";
+import { CustomInputProps } from "../../types/types";
 
 // Create the input
-const Input = ({ text }: InputBtnProps) => {
+const Input = ({ text, autoFocus }: CustomInputProps) => {
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
 
@@ -16,6 +16,7 @@ const Input = ({ text }: InputBtnProps) => {
   return (
     <TextInput
       placeholder={text}
+      autoFocus={autoFocus}
       style={[styles.inputContainer, inputContainerStyles]}
     />
   );
@@ -30,7 +31,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#1E90FF",
+    borderColor: "rgba(30, 144, 255, 0.77)",
     fontSize: 17.5,
+    marginVertical: 8
   },
 });

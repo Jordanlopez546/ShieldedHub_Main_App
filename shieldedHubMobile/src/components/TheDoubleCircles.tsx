@@ -17,13 +17,13 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(30, 144, 255, 0.7)",
     borderRadius: 105, // Half of the width (or height) to make a semi-circle
     overflow: "hidden", // Hide the top half
-    marginTop: -120,
-    height: 200,
-    width: 200,
+    marginTop: -50,
+    height: 100,
+    width: 100,
   },
   secondCircle: {
     position: "absolute",
-    marginTop: -90,
-    left: -80,
+    marginTop: -30,
+    left: -40,
   },
 });

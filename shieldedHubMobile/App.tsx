@@ -6,6 +6,7 @@ import CustomButton from "./src/components/CustomButton";
 import MyFonts from "./src/components/MyFonts";
 import Input from "./src/components/Input";
 import GetStarted from "./src/screens/GetStarted";
+import LogIn from "./src/screens/LogIn";
 
 export default function App() {
   const currentUser = useContext(AuthContext);
@@ -26,7 +27,8 @@ export default function App() {
         <SafeAreaView style={styles.container}>
           {/* <CustomButton text="Log In"/> */}
           {/* <Input text="Enter your email" /> */}
-          <GetStarted />
+          {/* <GetStarted /> */}
+          <LogIn/>
         </SafeAreaView>
       </AuthContext.Provider>
     </ThemeContext.Provider>

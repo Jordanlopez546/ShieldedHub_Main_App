@@ -5,10 +5,10 @@ import {
   useWindowDimensions,
 } from "react-native";
 import React from "react";
-import { InputBtnProps } from "../../types/types";
+import { CustomBtnProps } from "../../types/types";
 
 // Custom Button
-const CustomButton = ({ text }: InputBtnProps) => {
+const CustomButton = ({ text, onPress }: CustomBtnProps) => {
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
 
@@ -22,6 +22,7 @@ const CustomButton = ({ text }: InputBtnProps) => {
     <TouchableOpacity
       activeOpacity={0.5}
       style={[styles.btnContainer, btnContainerStyles]}
+      onPress={onPress}
     >
       <Text style={styles.btnText}>{text}</Text>
     </TouchableOpacity>
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
   btnContainer: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(30, 144, 255, 0.8)",
+    backgroundColor: "rgba(30, 144, 255, 0.77)",
     alignSelf: "center",
     padding: 10,
     borderRadius: 10,

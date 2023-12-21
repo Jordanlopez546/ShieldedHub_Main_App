@@ -19,8 +19,8 @@ const GetStartedAndLoginImageView = ({ text }: InputBtnProps) => {
 
   // Calculate the height and width based on the current screen dimensions
   const containerStyles = {
-    width: width * 0.51, // 51% of the screen
-    height: height * 0.26, // 26% of the screen
+    width: width * 0.33, // 33% of the screen
+    height: height * 0.17, // 17% of the screen
   };
 
   return (
