@@ -3,9 +3,13 @@ import React from "react";
 import GetStartedAndLoginImageView from "../components/GetStartedAndLoginImageView";
 import TheDoubleCircles from "../components/TheDoubleCircles";
 import CustomButton from "../components/CustomButton";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParams } from "../../types/types";
 
 // Get Started Screen
 const GetStarted = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
 
@@ -19,7 +23,9 @@ const GetStarted = () => {
     height: height * 0.1, // 10% of the screen
   };
 
-  const handleGetStarted = () => {};
+  const handleGetStarted = () => {
+    navigation.navigate("LogIn");
+  };
 
   return (
     <View style={styles.container}>
@@ -50,6 +56,7 @@ export default GetStarted;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   doubleCirclesContainer: {
     flex: 0.14,

@@ -7,19 +7,20 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import TheDoubleCircles from "../components/TheDoubleCircles";
-import GetStartedAndLoginImageView from "../components/GetStartedAndLoginImageView";
 import CustomButton from "../components/CustomButton";
 import Input from "../components/Input";
 import { RootStackParams } from "../../types/types";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 
-// Login Screen
-const LogIn = () => {
+// Signup Screen
+const SignUp = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
+  const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
@@ -30,8 +31,8 @@ const LogIn = () => {
     height: height * 0.05, // 5% of the screen
   };
 
-  const handleLogIn = () => {
-    navigation.navigate("SignUp");
+  const handleSignUp = () => {
+    navigation.navigate("GetStarted");
   };
 
   return (
@@ -40,14 +41,22 @@ const LogIn = () => {
         <TheDoubleCircles />
       </View>
       <View style={styles.getStartedImageContainer}>
-        <Text style={[styles.firstText, { marginBottom: 5 }]}>
-          Welcome back!
+        <Text style={[styles.firstText, { marginBottom: 20 }]}>
+          Welcome to ShieldedHub!
         </Text>
-        <GetStartedAndLoginImageView text="first" />
-      </View>
-      <View style={[styles.inputsContainer]}>
+        <Text
+          style={[styles.firstText, { marginBottom: 20, fontWeight: "400" }]}
+        >
+          Please sign up below
+        </Text>
         <Input
           autoFocus={true}
+          value={fullName}
+          onChangeText={setFullName}
+          text="Enter your full name"
+        />
+        <Input
+          autoFocus={false}
           value={email}
           onChangeText={setEmail}
           text="Enter your email"
@@ -58,26 +67,18 @@ const LogIn = () => {
           onChangeText={setPassword}
           text="Enter your password"
         />
-        <TouchableOpacity activeOpacity={0.3}>
-          <Text
-            style={[
-              styles.firstText,
-              {
-                color: "rgba(30, 144, 255, 0.77)",
-                fontWeight: "400",
-                marginVertical: 12,
-              },
-            ]}
-          >
-            Forget Password?
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.CustomBtnContainer}>
-        <CustomButton onPress={handleLogIn} text="Log In" />
+        <Input
+          autoFocus={false}
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          text="Confirm password"
+        />
+        <View style={{ marginTop: 20 }}>
+          <CustomButton onPress={handleSignUp} text="Register" />
+        </View>
         <View style={[styles.dontHaveContainer, containerStyles]}>
           <Text style={[styles.firstText, { fontWeight: "400", fontSize: 18 }]}>
-            Don't have an account?{" "}
+            Already have an account?{" "}
           </Text>
           <TouchableOpacity activeOpacity={0.3}>
             <Text
@@ -90,7 +91,7 @@ const LogIn = () => {
                 },
               ]}
             >
-              Register
+              Log In
             </Text>
           </TouchableOpacity>
         </View>
@@ -99,7 +100,7 @@ const LogIn = () => {
   );
 };
 
-export default LogIn;
+export default SignUp;
 
 const styles = StyleSheet.create({
   container: {
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
     flex: 0.15,
   },
   getStartedImageContainer: {
-    flex: 0.78,
+    flex: 0.85,
     alignItems: "center",
     justifyContent: "center",
   },

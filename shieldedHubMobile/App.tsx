@@ -7,6 +7,9 @@ import MyFonts from "./src/components/MyFonts";
 import Input from "./src/components/Input";
 import GetStarted from "./src/screens/GetStarted";
 import LogIn from "./src/screens/LogIn";
+import SignUp from "./src/screens/SignUp";
+import { NavigationContainer } from "@react-navigation/native";
+import StackNavigator from "./src/navigations/StackNavigator";
 
 export default function App() {
   const currentUser = useContext(AuthContext);
@@ -25,10 +28,9 @@ export default function App() {
     <ThemeContext.Provider value={theme}>
       <AuthContext.Provider value={currentUser}>
         <SafeAreaView style={styles.container}>
-          {/* <CustomButton text="Log In"/> */}
-          {/* <Input text="Enter your email" /> */}
-          {/* <GetStarted /> */}
-          <LogIn/>
+          <NavigationContainer>
+            <StackNavigator/>
+          </NavigationContainer>
         </SafeAreaView>
       </AuthContext.Provider>
     </ThemeContext.Provider>

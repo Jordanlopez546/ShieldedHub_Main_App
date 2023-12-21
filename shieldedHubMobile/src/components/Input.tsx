@@ -3,7 +3,7 @@ import React from "react";
 import { CustomInputProps } from "../../types/types";
 
 // Create the input
-const Input = ({ text, autoFocus }: CustomInputProps) => {
+const Input = ({ text, autoFocus, value, onChangeText }: CustomInputProps) => {
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
 
@@ -17,6 +17,8 @@ const Input = ({ text, autoFocus }: CustomInputProps) => {
     <TextInput
       placeholder={text}
       autoFocus={autoFocus}
+      value={value}
+      onChangeText={(text: string) => onChangeText(text)}
       style={[styles.inputContainer, inputContainerStyles]}
     />
   );
