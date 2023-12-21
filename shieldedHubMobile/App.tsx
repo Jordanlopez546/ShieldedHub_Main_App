@@ -1,10 +1,4 @@
-import {
-  Platform,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-} from "react-native";
+import { Platform, SafeAreaView, StatusBar, StyleSheet } from "react-native";
 import "react-native-gesture-handler";
 import { ThemeContext, AuthContext } from "./Global/UISettings";
 import { useContext, useEffect } from "react";
@@ -13,20 +7,18 @@ import MyFonts from "./src/components/MyFonts";
 import Input from "./src/components/Input";
 import GetStarted from "./src/screens/GetStarted";
 
-
 export default function App() {
-  
   const currentUser = useContext(AuthContext);
   const theme = useContext(ThemeContext);
 
   const changeStatusBarColour = () => {
-    StatusBar.setBarStyle('light-content')
-    StatusBar.setBackgroundColor('black');
-  }
+    StatusBar.setBarStyle("light-content");
+    StatusBar.setBackgroundColor("black");
+  };
 
   useEffect(() => {
     changeStatusBarColour();
-  }, [])
+  }, []);
 
   return (
     <ThemeContext.Provider value={theme}>
@@ -34,7 +26,7 @@ export default function App() {
         <SafeAreaView style={styles.container}>
           {/* <CustomButton text="Log In"/> */}
           {/* <Input text="Enter your email" /> */}
-          <GetStarted/>
+          <GetStarted />
         </SafeAreaView>
       </AuthContext.Provider>
     </ThemeContext.Provider>

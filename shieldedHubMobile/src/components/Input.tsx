@@ -1,13 +1,6 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { StyleSheet, TextInput, useWindowDimensions } from "react-native";
 import React from "react";
 import { InputBtnProps } from "../../types/types";
-import { regular } from "./MyFonts";
 
 // Create the input
 const Input = ({ text }: InputBtnProps) => {

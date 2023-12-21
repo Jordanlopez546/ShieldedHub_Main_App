@@ -1,6 +1,10 @@
-import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+} from "react-native";
 import React from "react";
-import { semiBold } from "./MyFonts";
 import { InputBtnProps } from "../../types/types";
 
 // Custom Button
@@ -15,9 +19,12 @@ const CustomButton = ({ text }: InputBtnProps) => {
   };
 
   return (
-    <View style={[styles.btnContainer, btnContainerStyles]}>
+    <TouchableOpacity
+      activeOpacity={0.5}
+      style={[styles.btnContainer, btnContainerStyles]}
+    >
       <Text style={styles.btnText}>{text}</Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -27,7 +34,7 @@ const styles = StyleSheet.create({
   btnContainer: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#1E90FF",
+    backgroundColor: "rgba(30, 144, 255, 0.8)",
     alignSelf: "center",
     padding: 10,
     borderRadius: 10,
@@ -35,6 +42,6 @@ const styles = StyleSheet.create({
   btnText: {
     color: "#FFFFFF",
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
