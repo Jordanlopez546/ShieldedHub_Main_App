@@ -42,8 +42,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logoContainer: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     backgroundColor: "#1E90FF",
     borderRadius: 40,
     alignItems: "center",

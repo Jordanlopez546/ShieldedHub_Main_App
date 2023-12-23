@@ -1,5 +1,4 @@
 import {
-  Pressable,
   StyleSheet,
   Text,
   View,
@@ -21,8 +20,9 @@ const Credential = ({ item }: CredentialChildProps) => {
   };
 
   return (
-    <Pressable
+    <TouchableOpacity
       key={item.id}
+      activeOpacity={0.4}
       style={[styles.credentialContainer, containerStyles]}
     >
       <View style={styles.firstIconContainer}>
@@ -37,7 +37,7 @@ const Credential = ({ item }: CredentialChildProps) => {
           <Feather name="more-vertical" size={34} color="black" />
         </TouchableOpacity>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

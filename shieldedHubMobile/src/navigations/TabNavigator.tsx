@@ -10,7 +10,7 @@ const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Credentials"
+      initialRouteName="New Detail"
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarShowLabel: true,

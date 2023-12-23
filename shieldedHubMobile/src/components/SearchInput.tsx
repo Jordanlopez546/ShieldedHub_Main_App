@@ -20,6 +20,8 @@ const SearchInput = ({
   onSearch,
   clearSearch,
   clearSearchIcon,
+  multiline,
+  showDetail
 }: SearchInputProps) => {
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
@@ -34,9 +36,12 @@ const SearchInput = ({
     <View style={[inputContainerStyles, styles.inputMainCont]}>
       <Ionicons name={iconName} size={26} color="black" />
       <TextInput
+        secureTextEntry={showDetail}
+        textContentType="password"
         placeholder={text}
         autoFocus={autoFocus}
         value={value}
+        multiline={multiline}
         onChangeText={onChangeText}
         style={[styles.inputContainer, {width: clearSearchIcon ? "80%" : "85%"}]}
         onEndEditing={onSearch}

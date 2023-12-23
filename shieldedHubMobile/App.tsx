@@ -5,7 +5,7 @@ import { useContext, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import StackNavigator from "./src/navigations/StackNavigator";
 
-export default function App() {
+export default function xApp() {
   const currentUser = useContext(AuthContext);
   const theme = useContext(ThemeContext);
 

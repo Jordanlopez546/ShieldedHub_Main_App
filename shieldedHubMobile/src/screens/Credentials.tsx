@@ -19,6 +19,7 @@ const Credentials = () => {
   const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
   const [credentialLoading, setCredentialLoading] = useState<boolean>(false);
   const [clearSearchIcon, setClearSearchIcon] = useState<boolean>(false);
+  
   // Getting the width of the screen
   const { width, height } = useWindowDimensions();
 

@@ -22,10 +22,12 @@ export type RootStackParams = {
 };
 
 export type SearchInputProps = CustomInputProps & {
-  iconName: "search";
-  onSearch: () => void;
-  clearSearch: () => void;
-  clearSearchIcon: boolean;
+  iconName: "search" | "at" | "document-outline" | "lock-closed-outline";
+  onSearch?: () => void;
+  clearSearch?: () => void;
+  clearSearchIcon?: boolean;
+  multiline?: boolean;
+  showDetail?: boolean;
 };
 
 export interface CredentialItemProps {
