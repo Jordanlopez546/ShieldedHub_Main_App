@@ -32,7 +32,7 @@ const SignUp = () => {
   };
 
   const handleSignUp = () => {
-    navigation.navigate("GetStarted");
+    navigation.navigate("TheTabBarNavigators");
   };
 
   return (
