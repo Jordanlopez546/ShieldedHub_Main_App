@@ -10,7 +10,7 @@ const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="New Detail"
+      initialRouteName="Recycle Bin"
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarShowLabel: true,

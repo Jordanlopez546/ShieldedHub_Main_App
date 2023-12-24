@@ -21,7 +21,7 @@ const SearchInput = ({
   clearSearch,
   clearSearchIcon,
   multiline,
-  showDetail
+  showDetail,
 }: SearchInputProps) => {
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
@@ -43,7 +43,10 @@ const SearchInput = ({
         value={value}
         multiline={multiline}
         onChangeText={onChangeText}
-        style={[styles.inputContainer, {width: clearSearchIcon ? "80%" : "85%"}]}
+        style={[
+          styles.inputContainer,
+          { width: clearSearchIcon ? "80%" : "85%" },
+        ]}
         onEndEditing={onSearch}
       />
       {clearSearchIcon && (

@@ -37,4 +37,8 @@ export interface CredentialItemProps {
 
 export interface CredentialChildProps {
   item: CredentialItemProps;
+  colour?: string;
+  expireText?: string;
+  recoverBtn?: () => void;
+  deleteBtn?: () => void;
 }

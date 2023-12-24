@@ -1,4 +1,5 @@
 import {
+  Alert,
   StyleSheet,
   Text,
   View,
@@ -9,7 +10,13 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { CredentialChildProps } from "../../types/types";
 
-const Credential = ({ item }: CredentialChildProps) => {
+const Credential = ({
+  item,
+  colour,
+  expireText,
+  recoverBtn,
+  deleteBtn,
+}: CredentialChildProps) => {
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
 
@@ -17,6 +24,36 @@ const Credential = ({ item }: CredentialChildProps) => {
   const containerStyles = {
     width: width * 0.8, // 80% of the screen
     // height: height * 0.08, // 8% of the screen
+  };
+
+  const showAlert = () => {
+    {
+      recoverBtn
+        ? Alert.alert("Confirm", "Choose the respective action", [
+            {
+              text: "Recover",
+              onPress: () => recoverBtn && recoverBtn(),
+            },
+            {
+              text: "Delete",
+              onPress: () => deleteBtn && deleteBtn(),
+            },
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+          ])
+        : Alert.alert("Confirm", "Choose the respective action", [
+            {
+              text: "Delete",
+              onPress: () => deleteBtn && deleteBtn(),
+            },
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+          ]);
+    }
   };
 
   return (
@@ -29,11 +66,15 @@ const Credential = ({ item }: CredentialChildProps) => {
         <AntDesign name="profile" size={30} color="black" />
       </View>
       <View style={styles.textContainer}>
-        <Text style={styles.headerText}>{item.name}</Text>
-        <Text style={styles.dateText}>Today, 16:45</Text>
+        <Text style={[styles.headerText, { color: colour ? colour : "black" }]}>
+          {item.name}
+        </Text>
+        <Text style={[styles.dateText, { color: colour ? colour : "black" }]}>
+          {expireText ? expireText : "Today, 16:45"}
+        </Text>
       </View>
       <View style={styles.secondIconContainer}>
-        <TouchableOpacity activeOpacity={-0.3}>
+        <TouchableOpacity onPress={showAlert} activeOpacity={-0.3}>
           <Feather name="more-vertical" size={34} color="black" />
         </TouchableOpacity>
       </View>

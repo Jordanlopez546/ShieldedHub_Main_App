@@ -19,7 +19,7 @@ const Credentials = () => {
   const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
   const [credentialLoading, setCredentialLoading] = useState<boolean>(false);
   const [clearSearchIcon, setClearSearchIcon] = useState<boolean>(false);
-  
+
   // Getting the width of the screen
   const { width, height } = useWindowDimensions();
 
@@ -127,6 +127,10 @@ const Credentials = () => {
     }
   }, [credentialSearch]);
 
+  const deleteBtnFunc = () => {
+    console.log("Deleting...");
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -156,7 +160,9 @@ const Credentials = () => {
           <FlatList
             data={renderData}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <Credential item={item} />}
+            renderItem={({ item }) => (
+              <Credential deleteBtn={deleteBtnFunc} item={item} />
+            )}
           />
         ) : (
           <Text style={styles.noDataText}>No available data</Text>
