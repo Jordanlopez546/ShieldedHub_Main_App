@@ -12,9 +12,10 @@ import React, { useEffect, useState } from "react";
 import TopBar from "../components/TopBar";
 import SearchInput from "../components/SearchInput";
 import Credential from "../components/Credential";
-import { CredentialItemProps } from "../../types/types";
+import { CredentialItemProps, CredentialItemScreenNavigationOptions } from "../../types/types";
 
-const Credentials = () => {
+const Credentials = ({staticData, setStaticData}: CredentialItemScreenNavigationOptions) => {
+
   const [credentialSearch, setCredentialSearch] = useState<string>("");
   const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
   const [credentialLoading, setCredentialLoading] = useState<boolean>(false);
@@ -27,83 +28,12 @@ const Credentials = () => {
     width: width * 1,
   };
 
-  const staticData: CredentialItemProps[] = [
-    {
-      id: 1,
-      name: "Facebook Login",
-    },
-    {
-      id: 2,
-      name: "Whatsapp Login",
-    },
-    {
-      id: 4,
-      name: "Instagram Login",
-    },
-    {
-      id: 5,
-      name: "Snapchat Login",
-    },
-    {
-      id: 6,
-      name: "2go Login",
-    },
-    {
-      id: 7,
-      name: "Facebook Login",
-    },
-    {
-      id: 8,
-      name: "Whatsapp Login",
-    },
-    {
-      id: 9,
-      name: "Instagram Login",
-    },
-    {
-      id: 11,
-      name: "Snapchat Login",
-    },
-    {
-      id: 12,
-      name: "2go Login",
-    },
-    {
-      id: 13,
-      name: "Facebook Login",
-    },
-    {
-      id: 14,
-      name: "Whatsapp Login",
-    },
-    {
-      id: 15,
-      name: "Instagram Login",
-    },
-    {
-      id: 16,
-      name: "Snapchat Login",
-    },
-    {
-      id: 17,
-      name: "2go Login",
-    },
-    {
-      id: 18,
-      name: "Snapchat Login",
-    },
-    {
-      id: 19,
-      name: "2go Login",
-    },
-  ];
-
   // Functionality To search for credentials
   const searchCredential = (text: string) => {
     setCredentialLoading(true);
     setTimeout(() => {
       const filteredItems = staticData.filter((item) =>
-        item.name.toLowerCase().includes(text.toLowerCase())
+        item.title.toLowerCase().includes(text.toLowerCase())
       );
       setFilteredData(filteredItems);
       setCredentialLoading(false);
@@ -127,9 +57,6 @@ const Credentials = () => {
     }
   }, [credentialSearch]);
 
-  const deleteBtnFunc = () => {
-    console.log("Deleting...");
-  };
 
   return (
     <KeyboardAvoidingView
@@ -161,7 +88,11 @@ const Credentials = () => {
             data={renderData}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <Credential deleteBtn={deleteBtnFunc} item={item} />
+              <Credential
+                staticData={staticData}
+                setStaticData={setStaticData}
+                item={item}
+              />
             )}
           />
         ) : (

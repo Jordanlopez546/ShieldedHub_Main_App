@@ -8,25 +8,15 @@ import {
 import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { AntDesign, Feather } from "@expo/vector-icons";
-import {
-  CredentialChildProps,
-  CredentialItemProps,
-  CredentialItemScreenParams,
-  RootStackParams,
-} from "../../types/types";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { RecycleChildProps } from "../../types/types";
 
-const Credential = ({
+const Recycle = ({
   item,
   colour,
   expireText,
   recoverBtn,
-  setStaticData,
-  staticData
-}: CredentialChildProps) => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
-
+  deleteBtn,
+}: RecycleChildProps) => {
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
 
@@ -36,41 +26,40 @@ const Credential = ({
     // height: height * 0.08, // 8% of the screen
   };
 
-  const deleteBtn = (idToDelete: number) => {
-    const newArray = staticData.filter((item: CredentialItemProps) => item.id !== idToDelete);
-    setStaticData(newArray);
-  };
-
   const showAlert = () => {
-    const deleteAction = () => deleteBtn(item.id);
-
-    const buttons:any = recoverBtn
-      ? [
-          { text: "Recover", onPress: () => recoverBtn && recoverBtn() },
-          { text: "Delete", onPress: deleteAction },
-          { text: "Cancel", style: "cancel" },
-        ]
-      : [
-          { text: "Delete", onPress: deleteAction },
-          { text: "Cancel", style: "cancel" },
-        ];
-
-    Alert.alert("Confirm", "Choose the respective action", buttons);
+    {
+      recoverBtn
+        ? Alert.alert("Confirm", "Choose the respective action", [
+            {
+              text: "Recover",
+              onPress: () => recoverBtn && recoverBtn(),
+            },
+            {
+              text: "Delete",
+              onPress: () => deleteBtn && deleteBtn(),
+            },
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+          ])
+        : Alert.alert("Confirm", "Choose the respective action", [
+            {
+              text: "Delete",
+              onPress: () => deleteBtn && deleteBtn(),
+            },
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+          ]);
+    }
   };
 
   return (
     <TouchableOpacity
       key={item.id}
       activeOpacity={0.4}
-      onPress={() =>
-        navigation.navigate("CredentialItemScreen", {
-          credentialId: item.id,
-          credentialTitle: item.title,
-          credentialEmail: item.email,
-          credentialPassword: item.password,
-          credentialNotes: item.notes,
-        } as CredentialItemScreenParams)
-      }
       style={[styles.credentialContainer, containerStyles]}
     >
       <View style={styles.firstIconContainer}>
@@ -93,7 +82,7 @@ const Credential = ({
   );
 };
 
-export default Credential;
+export default Recycle;
 
 const styles = StyleSheet.create({
   credentialContainer: {

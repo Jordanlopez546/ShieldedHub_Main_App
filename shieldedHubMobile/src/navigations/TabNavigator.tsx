@@ -4,18 +4,26 @@ import NewDetail from "../screens/NewDetail";
 import RecycleBin from "../screens/RecycleBin";
 import { FontAwesome5, Entypo, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Dimensions } from "react-native";
+import {
+  CredentialItemProps,
+  CredentialItemScreenNavigationOptions,
+} from "../../types/types";
 
 const Tab = createBottomTabNavigator();
 
-const TabNavigator = () => {
+const TabNavigator = ({
+  staticData,
+  setStaticData,
+}: CredentialItemScreenNavigationOptions) => {
   return (
     <Tab.Navigator
-      initialRouteName="Recycle Bin"
+      initialRouteName="Credentials"
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarShowLabel: true,
         tabBarLabelStyle: {
-          fontSize: 13,
+          fontSize: 14,
         },
         tabBarStyle: {
           backgroundColor: "black",
@@ -44,7 +52,11 @@ const TabNavigator = () => {
         },
       })}
     >
-      <Tab.Screen name="Credentials" component={Credentials} />
+      <Tab.Screen name="Credentials">
+        {(props) => (
+          <Credentials staticData={staticData} setStaticData={setStaticData} />
+        )}
+      </Tab.Screen>
       <Tab.Screen name="New Detail" component={NewDetail} />
       <Tab.Screen name="Recycle Bin" component={RecycleBin} />
     </Tab.Navigator>

@@ -11,12 +11,12 @@ import {
 import React, { useEffect, useState } from "react";
 import TopBar from "../components/TopBar";
 import SearchInput from "../components/SearchInput";
-import Credential from "../components/Credential";
-import { CredentialItemProps } from "../../types/types";
+import {RecycleItemProps } from "../../types/types";
+import Recycle from "../components/Recycle";
 
 const RecycleBin = () => {
   const [recyclebinSearch, setRecyclebinSearch] = useState<string>("");
-  const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
+  const [filteredData, setFilteredData] = useState<RecycleItemProps[]>([]);
   const [recyclebinLoading, setRecyclebinLoading] = useState<boolean>(false);
   const [clearSearchIcon, setClearSearchIcon] = useState<boolean>(false);
 
@@ -27,22 +27,22 @@ const RecycleBin = () => {
     width: width * 1,
   };
 
-  const staticData: CredentialItemProps[] = [
+  const staticData: RecycleItemProps[] = [
     {
       id: 1,
-      name: "Facebook Login",
+      title: "Facebook Login",
     },
     {
       id: 2,
-      name: "Whatsapp Login",
+      title: "Whatsapp Login",
     },
     {
       id: 3,
-      name: "Instagram Login",
+      title: "Instagram Login",
     },
     {
       id: 4,
-      name: "Snapchat Login",
+      title: "Snapchat Login",
     },
   ];
 
@@ -51,7 +51,7 @@ const RecycleBin = () => {
     setRecyclebinLoading(true);
     setTimeout(() => {
       const filteredItems = staticData.filter((item) =>
-        item.name.toLowerCase().includes(text.toLowerCase())
+        item.title.toLowerCase().includes(text.toLowerCase())
       );
       setFilteredData(filteredItems);
       setRecyclebinLoading(false);
@@ -112,7 +112,7 @@ const RecycleBin = () => {
             data={renderData}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <Credential
+              <Recycle
                 recoverBtn={recoverBtnFunc}
                 deleteBtn={deleteBtnFunc}
                 expireText="Expires in 30 days"

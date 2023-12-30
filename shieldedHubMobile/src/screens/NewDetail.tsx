@@ -44,6 +44,8 @@ const NewDetail = () => {
     setNotes("");
   };
 
+  const responsiveMargin = width * 0.12;
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -66,10 +68,10 @@ const NewDetail = () => {
           {title && (
             <TouchableOpacity
               activeOpacity={0.8}
-              style={{ position: "absolute", right: 50 }}
+              style={{ position: "absolute", right: responsiveMargin }}
               onPress={() => setShowTitle(!showTitle)}
             >
-              <Text style={styles.showHideText}>
+              <Text style={[styles.showHideText, {marginLeft: 10}]}>
                 {showTitle ? "Show" : "Hide"}
               </Text>
             </TouchableOpacity>
@@ -87,7 +89,7 @@ const NewDetail = () => {
           {emailOrUsername && (
             <TouchableOpacity
               activeOpacity={0.8}
-              style={{ position: "absolute", right: 50 }}
+              style={{ position: "absolute", right: responsiveMargin }}
               onPress={() => setShowEmailorUsername(!showEmailOrUsername)}
             >
               <Text style={styles.showHideText}>
@@ -108,7 +110,7 @@ const NewDetail = () => {
           {password && (
             <TouchableOpacity
               activeOpacity={0.8}
-              style={{ position: "absolute", right: 50 }}
+              style={{ position: "absolute", right: responsiveMargin }}
               onPress={() => setShowPassword(!showPassword)}
             >
               <Text style={styles.showHideText}>
@@ -183,7 +185,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   showHideText: {
-    marginLeft: 10,
     color: "blue",
   },
 });

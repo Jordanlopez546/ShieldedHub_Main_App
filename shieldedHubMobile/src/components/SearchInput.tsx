@@ -22,6 +22,7 @@ const SearchInput = ({
   clearSearchIcon,
   multiline,
   showDetail,
+  editable
 }: SearchInputProps) => {
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
@@ -48,6 +49,7 @@ const SearchInput = ({
           { width: clearSearchIcon ? "80%" : "85%" },
         ]}
         onEndEditing={onSearch}
+        editable={editable}
       />
       {clearSearchIcon && (
         <TouchableOpacity onPress={clearSearch}>
@@ -69,6 +71,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     height: "100%",
     width: "85%",
+    color: 'black'
   },
   inputMainCont: {
     borderColor: "rgba(30, 144, 255, 0.77)",
