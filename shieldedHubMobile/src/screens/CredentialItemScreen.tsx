@@ -8,7 +8,12 @@ import {
   useWindowDimensions,
 } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
-import { CredentialItemProps, CredentialItemScreenProps, CredentialItemScreenRouteProp, RootStackParams } from "../../types/types";
+import {
+  CredentialItemProps,
+  CredentialItemScreenProps,
+  CredentialItemScreenRouteProp,
+  RootStackParams,
+} from "../../types/types";
 import SearchInput from "../components/SearchInput";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -17,10 +22,10 @@ const CredentialItemScreen = ({
   route,
   navigation,
   staticData,
-  setStaticData
+  setStaticData,
 }: {
-  route: CredentialItemScreenRouteProp,
-  navigation: StackNavigationProp<RootStackParams, "CredentialItemScreen">,
+  route: CredentialItemScreenRouteProp;
+  navigation: StackNavigationProp<RootStackParams, "CredentialItemScreen">;
   setStaticData: React.Dispatch<React.SetStateAction<CredentialItemProps[]>>;
   staticData: CredentialItemProps[];
 }) => {
@@ -32,22 +37,21 @@ const CredentialItemScreen = ({
     credentialNotes: initialNotes,
   } = route.params;
 
-
   const [credentialTitle, setCredentialTitle] = useState(initialTitle);
   const [credentialEmail, setCredentialEmail] = useState(initialEmail);
   const [credentialPassword, setCredentialPassword] = useState(initialPassword);
   const [credentialNotes, setCredentialNotes] = useState(initialNotes);
   const [editableText, setEditableText] = useState(false);
 
-
   const handleUpdateCredentials = () => {
-    
-    if (credentialEmail.trim() !== "" && credentialTitle.trim() !== "" && credentialPassword.trim() !== "")
-    {
-
+    if (
+      credentialEmail.trim() !== "" &&
+      credentialTitle.trim() !== "" &&
+      credentialPassword.trim() !== ""
+    ) {
       // Update the staticData array with the new values
-  
-      const updatedData = staticData.map((item:any) => {
+
+      const updatedData = staticData.map((item: any) => {
         if (item.id === credentialId) {
           return {
             ...item,
@@ -59,24 +63,21 @@ const CredentialItemScreen = ({
         }
         return item;
       });
-  
+
       // Update the state of staticData
       setStaticData(updatedData);
-  
+
       // Navigate back to the previous screen
       navigation.goBack();
-    }
-    
-    else {
-      Alert.alert('Instruction', 'Please fill in the inputs.', [
+    } else {
+      Alert.alert("Instruction", "Please fill in the inputs.", [
         {
           text: "Okay",
           style: "cancel",
         },
-      ])
+      ]);
     }
   };
-
 
   // Getting the width of the screen
   const { width, height } = useWindowDimensions();
@@ -182,7 +183,10 @@ const CredentialItemScreen = ({
             >
               <Text style={styles.createOrClearText}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleUpdateCredentials()} activeOpacity={-0}>
+            <TouchableOpacity
+              onPress={() => handleUpdateCredentials()}
+              activeOpacity={-0}
+            >
               <Text style={styles.createOrClearText}>Update</Text>
             </TouchableOpacity>
           </View>
