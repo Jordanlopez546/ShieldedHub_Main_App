@@ -11,6 +11,7 @@ import {
 import TabNavigator from "./TabNavigator";
 import CredentialItemScreen from "../screens/CredentialItemScreen";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import DrawerNavigator from "./DrawerNavigator";
 
 const Stack = createStackNavigator<RootStackParams>();
 
@@ -35,7 +36,7 @@ const StackNavigator = ({
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="TheTabBarNavigators">
         {(props) => (
-          <TabNavigator setStaticData={setStaticData} staticData={staticData} />
+          <DrawerNavigator setStaticData={setStaticData} staticData={staticData} />
         )}
       </Stack.Screen>
     </Stack.Navigator>

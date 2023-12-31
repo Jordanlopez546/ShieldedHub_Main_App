@@ -5,6 +5,8 @@ import { useContext, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import StackNavigator from "./src/navigations/StackNavigator";
 import { CredentialItemProps } from "./types/types";
+import "react-native-gesture-handler";
+import DrawerNavigator from "./src/navigations/DrawerNavigator";
 
 export default function xApp() {
   const staticDataInitial = [
@@ -126,7 +128,8 @@ export default function xApp() {
       notes: "Something really good!",
     },
   ];
-  const [staticData, setStaticData] = useState<CredentialItemProps[]>(staticDataInitial);
+  const [staticData, setStaticData] =
+    useState<CredentialItemProps[]>(staticDataInitial);
 
   const currentUser = useContext(AuthContext);
   const theme = useContext(ThemeContext);
@@ -145,7 +148,10 @@ export default function xApp() {
       <AuthContext.Provider value={currentUser}>
         <SafeAreaView style={styles.container}>
           <NavigationContainer>
-            <StackNavigator staticData={staticData} setStaticData={setStaticData} />
+            <StackNavigator
+              staticData={staticData}
+              setStaticData={setStaticData}
+            />
           </NavigationContainer>
         </SafeAreaView>
       </AuthContext.Provider>

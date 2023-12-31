@@ -1,4 +1,5 @@
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -11,15 +12,71 @@ import {
 import React, { useState } from "react";
 import TopBar from "../components/TopBar";
 import SearchInput from "../components/SearchInput";
+import {
+  CredentialItemScreenNavigationOptions,
+  RootStackParams,
+} from "../../types/types";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
-const NewDetail = () => {
+const NewDetail = ({
+  staticData,
+  setStaticData,
+}: CredentialItemScreenNavigationOptions) => {
   const [title, setTitle] = useState<string>("");
-  const [showTitle, setShowTitle] = useState(true);
-  const [showEmailOrUsername, setShowEmailorUsername] = useState(true);
-  const [showPassword, setShowPassword] = useState(true);
   const [emailOrUsername, setEmailOrUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
+  const [showTitle, setShowTitle] = useState(true);
+  const [showEmailOrUsername, setShowEmailorUsername] = useState(true);
+  const [showPassword, setShowPassword] = useState(true);
+
+  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
+
+  const handleAddCredentials = () => {
+    if (
+      title.trim() !== "" &&
+      emailOrUsername.trim() !== "" &&
+      password.trim() !== ""
+    ) {
+      // Find the maximum id in the existing data
+      const maxId = staticData.reduce(
+        (max, credential) => Math.max(max, credential.id || 0),
+        0
+      );
+
+      // Create a new credential
+      const newCredential = {
+        id: maxId + 1,
+        title: title,
+        email: emailOrUsername,
+        password: password,
+        notes: notes
+      };
+
+      // Add the new credential to the staticData array
+      const updatedData = [newCredential, ...staticData];
+
+      // Update the state of staticData
+      setStaticData(updatedData);
+
+      // Clear the input fields
+      setEmailOrUsername("");
+      setTitle("");
+      setNotes("");
+      setPassword("");
+
+      // Navigate back to the credentials screen
+      navigation.goBack();
+    } else {
+      Alert.alert("Instruction", "Please fill in the inputs.", [
+        {
+          text: "Okay",
+          style: "cancel",
+        },
+      ]);
+    }
+  };
 
   // Getting the width of the screen
   const { width, height } = useWindowDimensions();
@@ -50,7 +107,7 @@ const NewDetail = () => {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -50} // Adjust the offset as needed
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -100}
     >
       <View style={[styles.topBarContainer, containerStyles]}>
         <TopBar />
@@ -71,7 +128,7 @@ const NewDetail = () => {
               style={{ position: "absolute", right: responsiveMargin }}
               onPress={() => setShowTitle(!showTitle)}
             >
-              <Text style={[styles.showHideText, {marginLeft: 10}]}>
+              <Text style={[styles.showHideText, { marginLeft: 10 }]}>
                 {showTitle ? "Show" : "Hide"}
               </Text>
             </TouchableOpacity>
@@ -139,7 +196,10 @@ const NewDetail = () => {
           >
             <Text style={styles.createOrClearText}>Clear</Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={-0}>
+          <TouchableOpacity
+            onPress={() => handleAddCredentials()}
+            activeOpacity={-0}
+          >
             <Text style={styles.createOrClearText}>Create</Text>
           </TouchableOpacity>
         </View>

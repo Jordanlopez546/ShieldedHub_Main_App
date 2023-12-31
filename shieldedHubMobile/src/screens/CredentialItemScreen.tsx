@@ -13,6 +13,7 @@ import {
   CredentialItemScreenProps,
   CredentialItemScreenRouteProp,
   RootStackParams,
+  StackCredentialItemProps,
 } from "../../types/types";
 import SearchInput from "../components/SearchInput";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
@@ -23,12 +24,7 @@ const CredentialItemScreen = ({
   navigation,
   staticData,
   setStaticData,
-}: {
-  route: CredentialItemScreenRouteProp;
-  navigation: StackNavigationProp<RootStackParams, "CredentialItemScreen">;
-  setStaticData: React.Dispatch<React.SetStateAction<CredentialItemProps[]>>;
-  staticData: CredentialItemProps[];
-}) => {
+}: StackCredentialItemProps) => {
   const {
     credentialId,
     credentialTitle: initialTitle,
@@ -49,8 +45,8 @@ const CredentialItemScreen = ({
       credentialTitle.trim() !== "" &&
       credentialPassword.trim() !== ""
     ) {
-      // Update the staticData array with the new values
 
+      // Update the staticData array with the new values
       const updatedData = staticData.map((item: any) => {
         if (item.id === credentialId) {
           return {

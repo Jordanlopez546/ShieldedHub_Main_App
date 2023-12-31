@@ -86,7 +86,7 @@ const RecycleBin = () => {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -250} // Adjust the offset as needed
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -250}
     >
       <View style={[styles.topBarContainer, containerStyles]}>
         <TopBar />

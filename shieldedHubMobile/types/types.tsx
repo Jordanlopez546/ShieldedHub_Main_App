@@ -89,3 +89,10 @@ export interface CredentialItemScreenNavigationOptions {
   setStaticData: React.Dispatch<React.SetStateAction<CredentialItemProps[]>>;
   staticData: CredentialItemProps[];
 }
+
+export interface StackCredentialItemProps {
+  route: CredentialItemScreenRouteProp;
+  navigation: StackNavigationProp<RootStackParams, "CredentialItemScreen">;
+  setStaticData: React.Dispatch<React.SetStateAction<CredentialItemProps[]>>;
+  staticData: CredentialItemProps[];
+}

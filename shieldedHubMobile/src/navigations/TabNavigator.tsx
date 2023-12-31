@@ -57,7 +57,11 @@ const TabNavigator = ({
           <Credentials staticData={staticData} setStaticData={setStaticData} />
         )}
       </Tab.Screen>
-      <Tab.Screen name="New Detail" component={NewDetail} />
+      <Tab.Screen name="New Detail">
+        {(props) => (
+          <NewDetail staticData={staticData} setStaticData={setStaticData} />
+        )}
+      </Tab.Screen>
       <Tab.Screen name="Recycle Bin" component={RecycleBin} />
     </Tab.Navigator>
   );
