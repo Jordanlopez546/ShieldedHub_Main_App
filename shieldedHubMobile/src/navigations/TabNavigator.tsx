@@ -1,21 +1,45 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Credentials from "../screens/Credentials";
 import NewDetail from "../screens/NewDetail";
-import RecycleBin from "../screens/RecycleBin";
 import { FontAwesome5, Entypo, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Dimensions } from "react-native";
 import {
-  CredentialItemProps,
   CredentialItemScreenNavigationOptions,
+  TabNavigatorProps,
+  TabParamList,
 } from "../../types/types";
+import RecycleBin from "../screens/RecycleBin";
+import { RouteProp, useRoute } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = ({
   staticData,
   setStaticData,
-}: CredentialItemScreenNavigationOptions) => {
+  theme,
+  setTheme,
+  isModalVisible,
+  setIsModalVisible,
+  currentScreen,
+  handleScreenChange,
+  navigation,
+  isDarkMode,
+  setIsDarkMode,
+}: TabNavigatorProps) => {
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+      if (isModalVisible) {
+        e.preventDefault(); // Prevent the screen from being removed
+        if (setIsModalVisible) {
+          setIsModalVisible(false); // Close the modal
+          navigation.dispatch(e.data.action); // Dispatch the action
+        }
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, isModalVisible, setIsModalVisible]);
+
   return (
     <Tab.Navigator
       initialRouteName="Credentials"
@@ -26,11 +50,18 @@ const TabNavigator = ({
           fontSize: 14,
         },
         tabBarStyle: {
-          backgroundColor: "black",
+          backgroundColor: isDarkMode ? "#1E272E" : "#000",
         },
         tabBarIcon: ({ focused, color, size }) => {
           let iconColor, iconSize;
-          iconColor = focused ? "#1E90FF" : "#fff";
+          iconColor = focused
+            ? isDarkMode
+              ? "#fff"
+              : "#1E90FF"
+            : isDarkMode
+            ? "rgba(240, 240, 240, 0.6)"
+            : "rgba(240, 240, 240, 0.6)";
+
           iconSize = focused ? 28 : 24;
           if (route.name === "Credentials") {
             return (
@@ -50,19 +81,85 @@ const TabNavigator = ({
             );
           }
         },
+        tabBarActiveTintColor: isDarkMode ? "#fff" : "#1E90FF", // Active tab text and icon color
       })}
     >
-      <Tab.Screen name="Credentials">
+      <Tab.Screen
+        name="Credentials"
+        listeners={{
+          tabPress: (e) => {
+            if (handleScreenChange) {
+              handleScreenChange("Credentials");
+            }
+          },
+        }}
+      >
         {(props) => (
-          <Credentials staticData={staticData} setStaticData={setStaticData} />
+          <Credentials
+            {...props}
+            currentScreen={currentScreen}
+            handleScreenChange={handleScreenChange}
+            isModalVisible={isModalVisible}
+            setIsModalVisible={setIsModalVisible}
+            theme={theme}
+            setTheme={setTheme}
+            staticData={staticData}
+            setStaticData={setStaticData}
+            isDarkMode={isDarkMode}
+            setIsDarkMode={setIsDarkMode}
+          />
         )}
       </Tab.Screen>
-      <Tab.Screen name="New Detail">
+      <Tab.Screen
+        name="New Detail"
+        listeners={{
+          tabPress: (e) => {
+            if (handleScreenChange) {
+              handleScreenChange("New Detail");
+            }
+          },
+        }}
+      >
         {(props) => (
-          <NewDetail staticData={staticData} setStaticData={setStaticData} />
+          <NewDetail
+            {...props}
+            currentScreen={currentScreen}
+            handleScreenChange={handleScreenChange}
+            isModalVisible={isModalVisible}
+            setIsModalVisible={setIsModalVisible}
+            theme={theme}
+            setTheme={setTheme}
+            staticData={staticData}
+            setStaticData={setStaticData}
+            isDarkMode={isDarkMode}
+            setIsDarkMode={setIsDarkMode}
+          />
         )}
       </Tab.Screen>
-      <Tab.Screen name="Recycle Bin" component={RecycleBin} />
+      <Tab.Screen
+        name="Recycle Bin"
+        listeners={{
+          tabPress: (e) => {
+            if (handleScreenChange) {
+              handleScreenChange("Recycle Bin");
+            }
+          },
+        }}
+      >
+        {(props) => (
+          <RecycleBin
+            currentScreen={currentScreen}
+            handleScreenChange={handleScreenChange}
+            isModalVisible={isModalVisible}
+            setIsModalVisible={setIsModalVisible}
+            theme={theme}
+            setTheme={setTheme}
+            isDarkMode={isDarkMode}
+            setIsDarkMode={setIsDarkMode}
+            {...props}
+          />
+        )}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };

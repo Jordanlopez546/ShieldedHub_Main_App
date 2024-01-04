@@ -24,6 +24,10 @@ const CredentialItemScreen = ({
   navigation,
   staticData,
   setStaticData,
+  isDarkMode,
+  setIsDarkMode,
+  theme,
+  setTheme,
 }: StackCredentialItemProps) => {
   const {
     credentialId,
@@ -45,7 +49,6 @@ const CredentialItemScreen = ({
       credentialTitle.trim() !== "" &&
       credentialPassword.trim() !== ""
     ) {
-
       // Update the staticData array with the new values
       const updatedData = staticData.map((item: any) => {
         if (item.id === credentialId) {
@@ -88,6 +91,10 @@ const CredentialItemScreen = ({
     }
     navigation.setOptions({
       title: limitedTitle,
+      headerStyle: {
+        backgroundColor: isDarkMode ? "#1E272E" : "#FFFFFF",
+      },
+      headerTintColor: isDarkMode ? "#FFFFFF" : "#000",
     });
   }, [navigation, credentialTitle]);
 
@@ -113,9 +120,12 @@ const CredentialItemScreen = ({
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[
+        styles.container,
+        { backgroundColor: isDarkMode ? "#1E272E" : "#FFFFFF" },
+      ]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -50} // Adjust the offset as needed
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -50}
     >
       <View style={styles.inputsContainer}>
         <View style={[styles.inputMargin]}>
@@ -127,6 +137,7 @@ const CredentialItemScreen = ({
             showDetail={false}
             editable={editableText}
             onChangeText={(text) => setCredentialTitle(text)}
+            isDarkMode={isDarkMode}
           />
         </View>
         <View style={styles.inputMargin}>
@@ -138,6 +149,7 @@ const CredentialItemScreen = ({
             showDetail={false}
             editable={editableText}
             onChangeText={(text) => setCredentialEmail(text)}
+            isDarkMode={isDarkMode}
           />
         </View>
         <View style={styles.inputMargin}>
@@ -149,6 +161,7 @@ const CredentialItemScreen = ({
             showDetail={false}
             editable={editableText}
             onChangeText={(text) => setCredentialPassword(text)}
+            isDarkMode={isDarkMode}
           />
         </View>
         <TextInput
@@ -156,7 +169,12 @@ const CredentialItemScreen = ({
           textAlignVertical="top"
           multiline={true}
           placeholder="Notes(Optional)"
-          style={[styles.noteInput, noteInputContainerStyles]}
+          placeholderTextColor={isDarkMode ? "#fff" : "#000"}
+          style={[
+            styles.noteInput,
+            noteInputContainerStyles,
+            { color: isDarkMode ? "#fff" : "#000" },
+          ]}
           editable={editableText}
           onChangeText={(text) => setCredentialNotes(text)}
         />
@@ -171,25 +189,53 @@ const CredentialItemScreen = ({
               onPress={() => handleClearInputs()}
               activeOpacity={-0}
             >
-              <Text style={styles.createOrClearText}>Clear</Text>
+              <Text
+                style={[
+                  styles.createOrClearText,
+                  { color: isDarkMode ? "#fff" : "#000" },
+                ]}
+              >
+                Clear
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setEditableText(!editableText)}
               activeOpacity={-0}
             >
-              <Text style={styles.createOrClearText}>Cancel</Text>
+              <Text
+                style={[
+                  styles.createOrClearText,
+                  { color: isDarkMode ? "#fff" : "#000" },
+                ]}
+              >
+                Cancel
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => handleUpdateCredentials()}
               activeOpacity={-0}
             >
-              <Text style={styles.createOrClearText}>Update</Text>
+              <Text
+                style={[
+                  styles.createOrClearText,
+                  { color: isDarkMode ? "#fff" : "#000" },
+                ]}
+              >
+                Update
+              </Text>
             </TouchableOpacity>
           </View>
         ) : (
           <View style={[styles.editTextContainer, clearOrCreateContainerWidth]}>
             <TouchableOpacity onPress={editablePress} activeOpacity={-0}>
-              <Text style={styles.editText}>Edit</Text>
+              <Text
+                style={[
+                  styles.editText,
+                  { color: isDarkMode ? "#fff" : "#000" },
+                ]}
+              >
+                Edit
+              </Text>
             </TouchableOpacity>
           </View>
         )}

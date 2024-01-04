@@ -4,8 +4,10 @@ import {
   Text,
   View,
   useWindowDimensions,
+  ScrollView,
+  StatusBar,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import TheDoubleCircles from "../components/TheDoubleCircles";
 import GetStartedAndLoginImageView from "../components/GetStartedAndLoginImageView";
 import CustomButton from "../components/CustomButton";
@@ -34,13 +36,23 @@ const LogIn = () => {
     navigation.navigate("SignUp");
   };
 
+  useEffect(() => {
+    StatusBar.setBarStyle("dark-content");
+    StatusBar.setBackgroundColor("white");
+  }, []);
+
   return (
-    <View style={styles.container}>
+    <ScrollView
+      scrollEnabled
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+      style={styles.container}
+    >
       <View style={styles.doubleCirclesContainer}>
         <TheDoubleCircles />
       </View>
       <View style={styles.getStartedImageContainer}>
-        <Text style={[styles.firstText, { marginBottom: 5 }]}>
+        <Text style={[styles.firstText, { marginBottom: 15 }]}>
           Welcome back!
         </Text>
         <GetStartedAndLoginImageView text="first" />
@@ -49,13 +61,13 @@ const LogIn = () => {
         <Input
           autoFocus={true}
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(text) => setEmail(text)}
           text="Enter your email"
         />
         <Input
           autoFocus={false}
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(text) => setPassword(text)}
           text="Enter your password"
         />
         <TouchableOpacity activeOpacity={0.3}>
@@ -65,7 +77,7 @@ const LogIn = () => {
               {
                 color: "rgba(30, 144, 255, 0.77)",
                 fontWeight: "400",
-                marginVertical: 12,
+                marginVertical: 25,
               },
             ]}
           >
@@ -79,7 +91,7 @@ const LogIn = () => {
           <Text style={[styles.firstText, { fontWeight: "400", fontSize: 18 }]}>
             Don't have an account?{" "}
           </Text>
-          <TouchableOpacity activeOpacity={0.3}>
+          <TouchableOpacity onPress={handleLogIn} activeOpacity={0.3}>
             <Text
               style={[
                 styles.firstText,
@@ -95,7 +107,7 @@ const LogIn = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -104,15 +116,17 @@ export default LogIn;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
   doubleCirclesContainer: {
     flex: 0.15,
+    marginBottom: 90,
   },
   getStartedImageContainer: {
     flex: 0.78,
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 50,
   },
   firstText: {
     fontSize: 20,
@@ -124,6 +138,7 @@ const styles = StyleSheet.create({
   },
   inputsContainer: {
     alignItems: "center",
+    marginBottom: 10,
   },
   CustomBtnContainer: {
     alignItems: "center",
@@ -133,5 +148,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
+    marginTop: 5,
   },
 });

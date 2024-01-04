@@ -1,5 +1,11 @@
-import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
-import React from "react";
+import {
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from "react-native";
+import React, { useEffect, useLayoutEffect } from "react";
 import GetStartedAndLoginImageView from "../components/GetStartedAndLoginImageView";
 import TheDoubleCircles from "../components/TheDoubleCircles";
 import CustomButton from "../components/CustomButton";
@@ -26,6 +32,11 @@ const GetStarted = () => {
   const handleGetStarted = () => {
     navigation.navigate("LogIn");
   };
+
+  useEffect(() => {
+    StatusBar.setBarStyle("dark-content");
+    StatusBar.setBackgroundColor("white");
+  }, []);
 
   return (
     <View style={styles.container}>

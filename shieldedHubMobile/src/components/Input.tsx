@@ -16,9 +16,10 @@ const Input = ({ text, autoFocus, value, onChangeText }: CustomInputProps) => {
   return (
     <TextInput
       placeholder={text}
+      placeholderTextColor={"rgba(0, 0, 0, 0.55)"}
       autoFocus={autoFocus}
       value={value}
-      onChangeText={(text: string) => onChangeText(text)}
+      onChangeText={onChangeText}
       style={[styles.inputContainer, inputContainerStyles]}
     />
   );
@@ -35,6 +36,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(30, 144, 255, 0.77)",
     fontSize: 17.5,
-    marginVertical: 8
+    marginVertical: 8,
   },
 });

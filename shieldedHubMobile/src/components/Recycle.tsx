@@ -16,6 +16,7 @@ const Recycle = ({
   expireText,
   recoverBtn,
   deleteBtn,
+  isDarkMode,
 }: RecycleChildProps) => {
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
@@ -60,14 +61,24 @@ const Recycle = ({
     <TouchableOpacity
       key={item.id}
       activeOpacity={0.4}
-      style={[styles.credentialContainer, containerStyles]}
+      style={[
+        styles.credentialContainer,
+        containerStyles,
+        { backgroundColor: isDarkMode ? "#1E272E" : "#fff" },
+      ]}
     >
       <View style={styles.firstIconContainer}>
-        <AntDesign name="profile" size={30} color="black" />
+        <AntDesign
+          name="profile"
+          size={25}
+          color={isDarkMode ? "#fff" : "#000"}
+        />
       </View>
       <View style={styles.textContainer}>
         <Text style={[styles.headerText, { color: colour ? colour : "black" }]}>
-          {item.title}
+          {item.title.length > 25
+            ? item.title.substring(0, 20) + "..."
+            : item.title}
         </Text>
         <Text style={[styles.dateText, { color: colour ? colour : "black" }]}>
           {expireText ? expireText : "Today, 16:45"}
@@ -75,7 +86,11 @@ const Recycle = ({
       </View>
       <View style={styles.secondIconContainer}>
         <TouchableOpacity onPress={showAlert} activeOpacity={-0.3}>
-          <Feather name="more-vertical" size={34} color="black" />
+          <Feather
+            name="more-vertical"
+            size={29}
+            color={isDarkMode ? "#fff" : "#000"}
+          />
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
@@ -114,11 +129,11 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontWeight: "400",
-    fontSize: 19,
+    fontSize: 17,
     marginBottom: 5,
   },
   dateText: {
     fontWeight: "300",
-    fontSize: 17,
+    fontSize: 15,
   },
 });

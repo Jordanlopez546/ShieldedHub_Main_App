@@ -22,7 +22,9 @@ const SearchInput = ({
   clearSearchIcon,
   multiline,
   showDetail,
-  editable
+  editable,
+  setIsModalVisible,
+  isDarkMode,
 }: SearchInputProps) => {
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
@@ -30,12 +32,16 @@ const SearchInput = ({
   // Calculate the height and width based on the current screen dimensions
   const inputContainerStyles = {
     width: width * 0.8, // 80% of the screen
-    height: height * 0.06, // 6% of the screen
   };
 
   return (
     <View style={[inputContainerStyles, styles.inputMainCont]}>
-      <Ionicons name={iconName} size={26} color="black" />
+      <Ionicons
+        name={iconName}
+        size={26}
+        style={{ marginLeft: 10 }}
+        color={isDarkMode ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)"}
+      />
       <TextInput
         secureTextEntry={showDetail}
         textContentType="password"
@@ -44,16 +50,33 @@ const SearchInput = ({
         value={value}
         multiline={multiline}
         onChangeText={onChangeText}
+        placeholderTextColor={
+          isDarkMode ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.55)"
+        }
         style={[
           styles.inputContainer,
-          { width: clearSearchIcon ? "80%" : "85%" },
+          {
+            width: clearSearchIcon ? "80%" : "78%",
+            color: isDarkMode ? "#fff" : "#000",
+          },
         ]}
         onEndEditing={onSearch}
         editable={editable}
+        onPressIn={
+          setIsModalVisible
+            ? () => setIsModalVisible(false)
+            : () => console.log("Modal is invisible")
+        }
       />
       {clearSearchIcon && (
         <TouchableOpacity onPress={clearSearch}>
-          <FontAwesome5 name="times-circle" size={24} color="black" />
+          <FontAwesome5
+            name="times-circle"
+            size={24}
+            color={
+              isDarkMode ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)"
+            }
+          />
         </TouchableOpacity>
       )}
     </View>
@@ -70,8 +93,8 @@ const styles = StyleSheet.create({
     fontSize: 17.5,
     marginVertical: 8,
     height: "100%",
-    width: "85%",
-    color: 'black'
+    width: "78%",
+    color: "black",
   },
   inputMainCont: {
     borderColor: "rgba(30, 144, 255, 0.77)",
@@ -79,7 +102,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignSelf: "center",
     alignItems: "center",
-    justifyContent: "center",
+    height: 50,
     flexDirection: "row",
+    paddingRight: 10,
   },
 });

@@ -20,10 +20,11 @@ import { StackNavigationProp } from "@react-navigation/stack";
 const Credential = ({
   item,
   colour,
-  expireText,
+  createdText,
   recoverBtn,
   setStaticData,
-  staticData
+  staticData,
+  isDarkMode,
 }: CredentialChildProps) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
@@ -37,14 +38,16 @@ const Credential = ({
   };
 
   const deleteBtn = (idToDelete: number) => {
-    const newArray = staticData.filter((item: CredentialItemProps) => item.id !== idToDelete);
+    const newArray = staticData.filter(
+      (item: CredentialItemProps) => item.id !== idToDelete
+    );
     setStaticData(newArray);
   };
 
-  const showAlert = () => {
-    const deleteAction = () => deleteBtn(item.id);
+  const deleteAction = () => deleteBtn(item.id);
 
-    const buttons:any = recoverBtn
+  const showAlert = () => {
+    const buttons: any = recoverBtn
       ? [
           { text: "Recover", onPress: () => recoverBtn && recoverBtn() },
           { text: "Delete", onPress: deleteAction },
@@ -71,22 +74,41 @@ const Credential = ({
           credentialNotes: item.notes,
         } as CredentialItemScreenParams)
       }
-      style={[styles.credentialContainer, containerStyles]}
+      style={[
+        styles.credentialContainer,
+        containerStyles,
+        { backgroundColor: isDarkMode ? "#1E272E" : "#FFFFFF" },
+      ]}
     >
       <View style={styles.firstIconContainer}>
-        <AntDesign name="profile" size={30} color="black" />
+        <AntDesign
+          name="profile"
+          size={25}
+          color={isDarkMode ? "#fff" : "#000"}
+        />
       </View>
       <View style={styles.textContainer}>
-        <Text style={[styles.headerText, { color: colour ? colour : "black" }]}>
-          {item.title}
+        <Text
+          style={[styles.headerText, { color: isDarkMode ? "#fff" : "#000" }]}
+        >
+          {item.title.length > 25
+            ? item.title.substring(0, 20) + "..."
+            : item.title}
         </Text>
-        <Text style={[styles.dateText, { color: colour ? colour : "black" }]}>
-          {expireText ? expireText : "Today, 16:45"}
+        <Text
+          style={[styles.dateText, { color: isDarkMode ? "#fff" : "#000" }]}
+        >
+          {createdText ? createdText : "Today, 16:45"}
         </Text>
       </View>
       <View style={styles.secondIconContainer}>
-        <TouchableOpacity onPress={showAlert} activeOpacity={-0.3}>
-          <Feather name="more-vertical" size={34} color="black" />
+        <TouchableOpacity onPress={deleteAction} activeOpacity={-0.3}>
+          <Feather
+            name="trash-2"
+            size={25}
+            // style={{ marginRight: 10 }}
+            color={isDarkMode ? "#fff" : "#000"}
+          />
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
@@ -125,11 +147,11 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontWeight: "400",
-    fontSize: 19,
+    fontSize: 17,
     marginBottom: 5,
   },
   dateText: {
     fontWeight: "300",
-    fontSize: 17,
+    fontSize: 15,
   },
 });

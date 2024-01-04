@@ -4,8 +4,10 @@ import {
   Text,
   View,
   useWindowDimensions,
+  ScrollView,
+  StatusBar,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TheDoubleCircles from "../components/TheDoubleCircles";
 import CustomButton from "../components/CustomButton";
 import Input from "../components/Input";
@@ -35,13 +37,22 @@ const SignUp = () => {
     navigation.navigate("TheTabBarNavigators");
   };
 
+  useEffect(() => {
+    StatusBar.setBarStyle("dark-content");
+    StatusBar.setBackgroundColor("white");
+  }, []);
+
   return (
-    <View style={styles.container}>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+      style={styles.container}
+    >
       <View style={styles.doubleCirclesContainer}>
         <TheDoubleCircles />
       </View>
       <View style={styles.getStartedImageContainer}>
-        <Text style={[styles.firstText, { marginBottom: 20 }]}>
+        <Text style={[styles.firstText, { marginBottom: 40 }]}>
           Welcome to ShieldedHub!
         </Text>
         <Text
@@ -52,25 +63,25 @@ const SignUp = () => {
         <Input
           autoFocus={true}
           value={fullName}
-          onChangeText={setFullName}
+          onChangeText={(text) => setFullName(text)}
           text="Enter your full name"
         />
         <Input
           autoFocus={false}
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(text) => setEmail(text)}
           text="Enter your email"
         />
         <Input
           autoFocus={false}
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(text) => setPassword(text)}
           text="Enter your password"
         />
         <Input
           autoFocus={false}
           value={confirmPassword}
-          onChangeText={setConfirmPassword}
+          onChangeText={(text) => setConfirmPassword(text)}
           text="Confirm password"
         />
         <View style={{ marginTop: 20 }}>
@@ -80,7 +91,7 @@ const SignUp = () => {
           <Text style={[styles.firstText, { fontWeight: "400", fontSize: 18 }]}>
             Already have an account?{" "}
           </Text>
-          <TouchableOpacity activeOpacity={0.3}>
+          <TouchableOpacity onPress={handleSignUp} activeOpacity={0.3}>
             <Text
               style={[
                 styles.firstText,
@@ -96,7 +107,7 @@ const SignUp = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -105,10 +116,11 @@ export default SignUp;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
   doubleCirclesContainer: {
     flex: 0.15,
+    marginBottom: 150,
   },
   getStartedImageContainer: {
     flex: 0.85,

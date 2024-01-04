@@ -6,9 +6,18 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import React from "react";
+import React, { useRef } from "react";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
+import { DrawerActions, useNavigation } from "@react-navigation/native";
 
-const TopBar = () => {
+const TopBar = ({
+  handlePresentModal,
+}: {
+  handlePresentModal?: () => void;
+}) => {
   // Getting the width of the screen
   const { width, height } = useWindowDimensions();
 
@@ -25,7 +34,10 @@ const TopBar = () => {
             source={require("../assets/applogo.png")}
           />
         </View>
-        <TouchableOpacity style={[styles.logoContainer]}>
+        <TouchableOpacity
+          onPress={handlePresentModal}
+          style={[styles.logoContainer]}
+        >
           <Text style={styles.userText}>J</Text>
         </TouchableOpacity>
       </View>
@@ -62,6 +74,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    height: 80,
+    height: 60,
   },
 });

@@ -1,12 +1,16 @@
 import { Platform, SafeAreaView, StatusBar, StyleSheet } from "react-native";
 import "react-native-gesture-handler";
-import { ThemeContext, AuthContext } from "./Global/UISettings";
+import {
+  ThemeContext,
+  AuthContext,
+  ModalContext,
+  IsDarkModeContext,
+} from "./Global/UISettings";
 import { useContext, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import StackNavigator from "./src/navigations/StackNavigator";
 import { CredentialItemProps } from "./types/types";
 import "react-native-gesture-handler";
-import DrawerNavigator from "./src/navigations/DrawerNavigator";
 
 export default function xApp() {
   const staticDataInitial = [
@@ -131,17 +135,43 @@ export default function xApp() {
   const [staticData, setStaticData] =
     useState<CredentialItemProps[]>(staticDataInitial);
 
-  const currentUser = useContext(AuthContext);
-  const theme = useContext(ThemeContext);
+  const themeVal = useContext(ThemeContext);
+  const currentUserVal = useContext(AuthContext);
+  const modalVal = useContext(ModalContext);
 
+  const [currentUser, setCurrentUser] = useState(currentUserVal || "Jordan Nwabuike")
+
+  const [theme, setTheme] = useState(themeVal);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(modalVal);
+
+  const [currentScreen, setCurrentScreen] = useState<string>("Credentials");
+
+  const handleScreenChange = (screen: string) => {
+    setIsModalVisible(false); // Close modal when switching screens
+    setCurrentScreen(screen);
+  };
+
+  const darkModeVal = useContext(IsDarkModeContext);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(darkModeVal);
+
+  const changeThemeValue = () => {
+    if (isDarkMode) setTheme("dark");
+    else setTheme("light");
+  }
+  
   const changeStatusBarColour = () => {
-    StatusBar.setBarStyle("light-content");
-    StatusBar.setBackgroundColor("black");
+    StatusBar.setBarStyle(theme === "light" ? "dark-content" : "light-content");
+    StatusBar.setBackgroundColor(theme === "light" ? "white" : "#1E272E");
   };
 
   useEffect(() => {
     changeStatusBarColour();
-  }, []);
+    changeThemeValue();
+    console.log("Theme: "+theme);
+    console.log("Is Modal Visible: "+isModalVisible);
+    console.log("Current User: "+currentUser);
+    console.log(`is dark mode: ${isDarkMode}`);
+  }, [theme, isModalVisible, currentScreen, isDarkMode]);
 
   return (
     <ThemeContext.Provider value={theme}>
@@ -151,6 +181,14 @@ export default function xApp() {
             <StackNavigator
               staticData={staticData}
               setStaticData={setStaticData}
+              theme={theme}
+              setTheme={setTheme}
+              isModalVisible={isModalVisible}
+              setIsModalVisible={setIsModalVisible}
+              currentScreen={currentScreen}
+              handleScreenChange={handleScreenChange}
+              isDarkMode={isDarkMode}
+              setIsDarkMode={setIsDarkMode}
             />
           </NavigationContainer>
         </SafeAreaView>
