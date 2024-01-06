@@ -173,6 +173,7 @@ const RecycleBin = ({
                   colour="red"
                   item={item}
                   isDarkMode={isDarkMode}
+                  setIsModalVisible={setIsModalVisible}
                 />
               )}
             />

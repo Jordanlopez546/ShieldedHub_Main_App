@@ -176,7 +176,7 @@ export default function xApp() {
   return (
     <ThemeContext.Provider value={theme}>
       <AuthContext.Provider value={currentUser}>
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container]}>
           <NavigationContainer>
             <StackNavigator
               staticData={staticData}

@@ -150,6 +150,7 @@ const Credentials = ({
                   setStaticData={setStaticData}
                   item={item}
                   isDarkMode={isDarkMode}
+                  setIsModalVisible={setIsModalVisible}
                 />
               )}
             />

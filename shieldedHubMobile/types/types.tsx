@@ -90,6 +90,7 @@ export interface CredentialChildProps {
   staticData: CredentialItemProps[];
   setStaticData: Dispatch<SetStateAction<CredentialItemProps[]>>;
   isDarkMode?: boolean;
+  setIsModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // Recycle bin child props types
@@ -100,6 +101,7 @@ export interface RecycleChildProps {
   recoverBtn?: () => void;
   deleteBtn?: () => void;
   isDarkMode?: boolean;
+  setIsModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // Credential item screen params prop types

@@ -17,6 +17,7 @@ const Recycle = ({
   recoverBtn,
   deleteBtn,
   isDarkMode,
+  setIsModalVisible,
 }: RecycleChildProps) => {
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
@@ -28,6 +29,10 @@ const Recycle = ({
   };
 
   const showAlert = () => {
+    if (setIsModalVisible) {
+      setIsModalVisible(false);
+    }
+
     {
       recoverBtn
         ? Alert.alert("Confirm", "Choose the respective action", [

@@ -25,6 +25,7 @@ const Credential = ({
   setStaticData,
   staticData,
   isDarkMode,
+  setIsModalVisible,
 }: CredentialChildProps) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
@@ -46,34 +47,25 @@ const Credential = ({
 
   const deleteAction = () => deleteBtn(item.id);
 
-  const showAlert = () => {
-    const buttons: any = recoverBtn
-      ? [
-          { text: "Recover", onPress: () => recoverBtn && recoverBtn() },
-          { text: "Delete", onPress: deleteAction },
-          { text: "Cancel", style: "cancel" },
-        ]
-      : [
-          { text: "Delete", onPress: deleteAction },
-          { text: "Cancel", style: "cancel" },
-        ];
+  const navigateToCredentialItem = () => {
+    if (setIsModalVisible) {
+      setIsModalVisible(false);
+    }
 
-    Alert.alert("Confirm", "Choose the respective action", buttons);
+    navigation.navigate("CredentialItemScreen", {
+      credentialId: item.id,
+      credentialTitle: item.title,
+      credentialEmail: item.email,
+      credentialPassword: item.password,
+      credentialNotes: item.notes,
+    } as CredentialItemScreenParams);
   };
 
   return (
     <TouchableOpacity
       key={item.id}
       activeOpacity={0.4}
-      onPress={() =>
-        navigation.navigate("CredentialItemScreen", {
-          credentialId: item.id,
-          credentialTitle: item.title,
-          credentialEmail: item.email,
-          credentialPassword: item.password,
-          credentialNotes: item.notes,
-        } as CredentialItemScreenParams)
-      }
+      onPress={() => navigateToCredentialItem()}
       style={[
         styles.credentialContainer,
         containerStyles,
