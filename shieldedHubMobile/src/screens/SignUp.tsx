@@ -19,7 +19,7 @@ import { useNavigation } from "@react-navigation/native";
 const SignUp = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
-  const [fullName, setFullName] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -62,9 +62,9 @@ const SignUp = () => {
         </Text>
         <Input
           autoFocus={true}
-          value={fullName}
-          onChangeText={(text) => setFullName(text)}
-          text="Enter your full name"
+          value={username}
+          onChangeText={(text) => setUsername(text)}
+          text="Enter a username"
         />
         <Input
           autoFocus={false}

@@ -11,6 +11,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import StackNavigator from "./src/navigations/StackNavigator";
 import { CredentialItemProps } from "./types/types";
 import "react-native-gesture-handler";
+import ToastNotification from "./Global/toast";
 
 export default function xApp() {
   const staticDataInitial = [
@@ -139,7 +140,9 @@ export default function xApp() {
   const currentUserVal = useContext(AuthContext);
   const modalVal = useContext(ModalContext);
 
-  const [currentUser, setCurrentUser] = useState(currentUserVal || "Jordan Nwabuike")
+  const [currentUser, setCurrentUser] = useState(
+    currentUserVal || "Jordan Nwabuike"
+  );
 
   const [theme, setTheme] = useState(themeVal);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(modalVal);
@@ -157,8 +160,8 @@ export default function xApp() {
   const changeThemeValue = () => {
     if (isDarkMode) setTheme("dark");
     else setTheme("light");
-  }
-  
+  };
+
   const changeStatusBarColour = () => {
     StatusBar.setBarStyle(theme === "light" ? "dark-content" : "light-content");
     StatusBar.setBackgroundColor(theme === "light" ? "white" : "#1E272E");
@@ -167,9 +170,9 @@ export default function xApp() {
   useEffect(() => {
     changeStatusBarColour();
     changeThemeValue();
-    console.log("Theme: "+theme);
-    console.log("Is Modal Visible: "+isModalVisible);
-    console.log("Current User: "+currentUser);
+    console.log("Theme: " + theme);
+    console.log("Is Modal Visible: " + isModalVisible);
+    console.log("Current User: " + currentUser);
     console.log(`is dark mode: ${isDarkMode}`);
   }, [theme, isModalVisible, currentScreen, isDarkMode]);
 
@@ -189,6 +192,10 @@ export default function xApp() {
               handleScreenChange={handleScreenChange}
               isDarkMode={isDarkMode}
               setIsDarkMode={setIsDarkMode}
+            />
+            <ToastNotification
+              iconName="done"
+              message="Credential added successfully."
             />
           </NavigationContainer>
         </SafeAreaView>

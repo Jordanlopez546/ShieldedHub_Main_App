@@ -174,3 +174,10 @@ export type DrawerContentComponentProps =
     navigation: DrawerNavigationHelpers;
     descriptors: DrawerDescriptorMap;
   };
+
+// Toast Notification types
+export type ToastNotificationType = {
+  message: string;
+  iconName: string;
+  isDarkMode?: boolean;
+};

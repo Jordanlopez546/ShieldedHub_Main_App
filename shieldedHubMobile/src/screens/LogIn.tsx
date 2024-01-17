@@ -20,7 +20,7 @@ import { useNavigation } from "@react-navigation/native";
 const LogIn = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
-  const [email, setEmail] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   // Getting the height and width of the screen
@@ -60,9 +60,9 @@ const LogIn = () => {
       <View style={[styles.inputsContainer]}>
         <Input
           autoFocus={true}
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-          text="Enter your email"
+          value={username}
+          onChangeText={(text) => setUsername(text)}
+          text="Enter your username"
         />
         <Input
           autoFocus={false}
