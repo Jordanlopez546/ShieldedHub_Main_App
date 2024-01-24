@@ -1,0 +1,28 @@
+<FlatList
+              data={renderData}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <Credential
+                  staticData={staticData}
+                  setStaticData={setStaticData}
+                  item={item}
+                  isDarkMode={isDarkMode}
+                  setIsModalVisible={setIsModalVisible}
+                />)}
+
+
+
+
+<FlashList
+              data={renderData}
+              renderItem={({ item }) => (
+                <Credential
+                  staticData={staticData}
+                  setStaticData={setStaticData}
+                  item={item}
+                  isDarkMode={isDarkMode}
+                  setIsModalVisible={setIsModalVisible}
+                />
+              )}
+              estimatedItemSize={200}
+            />

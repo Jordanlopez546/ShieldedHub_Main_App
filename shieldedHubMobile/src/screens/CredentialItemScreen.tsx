@@ -169,7 +169,9 @@ const CredentialItemScreen = ({
           textAlignVertical="top"
           multiline={true}
           placeholder="Notes(Optional)"
-          placeholderTextColor={isDarkMode ? "#fff" : "#000"}
+          placeholderTextColor={
+            isDarkMode ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)"
+          }
           style={[
             styles.noteInput,
             noteInputContainerStyles,
@@ -187,7 +189,7 @@ const CredentialItemScreen = ({
           >
             <TouchableOpacity
               onPress={() => handleClearInputs()}
-              activeOpacity={-0}
+              activeOpacity={0.3}
             >
               <Text
                 style={[
@@ -200,7 +202,7 @@ const CredentialItemScreen = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setEditableText(!editableText)}
-              activeOpacity={-0}
+              activeOpacity={0.3}
             >
               <Text
                 style={[
@@ -213,7 +215,7 @@ const CredentialItemScreen = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => handleUpdateCredentials()}
-              activeOpacity={-0}
+              activeOpacity={0.3}
             >
               <Text
                 style={[
@@ -227,7 +229,7 @@ const CredentialItemScreen = ({
           </View>
         ) : (
           <View style={[styles.editTextContainer, clearOrCreateContainerWidth]}>
-            <TouchableOpacity onPress={editablePress} activeOpacity={-0}>
+            <TouchableOpacity onPress={editablePress} activeOpacity={0}>
               <Text
                 style={[
                   styles.editText,

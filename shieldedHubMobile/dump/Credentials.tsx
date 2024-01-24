@@ -1,5 +1,4 @@
 import {
-  FlatList,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -7,32 +6,37 @@ import {
   View,
   useWindowDimensions,
   ActivityIndicator,
-  TouchableOpacity,
   Switch,
+  TouchableOpacity,
 } from "react-native";
-
 import React, { useEffect, useRef, useState } from "react";
-import TopBar from "../components/TopBar";
-import SearchInput from "../components/SearchInput";
-import Credential from "../components/Credential";
-import { RecycleItemProps, RecycleScreenGlobalProps } from "../../types/types";
-import Recycle from "../components/Recycle";
+import TopBar from "../src/components/TopBar";
+import SearchInput from "../src/components/SearchInput";
+import Credential from "./Credential";
+import {
+  CredentialItemProps,
+  CredentialItemScreenNavigationOptions,
+} from "../types/types";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
+import { FlashList } from "@shopify/flash-list";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const RecycleBin = ({
+const Credentials = ({
+  staticData,
+  setStaticData,
   theme,
   setTheme,
   isModalVisible,
   setIsModalVisible,
   isDarkMode,
   setIsDarkMode,
-}: RecycleScreenGlobalProps) => {
-  const [recyclebinSearch, setRecyclebinSearch] = useState<string>("");
-  const [filteredData, setFilteredData] = useState<RecycleItemProps[]>([]);
-  const [recyclebinLoading, setRecyclebinLoading] = useState<boolean>(false);
+}: CredentialItemScreenNavigationOptions) => {
+  const [credentialSearch, setCredentialSearch] = useState<string>("");
+  const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
+  const [credentialLoading, setCredentialLoading] = useState<boolean>(false);
   const [clearSearchIcon, setClearSearchIcon] = useState<boolean>(false);
 
   // Getting the width of the screen
@@ -42,60 +46,45 @@ const RecycleBin = ({
     width: width * 1,
   };
 
-  const staticData: RecycleItemProps[] = [
-    {
-      id: 1,
-      title: "Facebook Login",
-    },
-    {
-      id: 2,
-      title: "Whatsapp Login",
-    },
-    {
-      id: 3,
-      title: "Instagram Login",
-    },
-    {
-      id: 4,
-      title: "Snapchat Login",
-    },
-  ];
-
   // Functionality To search for credentials
-  const searchRecyclebin = (text: string) => {
-    setRecyclebinLoading(true);
+  const searchCredential = (text: string) => {
+    setCredentialLoading(true);
     setTimeout(() => {
       const filteredItems = staticData.filter((item) =>
         item.title.toLowerCase().includes(text.toLowerCase())
       );
       setFilteredData(filteredItems);
-      setRecyclebinLoading(false);
+      setCredentialLoading(false);
     }, 100); // Simulating an asynchronous search operation
   };
 
-  const renderData = recyclebinSearch ? filteredData : staticData;
+  const renderData = credentialSearch ? filteredData : staticData;
 
   const clearSearch = () => {
     setTimeout(() => {
       setFilteredData([]);
-      setRecyclebinSearch("");
+      setCredentialSearch("");
     }, 1);
   };
 
-  const recoverBtnFunc = () => {
-    console.log("Recovering...");
-  };
-  const deleteBtnFunc = () => {
-    console.log("Deleting...");
-  };
+  useEffect(() => {
+    if (!isModalVisible) {
+      bottomSheetModalRef.current?.dismiss();
+    }
+
+    // Cleanup function to dismiss the modal when the screen unmounts
+    return () => {
+      bottomSheetModalRef.current?.dismiss();
+    };
+  }, [isModalVisible]);
 
   useEffect(() => {
-    if (recyclebinSearch) {
+    if (credentialSearch) {
       setClearSearchIcon(true);
     } else {
       setClearSearchIcon(false);
     }
-  }, [recyclebinSearch]);
+  }, [credentialSearch]);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -113,17 +102,6 @@ const RecycleBin = ({
       }
     }
   };
-
-  useEffect(() => {
-    if (!isModalVisible) {
-      bottomSheetModalRef.current?.dismiss();
-    }
-
-    // Cleanup function to dismiss the modal when the screen unmounts
-    return () => {
-      bottomSheetModalRef.current?.dismiss();
-    };
-  }, [isModalVisible]);
 
   return (
     <BottomSheetModalProvider>
@@ -144,11 +122,11 @@ const RecycleBin = ({
           <TopBar handlePresentModal={handlePresentModal} />
           <SearchInput
             autoFocus={false}
-            value={recyclebinSearch}
+            value={credentialSearch}
             text="Search"
             onChangeText={(text) => {
-              setRecyclebinSearch(text);
-              searchRecyclebin(text);
+              setCredentialSearch(text);
+              searchCredential(text);
             }}
             iconName={"search"}
             onSearch={() => {}}
@@ -159,23 +137,21 @@ const RecycleBin = ({
           />
         </View>
         <View style={styles.credentialsContainer}>
-          {recyclebinLoading ? (
+          {credentialLoading ? (
             <ActivityIndicator size={"large"} color={"dodgerblue"} />
           ) : renderData.length > 0 ? (
-            <FlatList
+            <FlashList
               data={renderData}
-              keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
-                <Recycle
-                  recoverBtn={recoverBtnFunc}
-                  deleteBtn={deleteBtnFunc}
-                  expireText="Expires in 30 days"
-                  colour="red"
+                <Credential
+                  staticData={staticData}
+                  setStaticData={setStaticData}
                   item={item}
                   isDarkMode={isDarkMode}
                   setIsModalVisible={setIsModalVisible}
                 />
               )}
+              estimatedItemSize={renderData.length}
             />
           ) : (
             <Text
@@ -217,11 +193,12 @@ const RecycleBin = ({
                 thumbColor={"white"}
                 trackColor={{ false: "grey", true: "black" }}
                 value={isDarkMode}
-                onChange={
-                  setIsDarkMode
-                    ? () => setIsDarkMode(!isDarkMode)
-                    : () => console.log("")
-                }
+                // onChange={
+                //   setIsDarkMode
+                //     ? () => setIsDarkMode(!isDarkMode)
+                //     : () => console.log("")
+                // }
+                onValueChange={setIsDarkMode}
               />
             </View>
             <TouchableOpacity>
@@ -245,7 +222,7 @@ const RecycleBin = ({
   );
 };
 
-export default RecycleBin;
+export default Credentials;
 
 const styles = StyleSheet.create({
   container: {

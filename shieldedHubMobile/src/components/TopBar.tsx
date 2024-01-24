@@ -6,12 +6,7 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import React, { useRef } from "react";
-import {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from "@gorhom/bottom-sheet";
-import { DrawerActions, useNavigation } from "@react-navigation/native";
+import React from "react";
 
 const TopBar = ({
   handlePresentModal,

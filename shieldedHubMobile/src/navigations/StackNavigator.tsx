@@ -27,7 +27,7 @@ const StackNavigator = ({
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName="GetStarted"
+      initialRouteName="TheTabBarNavigators"
     >
       <Stack.Screen name="GetStarted" component={GetStarted} />
       <Stack.Screen name="CredentialItemScreen" options={{ headerShown: true }}>

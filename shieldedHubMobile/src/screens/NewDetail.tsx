@@ -1,7 +1,5 @@
 import {
   Alert,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   StyleSheet,
   Switch,
@@ -24,6 +22,7 @@ import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
+import { BottomSheet } from "../../Global/sheet";
 
 const NewDetail = ({
   staticData,
@@ -120,16 +119,15 @@ const NewDetail = ({
   // holds the amount of height of the bottom sheet of the screen
   const snapPoints = ["35%", "60%"];
 
+  // Handle the present modal of the bottom sheet
   const handlePresentModal = () => {
     if (setIsModalVisible) {
       setIsModalVisible(!isModalVisible);
-
-      if (isModalVisible) {
-        bottomSheetModalRef.current?.dismiss();
-      } else {
-        bottomSheetModalRef.current?.present();
-      }
     }
+  };
+
+  const closeBottomSheet = () => {
+    if (setIsModalVisible) setIsModalVisible(false);
   };
 
   useEffect(() => {
@@ -144,203 +142,156 @@ const NewDetail = ({
   }, [isModalVisible]);
 
   return (
-    <BottomSheetModalProvider>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={[
-          styles.container,
-          { backgroundColor: isDarkMode ? "#1E272E" : "#FFFFFF" },
-        ]}
-        // behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <View style={[styles.topBarContainer, containerStyles]}>
-          <TopBar handlePresentModal={handlePresentModal} />
-        </View>
-        <View style={[styles.inputsContainer]}>
-          <View style={[styles.inputMargin]}>
-            <SearchInput
-              iconName={"document-outline"}
-              value={title}
-              onChangeText={(text) => setTitle(text)}
-              autoFocus={true}
-              text="Title of Credential"
-              showDetail={showTitle}
-              isDarkMode={isDarkMode}
-            />
-            {title && (
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={{ position: "absolute", right: responsiveMargin }}
-                onPress={() => setShowTitle(!showTitle)}
-              >
-                <Text
-                  style={[
-                    styles.showHideText,
-                    { marginLeft: 10, color: isDarkMode ? "white" : "blue" },
-                  ]}
-                >
-                  {showTitle ? "Show" : "Hide"}
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-          <View style={styles.inputMargin}>
-            <SearchInput
-              iconName={"at"}
-              value={emailOrUsername}
-              onChangeText={(text) => setEmailOrUsername(text)}
-              autoFocus={false}
-              text="Email/Username"
-              showDetail={showEmailOrUsername}
-              isDarkMode={isDarkMode}
-            />
-            {emailOrUsername && (
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={{ position: "absolute", right: responsiveMargin }}
-                onPress={() => setShowEmailorUsername(!showEmailOrUsername)}
-              >
-                <Text
-                  style={[
-                    styles.showHideText,
-                    { color: isDarkMode ? "white" : "blue" },
-                  ]}
-                >
-                  {showEmailOrUsername ? "Show" : "Hide"}
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-          <View style={styles.inputMargin}>
-            <SearchInput
-              iconName={"lock-closed-outline"}
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-              autoFocus={false}
-              text="Password"
-              showDetail={showPassword}
-              isDarkMode={isDarkMode}
-            />
-            {password && (
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={{ position: "absolute", right: responsiveMargin }}
-                onPress={() => setShowPassword(!showPassword)}
-              >
-                <Text
-                  style={[
-                    styles.showHideText,
-                    { color: isDarkMode ? "white" : "blue" },
-                  ]}
-                >
-                  {showPassword ? "Show" : "Hide"}
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-          <TextInput
-            value={notes}
-            onChangeText={(text) => setNotes(text)}
-            textAlignVertical="top"
-            multiline={true}
-            placeholder="Notes(Optional)"
-            placeholderTextColor={
-              isDarkMode ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)"
-            }
-            style={[
-              styles.noteInput,
-              noteInputContainerStyles,
-              { color: isDarkMode ? "white" : "black" },
-            ]}
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: isDarkMode ? "#1E272E" : "#FFFFFF" },
+      ]}
+    >
+      <View style={[styles.topBarContainer, containerStyles]}>
+        <TopBar handlePresentModal={handlePresentModal} />
+      </View>
+      <View style={[styles.inputsContainer]}>
+        <View style={[styles.inputMargin]}>
+          <SearchInput
+            iconName={"document-outline"}
+            value={title}
+            onChangeText={(text) => setTitle(text)}
+            text="Title of Credential"
+            showDetail={showTitle}
+            isDarkMode={isDarkMode}
+            setIsModalVisible={setIsModalVisible}
           />
-          <View
-            style={[
-              styles.createOrClearTextContainer,
-              clearOrCreateContainerWidth,
-            ]}
-          >
+          {title && (
             <TouchableOpacity
-              onPress={() => handleClearInputs()}
-              activeOpacity={-0}
+              activeOpacity={0.8}
+              style={{ position: "absolute", right: responsiveMargin }}
+              onPress={() => setShowTitle(!showTitle)}
             >
               <Text
                 style={[
-                  styles.createOrClearText,
-                  { color: isDarkMode ? "white" : "black" },
+                  styles.showHideText,
+                  { marginLeft: 10, color: isDarkMode ? "white" : "blue" },
                 ]}
               >
-                Clear
+                {showTitle ? "Show" : "Hide"}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => handleAddCredentials()}
-              activeOpacity={-0}
-            >
-              <Text
-                style={[
-                  styles.createOrClearText,
-                  { color: isDarkMode ? "white" : "black" },
-                ]}
-              >
-                Create
-              </Text>
-            </TouchableOpacity>
-          </View>
+          )}
         </View>
-        <BottomSheetModal
-          backgroundStyle={{
-            borderRadius: 20,
-            borderColor: "white",
-            borderWidth: 0.5,
-            backgroundColor: isDarkMode ? "#1E272E" : "rgba(30, 144, 255, 0.9)",
-          }}
-          ref={bottomSheetModalRef}
-          index={0}
-          snapPoints={snapPoints}
-          onDismiss={
+        <View style={styles.inputMargin}>
+          <SearchInput
+            iconName={"at"}
+            value={emailOrUsername}
+            onChangeText={(text) => setEmailOrUsername(text)}
+            autoFocus={false}
+            text="Email/Username"
+            showDetail={showEmailOrUsername}
+            isDarkMode={isDarkMode}
+            setIsModalVisible={setIsModalVisible}
+          />
+          {emailOrUsername && (
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={{ position: "absolute", right: responsiveMargin }}
+              onPress={() => setShowEmailorUsername(!showEmailOrUsername)}
+            >
+              <Text
+                style={[
+                  styles.showHideText,
+                  { color: isDarkMode ? "white" : "blue" },
+                ]}
+              >
+                {showEmailOrUsername ? "Show" : "Hide"}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        <View style={styles.inputMargin}>
+          <SearchInput
+            iconName={"lock-closed-outline"}
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            autoFocus={false}
+            text="Password"
+            showDetail={showPassword}
+            isDarkMode={isDarkMode}
+            setIsModalVisible={setIsModalVisible}
+          />
+          {password && (
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={{ position: "absolute", right: responsiveMargin }}
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              <Text
+                style={[
+                  styles.showHideText,
+                  { color: isDarkMode ? "white" : "blue" },
+                ]}
+              >
+                {showPassword ? "Show" : "Hide"}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        <TextInput
+          value={notes}
+          onChangeText={(text) => setNotes(text)}
+          textAlignVertical="top"
+          multiline={true}
+          placeholder="Notes(Optional)"
+          placeholderTextColor={
+            isDarkMode ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)"
+          }
+          style={[
+            styles.noteInput,
+            noteInputContainerStyles,
+            { color: isDarkMode ? "white" : "black" },
+          ]}
+          onPressIn={
             setIsModalVisible
               ? () => setIsModalVisible(false)
-              : () => console.log("")
+              : () => console.log("Modal is invisible")
           }
+        />
+        <View
+          style={[
+            styles.createOrClearTextContainer,
+            clearOrCreateContainerWidth,
+          ]}
         >
-          <View style={styles.contentContainer}>
-            <Text style={[styles.title, { marginBottom: 20 }]}>
-              Jordan Lopez
+          <TouchableOpacity
+            onPress={() => handleClearInputs()}
+            activeOpacity={0.3}
+          >
+            <Text
+              style={[
+                styles.createOrClearText,
+                { color: isDarkMode ? "white" : "black" },
+              ]}
+            >
+              Clear
             </Text>
-            <Text style={[styles.title, { marginBottom: 20 }]}>
-              stevjaytech@gmail.com
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleAddCredentials()}
+            activeOpacity={0.3}
+          >
+            <Text
+              style={[
+                styles.createOrClearText,
+                { color: isDarkMode ? "white" : "black" },
+              ]}
+            >
+              Create
             </Text>
-            <View style={styles.row}>
-              <Text style={styles.subtitle}>Dark mode</Text>
-              <Switch
-                thumbColor={"white"}
-                trackColor={{ false: "grey", true: "black" }}
-                value={isDarkMode}
-                onChange={
-                  setIsDarkMode
-                    ? () => setIsDarkMode(!isDarkMode)
-                    : () => console.log("")
-                }
-              />
-            </View>
-            <TouchableOpacity>
-              <Text
-                style={[
-                  styles.title,
-                  {
-                    marginVertical: 20,
-                    color: isDarkMode ? "#fff" : "#000",
-                    fontSize: 18.6,
-                  },
-                ]}
-              >
-                Log Out
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </BottomSheetModal>
-      </ScrollView>
-    </BottomSheetModalProvider>
+          </TouchableOpacity>
+        </View>
+      </View>
+      {/* Render the BottomSheet component */}
+      <BottomSheet isVisible={isModalVisible} onClose={closeBottomSheet} />
+    </View>
   );
 };
 
@@ -351,8 +302,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   topBarContainer: {
-    flex: 0.16,
-    marginBottom: 30,
+    flex: 0.15,
   },
   noteInput: {
     borderWidth: 1,
@@ -363,7 +313,7 @@ const styles = StyleSheet.create({
     fontSize: 17.5,
   },
   inputsContainer: {
-    flex: 0.87,
+    flex: 0.85,
   },
   createOrClearTextContainer: {
     alignSelf: "center",

@@ -1,16 +1,11 @@
 import React, { useEffect } from "react";
-import Credentials from "../screens/Credentials";
 import NewDetail from "../screens/NewDetail";
 import { FontAwesome5, Entypo, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {
-  CredentialItemScreenNavigationOptions,
-  TabNavigatorProps,
-  TabParamList,
-} from "../../types/types";
-import RecycleBin from "../screens/RecycleBin";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { TabNavigatorProps } from "../../types/types";
 import { View } from "react-native";
+import CredentialsScreen from "../screens/CredentialsScreen";
+import RecycleBinScreen from "../screens/RecycleBinScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -58,8 +53,6 @@ const TabNavigator = ({
           },
           tabBarStyle: {
             backgroundColor: isDarkMode ? "#1E272E" : "#000",
-            borderTopLeftRadius: 40,
-            borderTopRightRadius: 40,
           },
           tabBarIcon: ({ focused, color, size }) => {
             let iconColor, iconSize;
@@ -104,7 +97,7 @@ const TabNavigator = ({
           }}
         >
           {(props) => (
-            <Credentials
+            <CredentialsScreen
               {...props}
               currentScreen={currentScreen}
               handleScreenChange={handleScreenChange}
@@ -156,7 +149,7 @@ const TabNavigator = ({
           }}
         >
           {(props) => (
-            <RecycleBin
+            <RecycleBinScreen
               currentScreen={currentScreen}
               handleScreenChange={handleScreenChange}
               isModalVisible={isModalVisible}

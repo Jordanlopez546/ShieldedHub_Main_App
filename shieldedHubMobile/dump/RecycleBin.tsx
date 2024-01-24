@@ -7,36 +7,32 @@ import {
   View,
   useWindowDimensions,
   ActivityIndicator,
-  Switch,
   TouchableOpacity,
-  ScrollView,
+  Switch,
 } from "react-native";
+
 import React, { useEffect, useRef, useState } from "react";
-import TopBar from "../components/TopBar";
-import SearchInput from "../components/SearchInput";
-import Credential from "../components/Credential";
-import {
-  CredentialItemProps,
-  CredentialItemScreenNavigationOptions,
-} from "../../types/types";
+import TopBar from "../src/components/TopBar";
+import SearchInput from "../src/components/SearchInput";
+import Credential from "./Credential";
+import { RecycleItemProps, RecycleScreenGlobalProps } from "../types/types";
+import Recycle from "./Recycle";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 
-const Credentials = ({
-  staticData,
-  setStaticData,
+const RecycleBin = ({
   theme,
   setTheme,
   isModalVisible,
   setIsModalVisible,
   isDarkMode,
   setIsDarkMode,
-}: CredentialItemScreenNavigationOptions) => {
-  const [credentialSearch, setCredentialSearch] = useState<string>("");
-  const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
-  const [credentialLoading, setCredentialLoading] = useState<boolean>(false);
+}: RecycleScreenGlobalProps) => {
+  const [recyclebinSearch, setRecyclebinSearch] = useState<string>("");
+  const [filteredData, setFilteredData] = useState<RecycleItemProps[]>([]);
+  const [recyclebinLoading, setRecyclebinLoading] = useState<boolean>(false);
   const [clearSearchIcon, setClearSearchIcon] = useState<boolean>(false);
 
   // Getting the width of the screen
@@ -46,45 +42,60 @@ const Credentials = ({
     width: width * 1,
   };
 
+  const staticData: RecycleItemProps[] = [
+    {
+      id: 1,
+      title: "Facebook Login",
+    },
+    {
+      id: 2,
+      title: "Whatsapp Login",
+    },
+    {
+      id: 3,
+      title: "Instagram Login",
+    },
+    {
+      id: 4,
+      title: "Snapchat Login",
+    },
+  ];
+
   // Functionality To search for credentials
-  const searchCredential = (text: string) => {
-    setCredentialLoading(true);
+  const searchRecyclebin = (text: string) => {
+    setRecyclebinLoading(true);
     setTimeout(() => {
       const filteredItems = staticData.filter((item) =>
         item.title.toLowerCase().includes(text.toLowerCase())
       );
       setFilteredData(filteredItems);
-      setCredentialLoading(false);
+      setRecyclebinLoading(false);
     }, 100); // Simulating an asynchronous search operation
   };
 
-  const renderData = credentialSearch ? filteredData : staticData;
+  const renderData = recyclebinSearch ? filteredData : staticData;
 
   const clearSearch = () => {
     setTimeout(() => {
       setFilteredData([]);
-      setCredentialSearch("");
+      setRecyclebinSearch("");
     }, 1);
   };
 
-  useEffect(() => {
-    if (!isModalVisible) {
-      bottomSheetModalRef.current?.dismiss();
-    }
-
-    // Cleanup function to dismiss the modal when the screen unmounts
-    return () => {
-      bottomSheetModalRef.current?.dismiss();
-    };
-  }, [isModalVisible]);
+  const recoverBtnFunc = () => {
+    console.log("Recovering...");
+  };
+  const deleteBtnFunc = () => {
+    console.log("Deleting...");
+  };
 
   useEffect(() => {
-    if (credentialSearch) {
+    if (recyclebinSearch) {
       setClearSearchIcon(true);
     } else {
       setClearSearchIcon(false);
     }
-  }, [credentialSearch]);
+  }, [recyclebinSearch]);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -103,6 +114,17 @@ const Credentials = ({
     }
   };
 
+  useEffect(() => {
+    if (!isModalVisible) {
+      bottomSheetModalRef.current?.dismiss();
+    }
+
+    // Cleanup function to dismiss the modal when the screen unmounts
+    return () => {
+      bottomSheetModalRef.current?.dismiss();
+    };
+  }, [isModalVisible]);
+
   return (
     <BottomSheetModalProvider>
       <KeyboardAvoidingView
@@ -111,7 +133,6 @@ const Credentials = ({
           { backgroundColor: isDarkMode ? "#1E272E" : "#fff" },
         ]}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        // keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -150}
       >
         <View
           style={[
@@ -123,11 +144,11 @@ const Credentials = ({
           <TopBar handlePresentModal={handlePresentModal} />
           <SearchInput
             autoFocus={false}
-            value={credentialSearch}
+            value={recyclebinSearch}
             text="Search"
             onChangeText={(text) => {
-              setCredentialSearch(text);
-              searchCredential(text);
+              setRecyclebinSearch(text);
+              searchRecyclebin(text);
             }}
             iconName={"search"}
             onSearch={() => {}}
@@ -138,16 +159,18 @@ const Credentials = ({
           />
         </View>
         <View style={styles.credentialsContainer}>
-          {credentialLoading ? (
+          {recyclebinLoading ? (
             <ActivityIndicator size={"large"} color={"dodgerblue"} />
           ) : renderData.length > 0 ? (
             <FlatList
               data={renderData}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
-                <Credential
-                  staticData={staticData}
-                  setStaticData={setStaticData}
+                <Recycle
+                  recoverBtn={recoverBtnFunc}
+                  deleteBtn={deleteBtnFunc}
+                  expireText="Expires in 30 days"
+                  colour="red"
                   item={item}
                   isDarkMode={isDarkMode}
                   setIsModalVisible={setIsModalVisible}
@@ -222,7 +245,7 @@ const Credentials = ({
   );
 };
 
-export default Credentials;
+export default RecycleBin;
 
 const styles = StyleSheet.create({
   container: {

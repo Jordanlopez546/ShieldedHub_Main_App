@@ -8,7 +8,7 @@ import {
 import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { AntDesign, Feather } from "@expo/vector-icons";
-import { RecycleChildProps } from "../../types/types";
+import { RecycleChildProps } from "../types/types";
 
 const Recycle = ({
   item,
