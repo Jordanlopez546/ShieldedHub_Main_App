@@ -23,6 +23,7 @@ import {
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { BottomSheet } from "../../Global/sheet";
+import ToastNotification from "../../Global/toast";
 
 const NewDetail = ({
   staticData,
@@ -38,9 +39,8 @@ const NewDetail = ({
   const [emailOrUsername, setEmailOrUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
-  const [showTitle, setShowTitle] = useState(true);
-  const [showEmailOrUsername, setShowEmailorUsername] = useState(true);
   const [showPassword, setShowPassword] = useState(true);
+  const [successNotification, setSuccessNotification] = useState(false);
 
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
@@ -70,6 +70,7 @@ const NewDetail = ({
 
       // Update the state of staticData
       setStaticData(updatedData);
+      setSuccessNotification(true);
 
       // Clear the input fields
       setEmailOrUsername("");
@@ -78,7 +79,7 @@ const NewDetail = ({
       setPassword("");
 
       // Navigate back to the credentials screen
-      navigation.goBack();
+      // navigation.goBack();
     } else {
       Alert.alert("Instruction", "Please fill in the inputs.", [
         {
@@ -114,11 +115,6 @@ const NewDetail = ({
 
   const responsiveMargin = width * 0.12;
 
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
-  // holds the amount of height of the bottom sheet of the screen
-  const snapPoints = ["35%", "60%"];
-
   // Handle the present modal of the bottom sheet
   const handlePresentModal = () => {
     if (setIsModalVisible) {
@@ -130,17 +126,6 @@ const NewDetail = ({
     if (setIsModalVisible) setIsModalVisible(false);
   };
 
-  useEffect(() => {
-    if (!isModalVisible) {
-      bottomSheetModalRef.current?.dismiss();
-    }
-
-    // Cleanup function to dismiss the modal when the screen unmounts
-    return () => {
-      bottomSheetModalRef.current?.dismiss();
-    };
-  }, [isModalVisible]);
-
   return (
     <View
       style={[
@@ -151,33 +136,16 @@ const NewDetail = ({
       <View style={[styles.topBarContainer, containerStyles]}>
         <TopBar handlePresentModal={handlePresentModal} />
       </View>
-      <View style={[styles.inputsContainer]}>
+      <View>
         <View style={[styles.inputMargin]}>
           <SearchInput
             iconName={"document-outline"}
             value={title}
             onChangeText={(text) => setTitle(text)}
             text="Title of Credential"
-            showDetail={showTitle}
             isDarkMode={isDarkMode}
             setIsModalVisible={setIsModalVisible}
           />
-          {title && (
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={{ position: "absolute", right: responsiveMargin }}
-              onPress={() => setShowTitle(!showTitle)}
-            >
-              <Text
-                style={[
-                  styles.showHideText,
-                  { marginLeft: 10, color: isDarkMode ? "white" : "blue" },
-                ]}
-              >
-                {showTitle ? "Show" : "Hide"}
-              </Text>
-            </TouchableOpacity>
-          )}
         </View>
         <View style={styles.inputMargin}>
           <SearchInput
@@ -186,26 +154,9 @@ const NewDetail = ({
             onChangeText={(text) => setEmailOrUsername(text)}
             autoFocus={false}
             text="Email/Username"
-            showDetail={showEmailOrUsername}
             isDarkMode={isDarkMode}
             setIsModalVisible={setIsModalVisible}
           />
-          {emailOrUsername && (
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={{ position: "absolute", right: responsiveMargin }}
-              onPress={() => setShowEmailorUsername(!showEmailOrUsername)}
-            >
-              <Text
-                style={[
-                  styles.showHideText,
-                  { color: isDarkMode ? "white" : "blue" },
-                ]}
-              >
-                {showEmailOrUsername ? "Show" : "Hide"}
-              </Text>
-            </TouchableOpacity>
-          )}
         </View>
         <View style={styles.inputMargin}>
           <SearchInput
@@ -289,8 +240,23 @@ const NewDetail = ({
           </TouchableOpacity>
         </View>
       </View>
+
+      {successNotification ? (
+        <ToastNotification
+          message="Credential Added."
+          iconName="done"
+          setSuccessNotification={setSuccessNotification}
+        />
+      ) : null}
+
       {/* Render the BottomSheet component */}
-      <BottomSheet isVisible={isModalVisible} onClose={closeBottomSheet} />
+      <BottomSheet
+        isVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+        onClose={closeBottomSheet}
+        isDarkMode={isDarkMode}
+        setIsDarkMode={setIsDarkMode}
+      />
     </View>
   );
 };
@@ -302,7 +268,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   topBarContainer: {
-    flex: 0.15,
+    marginBottom: 20,
   },
   noteInput: {
     borderWidth: 1,
@@ -311,9 +277,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     fontSize: 17.5,
-  },
-  inputsContainer: {
-    flex: 0.85,
   },
   createOrClearTextContainer: {
     alignSelf: "center",
@@ -332,27 +295,5 @@ const styles = StyleSheet.create({
   },
   showHideText: {
     color: "blue",
-  },
-  contentContainer: {
-    flex: 1,
-    alignItems: "center",
-    paddingHorizontal: 15,
-  },
-  title: {
-    fontWeight: "900",
-    letterSpacing: 0.5,
-    fontSize: 17,
-    color: "#fff",
-  },
-  subtitle: {
-    color: "#fff",
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-  row: {
-    flexDirection: "row",
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "space-between",
   },
 });

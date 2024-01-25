@@ -42,6 +42,7 @@ const CredentialItemScreen = ({
   const [credentialPassword, setCredentialPassword] = useState(initialPassword);
   const [credentialNotes, setCredentialNotes] = useState(initialNotes);
   const [editableText, setEditableText] = useState(false);
+  const [showDetail, setShowDetail] = useState(true);
 
   const handleUpdateCredentials = () => {
     if (
@@ -116,6 +117,24 @@ const CredentialItemScreen = ({
 
   const editablePress = () => {
     setEditableText(!editableText);
+    setShowDetail(!showDetail);
+  };
+
+  const handleCancelPress = () => {
+    if (
+      credentialEmail.trim() === "" &&
+      credentialTitle.trim() === "" &&
+      credentialPassword.trim() === "" &&
+      credentialNotes?.trim() === ""
+    ) {
+      setCredentialTitle(initialTitle);
+      setCredentialEmail(initialEmail);
+      setCredentialPassword(initialPassword);
+      setCredentialNotes(initialNotes);
+    }
+
+    setEditableText(!editableText);
+    setShowDetail(!showDetail);
   };
 
   return (
@@ -134,7 +153,7 @@ const CredentialItemScreen = ({
             value={credentialTitle}
             autoFocus={true}
             text="Title of Credential"
-            showDetail={false}
+            showDetail={showDetail}
             editable={editableText}
             onChangeText={(text) => setCredentialTitle(text)}
             isDarkMode={isDarkMode}
@@ -146,7 +165,7 @@ const CredentialItemScreen = ({
             value={credentialEmail}
             autoFocus={false}
             text="Email/Username"
-            showDetail={false}
+            showDetail={showDetail}
             editable={editableText}
             onChangeText={(text) => setCredentialEmail(text)}
             isDarkMode={isDarkMode}
@@ -158,7 +177,7 @@ const CredentialItemScreen = ({
             value={credentialPassword}
             autoFocus={false}
             text="Password"
-            showDetail={false}
+            showDetail={showDetail}
             editable={editableText}
             onChangeText={(text) => setCredentialPassword(text)}
             isDarkMode={isDarkMode}
@@ -179,6 +198,7 @@ const CredentialItemScreen = ({
           ]}
           editable={editableText}
           onChangeText={(text) => setCredentialNotes(text)}
+          secureTextEntry={showDetail}
         />
         {editableText ? (
           <View
@@ -200,10 +220,7 @@ const CredentialItemScreen = ({
                 Clear
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setEditableText(!editableText)}
-              activeOpacity={0.3}
-            >
+            <TouchableOpacity onPress={handleCancelPress} activeOpacity={0.3}>
               <Text
                 style={[
                   styles.createOrClearText,

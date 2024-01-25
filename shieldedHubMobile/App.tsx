@@ -12,6 +12,9 @@ import StackNavigator from "./src/navigations/StackNavigator";
 import { CredentialItemProps } from "./types/types";
 import "react-native-gesture-handler";
 import ToastNotification from "./Global/toast";
+import CredentialsScreen from "./src/screens/CredentialsScreen";
+import NewDetail from "./src/screens/NewDetail";
+import RecycleBinScreen from "./src/screens/RecycleBinScreen";
 
 export default function xApp() {
   const staticDataInitial = [
@@ -167,6 +170,14 @@ export default function xApp() {
     StatusBar.setBackgroundColor(theme === "light" ? "white" : "#1E272E");
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: isDarkMode ? "#1E272E" : "#fff",
+      marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    },
+  });
+
   useEffect(() => {
     changeStatusBarColour();
     changeThemeValue();
@@ -193,21 +204,9 @@ export default function xApp() {
               isDarkMode={isDarkMode}
               setIsDarkMode={setIsDarkMode}
             />
-            <ToastNotification
-              iconName="done"
-              message="Credential added successfully."
-            />
           </NavigationContainer>
         </SafeAreaView>
       </AuthContext.Provider>
     </ThemeContext.Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-  },
-});

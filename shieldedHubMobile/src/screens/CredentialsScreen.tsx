@@ -27,6 +27,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import { Button } from "react-native";
 import { BottomSheet } from "../../Global/sheet";
+import ToastNotification from "../../Global/toast";
 
 const CredentialsScreen = ({
   staticData,
@@ -43,6 +44,9 @@ const CredentialsScreen = ({
   const [credentialLoading, setCredentialLoading] = useState<boolean>(false);
   const [clearSearchIcon, setClearSearchIcon] = useState<boolean>(false);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const [deletingNow, setDeletingNow] = useState<boolean>(false);
+  const [successNotification, setSuccessNotification] =
+    useState<boolean>(false);
 
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
@@ -125,7 +129,13 @@ const CredentialsScreen = ({
       );
       setStaticData(newArray);
     };
-    const deleteAction = () => deleteBtn(item.id);
+
+    const deleteAction = () => {
+      setSuccessNotification(true);
+      setDeletingNow(true);
+      deleteBtn(item.id);
+      setDeletingNow(false);
+    };
 
     return (
       <TouchableOpacity
@@ -160,25 +170,29 @@ const CredentialsScreen = ({
           </Text>
         </View>
         <View style={styles.secondIconContainer}>
-          <TouchableOpacity onPress={deleteAction} activeOpacity={0.3}>
-            <Feather
-              name="trash-2"
-              size={25}
-              color={isDarkMode ? "#fff" : "#000"}
-            />
-          </TouchableOpacity>
+          {!deletingNow ? (
+            <TouchableOpacity onPress={deleteAction} activeOpacity={0.3}>
+              <Feather
+                name="trash-2"
+                size={25}
+                color={isDarkMode ? "#fff" : "#000"}
+              />
+            </TouchableOpacity>
+          ) : (
+            <ActivityIndicator color={"dodgerblue"} />
+          )}
         </View>
       </TouchableOpacity>
     );
   };
 
   return (
-    <KeyboardAvoidingView
+    <View
       style={[
         styles.container,
         { backgroundColor: isDarkMode ? "#1E272E" : "#fff" },
       ]}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      // behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View
         style={[
@@ -204,7 +218,7 @@ const CredentialsScreen = ({
           isDarkMode={isDarkMode}
         />
       </View>
-      <View style={styles.credentialsContainer}>
+      <View style={[styles.credentialsContainer, containerStyles]}>
         {credentialLoading ? (
           <ActivityIndicator size={"large"} color={"dodgerblue"} />
         ) : renderData.length > 0 ? (
@@ -222,6 +236,14 @@ const CredentialsScreen = ({
         )}
       </View>
 
+      {successNotification ? (
+        <ToastNotification
+          message="Credential Deleted."
+          iconName="done"
+          setSuccessNotification={setSuccessNotification}
+        />
+      ) : null}
+
       {/* Render the BottomSheet component */}
       <BottomSheet
         isVisible={isModalVisible}
@@ -230,7 +252,7 @@ const CredentialsScreen = ({
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
       />
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
@@ -239,14 +261,12 @@ export default CredentialsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
   },
   topBarContainer: {
-    flex: 0.2,
     marginBottom: 25,
   },
   credentialsContainer: {
-    flex: 0.8,
+    flex: 1,
   },
   noDataText: {
     textAlign: "center",
@@ -261,7 +281,6 @@ const styles = StyleSheet.create({
     padding: 3,
     borderWidth: 1,
     marginBottom: 10,
-    backgroundColor: "white",
   },
   firstIconContainer: {
     width: "10%",

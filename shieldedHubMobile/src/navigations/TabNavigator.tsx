@@ -22,20 +22,6 @@ const TabNavigator = ({
   isDarkMode,
   setIsDarkMode,
 }: TabNavigatorProps) => {
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
-      if (isModalVisible) {
-        e.preventDefault(); // Prevent the screen from being removed
-        if (setIsModalVisible) {
-          setIsModalVisible(false); // Close the modal
-          navigation.dispatch(e.data.action); // Dispatch the action
-        }
-      }
-    });
-
-    return unsubscribe;
-  }, [navigation, isModalVisible, setIsModalVisible]);
-
   return (
     <View
       style={{

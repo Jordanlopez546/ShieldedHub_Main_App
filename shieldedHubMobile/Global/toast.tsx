@@ -4,13 +4,18 @@ import Animated, { FadeInUp, FadeOutUp } from "react-native-reanimated";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { ToastNotificationType } from "../types/types";
 
-const ToastNotification = ({ message, iconName }: ToastNotificationType) => {
+const ToastNotification = ({
+  message,
+  iconName,
+  setSuccessNotification,
+}: ToastNotificationType) => {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       setIsVisible(false);
-    }, 2000); // Hide the toast after 0.5 seconds
+      setSuccessNotification ? setSuccessNotification(false) : null;
+    }, 1000); // Hide the toast after 0.5 seconds
 
     // Cleanup the timeout when the component is unmounted
     return () => clearTimeout(timeout);

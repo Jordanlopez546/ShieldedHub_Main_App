@@ -194,12 +194,12 @@ const RecycleBinScreen = ({
   };
 
   return (
-    <KeyboardAvoidingView
+    <View
       style={[
         styles.container,
         { backgroundColor: isDarkMode ? "#1E272E" : "#fff" },
       ]}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      // behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View
         style={[
@@ -242,9 +242,16 @@ const RecycleBinScreen = ({
           </Text>
         )}
       </View>
+
       {/* Render the BottomSheet component */}
-      <BottomSheet isVisible={isModalVisible} onClose={closeBottomSheet} />
-    </KeyboardAvoidingView>
+      <BottomSheet
+        isVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+        onClose={closeBottomSheet}
+        isDarkMode={isDarkMode}
+        setIsDarkMode={setIsDarkMode}
+      />
+    </View>
   );
 };
 
@@ -253,14 +260,12 @@ export default RecycleBinScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
   },
   topBarContainer: {
-    flex: 0.2,
     marginBottom: 25,
   },
   recycleBContainer: {
-    flex: 0.8,
+    flex: 1,
   },
   noDataText: {
     textAlign: "center",

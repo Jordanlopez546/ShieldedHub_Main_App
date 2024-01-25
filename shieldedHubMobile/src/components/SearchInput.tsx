@@ -7,8 +7,7 @@ import {
 } from "react-native";
 import React from "react";
 import { SearchInputProps } from "../../types/types";
-import { Ionicons } from "@expo/vector-icons";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 
 // Create the input
 const SearchInput = ({
@@ -39,7 +38,7 @@ const SearchInput = ({
       <Ionicons
         name={iconName}
         size={26}
-        style={{ marginLeft: 10 }}
+        style={{ marginLeft: 5 }}
         color={isDarkMode ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)"}
       />
       <TextInput
@@ -65,7 +64,7 @@ const SearchInput = ({
         onPressIn={
           setIsModalVisible
             ? () => setIsModalVisible(false)
-            : () => console.log("Modal is invisible")
+            : () => console.log("")
         }
       />
       {clearSearchIcon && (

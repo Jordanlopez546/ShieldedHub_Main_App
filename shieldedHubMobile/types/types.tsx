@@ -63,6 +63,7 @@ export type SearchInputProps = CustomInputProps & {
   editable?: boolean;
   setIsModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
   isDarkMode?: boolean;
+  isModalVisible?: boolean;
 };
 
 // Credential detail item props types
@@ -180,4 +181,5 @@ export type ToastNotificationType = {
   message: string;
   iconName: string;
   isDarkMode?: boolean;
+  setSuccessNotification?: React.Dispatch<React.SetStateAction<boolean>>;
 };

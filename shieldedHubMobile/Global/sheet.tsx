@@ -99,6 +99,10 @@ export const BottomSheet = ({
     }
   }, [isVisible]);
 
+  const handleThemeChange = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
   const styles2 = StyleSheet.create({
     bottomSheet: {
       position: "absolute",
@@ -130,7 +134,7 @@ export const BottomSheet = ({
       justifyContent: "space-between",
       marginBottom: 10,
       padding: 8,
-      borderRadius: 7,
+      borderRadius: 10,
       borderWidth: 1,
       borderColor: "#fff",
     },
@@ -177,8 +181,13 @@ export const BottomSheet = ({
             <Text style={styles2.nameText}>Log Out</Text>
             <AntDesign name="logout" size={22} color="#E0E0E0" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles2.logOutDarkMView}>
-            <Text style={styles2.nameText}>Dark Mode</Text>
+          <TouchableOpacity
+            onPress={handleThemeChange}
+            style={styles2.logOutDarkMView}
+          >
+            <Text style={styles2.nameText}>
+              {isDarkMode ? "Light" : "Dark"} Mode
+            </Text>
             <MaterialCommunityIcons
               name="theme-light-dark"
               size={22}
