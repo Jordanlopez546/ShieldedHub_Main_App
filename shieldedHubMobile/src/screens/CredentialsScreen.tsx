@@ -10,22 +10,18 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  CredentialChildProps,
   CredentialItemProps,
   CredentialItemScreenNavigationOptions,
   CredentialItemScreenParams,
   RootStackParams,
 } from "../../types/types";
-import { BottomSheetProvider } from "@gorhom/bottom-sheet/lib/typescript/contexts";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import TopBar from "../components/TopBar";
 import SearchInput from "../components/SearchInput";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
-import { Button } from "react-native";
 import { BottomSheet } from "../../Global/sheet";
 import ToastNotification from "../../Global/toast";
 
@@ -38,6 +34,7 @@ const CredentialsScreen = ({
   setIsModalVisible,
   isDarkMode,
   setIsDarkMode,
+  currentUser,
 }: CredentialItemScreenNavigationOptions) => {
   const [credentialSearch, setCredentialSearch] = useState<string>("");
   const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
@@ -251,6 +248,7 @@ const CredentialsScreen = ({
         onClose={closeBottomSheet}
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
+        currentUser={currentUser}
       />
     </View>
   );

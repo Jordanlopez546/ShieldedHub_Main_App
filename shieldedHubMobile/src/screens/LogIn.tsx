@@ -6,8 +6,10 @@ import {
   useWindowDimensions,
   ScrollView,
   StatusBar,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import TheDoubleCircles from "../components/TheDoubleCircles";
 import GetStartedAndLoginImageView from "../components/GetStartedAndLoginImageView";
 import CustomButton from "../components/CustomButton";
@@ -15,13 +17,16 @@ import Input from "../components/Input";
 import { RootStackParams } from "../../types/types";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Login Screen
 const LogIn = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
-  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
@@ -32,8 +37,62 @@ const LogIn = () => {
     height: height * 0.05, // 5% of the screen
   };
 
-  const handleLogIn = () => {
-    navigation.navigate("SignUp");
+  // useEffect(() => {
+  //   checkLoginStatus();
+  // }, []);
+
+  const checkLoginStatus = async () => {
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+
+      if (token) {
+        navigation.replace("TheTabBarNavigators");
+      } else {
+        // Token not found, show the login screen itself
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleLogIn = async () => {
+    setLoading(true);
+    try {
+      if (email.trim() !== "" && password.trim() !== "") {
+        const user = {
+          email: email,
+          password: password,
+        };
+
+        const loginUser = await axios.post(
+          "http://192.168.0.109:3000/auth/login",
+          user
+        );
+
+        if (loginUser.status === 200) {
+          const { token, user } = loginUser.data;
+          const userEmail = user.email;
+          const userName = user.username;
+
+          AsyncStorage.setItem("authToken", token);
+          AsyncStorage.setItem("userName", userName);
+          AsyncStorage.setItem("userEmail", userEmail);
+          // Reset the navigation stack to only contain "TheTabBarNavigators"
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "TheTabBarNavigators" }],
+          });
+        } else {
+          Alert.alert("Login Failed", "Invalid Credentials.");
+        }
+      } else {
+        Alert.alert("Instruction", "Fill in the inputs completely.");
+      }
+    } catch (error: any) {
+      console.log(error.message);
+      Alert.alert("Login Failed", "Invalid Credentials.");
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -60,9 +119,9 @@ const LogIn = () => {
       <View style={[styles.inputsContainer]}>
         <Input
           autoFocus={true}
-          value={username}
-          onChangeText={(text) => setUsername(text)}
-          text="Enter your username"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          text="Enter your email"
         />
         <Input
           autoFocus={false}
@@ -86,12 +145,19 @@ const LogIn = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.CustomBtnContainer}>
-        <CustomButton onPress={handleLogIn} text="Log In" />
+        {loading ? (
+          <ActivityIndicator size={"large"} color={"dodgerblue"} />
+        ) : (
+          <CustomButton onPress={handleLogIn} text="Log In" />
+        )}
         <View style={[styles.dontHaveContainer, containerStyles]}>
           <Text style={[styles.firstText, { fontWeight: "400", fontSize: 18 }]}>
             Don't have an account?{" "}
           </Text>
-          <TouchableOpacity onPress={handleLogIn} activeOpacity={0.3}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("SignUp")}
+            activeOpacity={0.3}
+          >
             <Text
               style={[
                 styles.firstText,

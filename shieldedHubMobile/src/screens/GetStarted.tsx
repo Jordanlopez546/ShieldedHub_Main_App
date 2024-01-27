@@ -12,6 +12,7 @@ import CustomButton from "../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParams } from "../../types/types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Get Started Screen
 const GetStarted = () => {
@@ -30,10 +31,25 @@ const GetStarted = () => {
   };
 
   const handleGetStarted = () => {
-    navigation.navigate("LogIn");
+    navigation.replace("LogIn");
+  };
+
+  const checkLoginStatus = async () => {
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+
+      if (token) {
+        navigation.navigate("TheTabBarNavigators");
+      } else {
+        // Token not found, show the login screen itself
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
+    // checkLoginStatus();
     StatusBar.setBarStyle("dark-content");
     StatusBar.setBackgroundColor("white");
   }, []);

@@ -23,11 +23,12 @@ const StackNavigator = ({
   handleScreenChange,
   isDarkMode,
   setIsDarkMode,
+  currentUser,
 }: CredentialItemScreenNavigationOptions) => {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName="TheTabBarNavigators"
+      initialRouteName="GetStarted"
     >
       <Stack.Screen name="GetStarted" component={GetStarted} />
       <Stack.Screen name="CredentialItemScreen" options={{ headerShown: true }}>
@@ -59,6 +60,7 @@ const StackNavigator = ({
             staticData={staticData}
             isDarkMode={isDarkMode}
             setIsDarkMode={setIsDarkMode}
+            currentUser={currentUser}
           />
         )}
       </Stack.Screen>

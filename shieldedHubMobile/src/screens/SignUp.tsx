@@ -6,6 +6,7 @@ import {
   useWindowDimensions,
   ScrollView,
   StatusBar,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import TheDoubleCircles from "../components/TheDoubleCircles";
@@ -14,6 +15,9 @@ import Input from "../components/Input";
 import { RootStackParams } from "../../types/types";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
+import { ActivityIndicator } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 // Signup Screen
 const SignUp = () => {
@@ -23,6 +27,7 @@ const SignUp = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Getting the height and width of the screen
   const { height, width } = useWindowDimensions();
@@ -33,8 +38,43 @@ const SignUp = () => {
     height: height * 0.05, // 5% of the screen
   };
 
-  const handleSignUp = () => {
-    navigation.navigate("TheTabBarNavigators");
+  const handleSignUp = async () => {
+    setLoading(true);
+    try {
+      if (password === confirmPassword) {
+        if (
+          email.trim() !== "" &&
+          password.trim() !== "" &&
+          username.trim() !== "" &&
+          confirmPassword.trim() !== ""
+        ) {
+          const user = {
+            email: email,
+            password: password,
+            username: username,
+          };
+
+          const registerUser = await axios.post(
+            "http://192.168.0.109:3000/auth/register",
+            user
+          );
+
+          if (registerUser.status === 200) {
+            navigation.replace("LogIn");
+          } else {
+            Alert.alert("Signup Failed", "User already exists.");
+          }
+        } else {
+          Alert.alert("Instruction", "Fill in the inputs completely.");
+        }
+      } else {
+        Alert.alert("Wrong Password", "Passwords does not match.");
+      }
+    } catch (error: any) {
+      console.log(error.message);
+      Alert.alert("Signup Failed", "User already exists.");
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -85,13 +125,20 @@ const SignUp = () => {
           text="Confirm password"
         />
         <View style={{ marginTop: 20 }}>
-          <CustomButton onPress={handleSignUp} text="Register" />
+          {loading ? (
+            <ActivityIndicator size={"large"} color={"dodgerblue"} />
+          ) : (
+            <CustomButton onPress={handleSignUp} text="Register" />
+          )}
         </View>
         <View style={[styles.dontHaveContainer, containerStyles]}>
           <Text style={[styles.firstText, { fontWeight: "400", fontSize: 18 }]}>
             Already have an account?{" "}
           </Text>
-          <TouchableOpacity onPress={handleSignUp} activeOpacity={0.3}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("LogIn")}
+            activeOpacity={0.3}
+          >
             <Text
               style={[
                 styles.firstText,

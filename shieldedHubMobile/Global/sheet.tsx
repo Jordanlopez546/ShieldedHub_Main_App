@@ -30,6 +30,7 @@ export const BottomSheet = ({
   setIsModalVisible,
   isDarkMode,
   setIsDarkMode,
+  currentUser,
 }: any) => {
   // Getting the width of the screen
   const { height } = useWindowDimensions();
@@ -169,11 +170,11 @@ export const BottomSheet = ({
       <Animated.View style={[styles2.bottomSheet, bottomSheetStyle]}>
         <View style={styles2.line} />
         <View style={styles2.content}>
-          <Text style={styles2.nameText}>Jordan Nwabuike</Text>
+          <Text style={styles2.nameText}>{currentUser.userName}</Text>
           <FontAwesome5 name="user-alt" size={22} color="#E0E0E0" />
         </View>
         <View style={styles2.content}>
-          <Text style={styles2.nameText}>jordannwabuike@gmail.com</Text>
+          <Text style={styles2.nameText}>{currentUser.userEmail}</Text>
           <Entypo name="email" size={22} color="#E0E0E0" />
         </View>
         <View style={styles2.content}>

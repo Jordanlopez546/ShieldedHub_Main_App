@@ -15,6 +15,8 @@ import ToastNotification from "./Global/toast";
 import CredentialsScreen from "./src/screens/CredentialsScreen";
 import NewDetail from "./src/screens/NewDetail";
 import RecycleBinScreen from "./src/screens/RecycleBinScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 export default function xApp() {
   const staticDataInitial = [
@@ -143,9 +145,7 @@ export default function xApp() {
   const currentUserVal = useContext(AuthContext);
   const modalVal = useContext(ModalContext);
 
-  const [currentUser, setCurrentUser] = useState(
-    currentUserVal || "Jordan Nwabuike"
-  );
+  const [currentUser, setCurrentUser] = useState(currentUserVal);
 
   const [theme, setTheme] = useState(themeVal);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(modalVal);
@@ -160,9 +160,37 @@ export default function xApp() {
   const darkModeVal = useContext(IsDarkModeContext);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(darkModeVal);
 
+  const changeUser = async () => {
+    try {
+      const userName = await AsyncStorage.getItem("userName");
+      const userEmail = await AsyncStorage.getItem("userEmail");
+      const userTheme = await AsyncStorage.getItem("userTheme");
+
+      // Not working well, fix that next time
+      if (userTheme === "dark") {
+        setIsDarkMode(true);
+        setTheme("dark");
+      } else {
+        setIsDarkMode(false);
+        setTheme("light");
+      }
+
+      setCurrentUser({
+        userName: userName ? userName : "",
+        userEmail: userEmail ? userEmail : "",
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const changeThemeValue = () => {
-    if (isDarkMode) setTheme("dark");
-    else setTheme("light");
+    if (isDarkMode) {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+    AsyncStorage.setItem("userTheme", theme);
   };
 
   const changeStatusBarColour = () => {
@@ -181,6 +209,7 @@ export default function xApp() {
   useEffect(() => {
     changeStatusBarColour();
     changeThemeValue();
+    changeUser();
     console.log("Theme: " + theme);
     console.log("Is Modal Visible: " + isModalVisible);
     console.log("Current User: " + currentUser);
@@ -203,6 +232,7 @@ export default function xApp() {
               handleScreenChange={handleScreenChange}
               isDarkMode={isDarkMode}
               setIsDarkMode={setIsDarkMode}
+              currentUser={currentUser}
             />
           </NavigationContainer>
         </SafeAreaView>

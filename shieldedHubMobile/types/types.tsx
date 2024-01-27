@@ -1,8 +1,4 @@
 import {
-  DrawerDescriptorMap,
-  DrawerNavigationHelpers,
-} from "@react-navigation/drawer/lib/typescript/src/types";
-import {
   DrawerNavigationState,
   NavigationProp,
   ParamListBase,
@@ -138,12 +134,14 @@ export interface RecycleScreenGlobalProps {
   handleScreenChange?: (screen: string) => void;
   isDarkMode?: boolean;
   setIsDarkMode?: React.Dispatch<React.SetStateAction<boolean>>;
+  currentUser?: User;
 }
 // Credential Item screen navigation data(Static data for the app) prop types
 export interface CredentialItemScreenNavigationOptions
   extends RecycleScreenGlobalProps {
   setStaticData: React.Dispatch<React.SetStateAction<CredentialItemProps[]>>;
   staticData: CredentialItemProps[];
+  currentUser?: User;
 }
 
 // Stack credential items props types
@@ -166,16 +164,6 @@ export type HomeStackNavigatorProps = {
   staticData: CredentialItemProps[];
 };
 
-// The drawer content component props
-export type DrawerContentComponentProps =
-  CredentialItemScreenNavigationOptions & {
-    handleLogout: () => void;
-    changeTheme: () => void;
-    state: DrawerNavigationState<ParamListBase>;
-    navigation: DrawerNavigationHelpers;
-    descriptors: DrawerDescriptorMap;
-  };
-
 // Toast Notification types
 export type ToastNotificationType = {
   message: string;
@@ -183,3 +171,8 @@ export type ToastNotificationType = {
   isDarkMode?: boolean;
   setSuccessNotification?: React.Dispatch<React.SetStateAction<boolean>>;
 };
+
+export interface User {
+  userEmail: string;
+  userName: string;
+}

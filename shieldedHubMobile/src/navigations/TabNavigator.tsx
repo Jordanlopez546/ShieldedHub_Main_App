@@ -21,6 +21,7 @@ const TabNavigator = ({
   navigation,
   isDarkMode,
   setIsDarkMode,
+  currentUser,
 }: TabNavigatorProps) => {
   return (
     <View
@@ -95,6 +96,7 @@ const TabNavigator = ({
               setStaticData={setStaticData}
               isDarkMode={isDarkMode}
               setIsDarkMode={setIsDarkMode}
+              currentUser={currentUser}
             />
           )}
         </Tab.Screen>
@@ -121,6 +123,7 @@ const TabNavigator = ({
               setStaticData={setStaticData}
               isDarkMode={isDarkMode}
               setIsDarkMode={setIsDarkMode}
+              currentUser={currentUser}
             />
           )}
         </Tab.Screen>
@@ -144,6 +147,7 @@ const TabNavigator = ({
               setTheme={setTheme}
               isDarkMode={isDarkMode}
               setIsDarkMode={setIsDarkMode}
+              currentUser={currentUser}
               {...props}
             />
           )}
