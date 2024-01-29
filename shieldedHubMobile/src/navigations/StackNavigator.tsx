@@ -15,8 +15,6 @@ const Stack = createStackNavigator<RootStackParams>();
 const StackNavigator = ({
   staticData,
   setStaticData,
-  theme,
-  setTheme,
   isModalVisible,
   setIsModalVisible,
   currentScreen,
@@ -39,8 +37,6 @@ const StackNavigator = ({
             setStaticData={setStaticData}
             isDarkMode={isDarkMode}
             setIsDarkMode={setIsDarkMode}
-            theme={theme}
-            setTheme={setTheme}
           />
         )}
       </Stack.Screen>
@@ -54,8 +50,6 @@ const StackNavigator = ({
             handleScreenChange={handleScreenChange}
             isModalVisible={isModalVisible}
             setIsModalVisible={setIsModalVisible}
-            theme={theme}
-            setTheme={setTheme}
             setStaticData={setStaticData}
             staticData={staticData}
             isDarkMode={isDarkMode}

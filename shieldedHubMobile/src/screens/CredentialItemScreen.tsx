@@ -18,6 +18,7 @@ import {
 import SearchInput from "../components/SearchInput";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { StackNavigationProp } from "@react-navigation/stack";
+import ToastNotification from "../../Global/toast";
 
 const CredentialItemScreen = ({
   route,
@@ -43,6 +44,7 @@ const CredentialItemScreen = ({
   const [credentialNotes, setCredentialNotes] = useState(initialNotes);
   const [editableText, setEditableText] = useState(false);
   const [showDetail, setShowDetail] = useState(true);
+  const [successNotification, setSuccessNotification] = useState(false);
 
   const handleUpdateCredentials = () => {
     if (
@@ -66,9 +68,12 @@ const CredentialItemScreen = ({
 
       // Update the state of staticData
       setStaticData(updatedData);
+      setSuccessNotification(true);
 
       // Navigate back to the previous screen
-      navigation.goBack();
+      setTimeout(() => {
+        navigation.goBack();
+      }, 2200);
     } else {
       Alert.alert("Instruction", "Please fill in the inputs.", [
         {
@@ -258,6 +263,14 @@ const CredentialItemScreen = ({
             </TouchableOpacity>
           </View>
         )}
+
+        {successNotification ? (
+          <ToastNotification
+            message="Credential Updated."
+            iconName="done"
+            setSuccessNotification={setSuccessNotification}
+          />
+        ) : null}
       </View>
     </KeyboardAvoidingView>
   );

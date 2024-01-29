@@ -19,12 +19,11 @@ import { AntDesign, Feather } from "@expo/vector-icons";
 import { BottomSheet } from "../../Global/sheet";
 
 const RecycleBinScreen = ({
-  theme,
-  setTheme,
   isModalVisible,
   setIsModalVisible,
   isDarkMode,
   setIsDarkMode,
+  currentUser,
 }: RecycleScreenGlobalProps) => {
   const [recyclebinSearch, setRecyclebinSearch] = useState<string>("");
   const [filteredData, setFilteredData] = useState<RecycleItemProps[]>([]);
@@ -250,6 +249,7 @@ const RecycleBinScreen = ({
         onClose={closeBottomSheet}
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
+        currentUser={currentUser}
       />
     </View>
   );

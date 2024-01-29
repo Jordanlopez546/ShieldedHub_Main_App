@@ -20,6 +20,7 @@ const Input = ({ text, autoFocus, value, onChangeText }: CustomInputProps) => {
       autoFocus={autoFocus}
       value={value}
       onChangeText={onChangeText}
+      autoCapitalize="none"
       style={[styles.inputContainer, inputContainerStyles]}
     />
   );

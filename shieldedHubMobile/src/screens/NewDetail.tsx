@@ -1,39 +1,27 @@
 import {
   Alert,
-  ScrollView,
   StyleSheet,
-  Switch,
   Text,
   TextInput,
   TouchableOpacity,
   View,
   useWindowDimensions,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import TopBar from "../components/TopBar";
 import SearchInput from "../components/SearchInput";
-import {
-  CredentialItemScreenNavigationOptions,
-  RootStackParams,
-} from "../../types/types";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from "@gorhom/bottom-sheet";
+import { CredentialItemScreenNavigationOptions } from "../../types/types";
 import { BottomSheet } from "../../Global/sheet";
 import ToastNotification from "../../Global/toast";
 
 const NewDetail = ({
   staticData,
   setStaticData,
-  theme,
-  setTheme,
   isModalVisible,
   setIsModalVisible,
   isDarkMode,
   setIsDarkMode,
+  currentUser,
 }: CredentialItemScreenNavigationOptions) => {
   const [title, setTitle] = useState<string>("");
   const [emailOrUsername, setEmailOrUsername] = useState<string>("");
@@ -41,8 +29,6 @@ const NewDetail = ({
   const [notes, setNotes] = useState<string>("");
   const [showPassword, setShowPassword] = useState(true);
   const [successNotification, setSuccessNotification] = useState(false);
-
-  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
   const handleAddCredentials = () => {
     if (
@@ -256,6 +242,7 @@ const NewDetail = ({
         onClose={closeBottomSheet}
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
+        currentUser={currentUser}
       />
     </View>
   );

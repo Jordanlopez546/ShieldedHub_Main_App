@@ -11,10 +11,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import StackNavigator from "./src/navigations/StackNavigator";
 import { CredentialItemProps } from "./types/types";
 import "react-native-gesture-handler";
-import ToastNotification from "./Global/toast";
-import CredentialsScreen from "./src/screens/CredentialsScreen";
-import NewDetail from "./src/screens/NewDetail";
-import RecycleBinScreen from "./src/screens/RecycleBinScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
@@ -166,14 +162,7 @@ export default function xApp() {
       const userEmail = await AsyncStorage.getItem("userEmail");
       const userTheme = await AsyncStorage.getItem("userTheme");
 
-      // Not working well, fix that next time
-      if (userTheme === "dark") {
-        setIsDarkMode(true);
-        setTheme("dark");
-      } else {
-        setIsDarkMode(false);
-        setTheme("light");
-      }
+      // Save the user's theme
 
       setCurrentUser({
         userName: userName ? userName : "",
@@ -190,7 +179,6 @@ export default function xApp() {
     } else {
       setTheme("light");
     }
-    AsyncStorage.setItem("userTheme", theme);
   };
 
   const changeStatusBarColour = () => {
@@ -212,7 +200,7 @@ export default function xApp() {
     changeUser();
     console.log("Theme: " + theme);
     console.log("Is Modal Visible: " + isModalVisible);
-    console.log("Current User: " + currentUser);
+    console.log("Current User: " + currentUser.userName);
     console.log(`is dark mode: ${isDarkMode}`);
   }, [theme, isModalVisible, currentScreen, isDarkMode]);
 

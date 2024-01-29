@@ -1,9 +1,7 @@
 import {
   ActivityIndicator,
   FlatList,
-  KeyboardAvoidingView,
   ListRenderItem,
-  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -28,8 +26,6 @@ import ToastNotification from "../../Global/toast";
 const CredentialsScreen = ({
   staticData,
   setStaticData,
-  theme,
-  setTheme,
   isModalVisible,
   setIsModalVisible,
   isDarkMode,
@@ -40,7 +36,6 @@ const CredentialsScreen = ({
   const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
   const [credentialLoading, setCredentialLoading] = useState<boolean>(false);
   const [clearSearchIcon, setClearSearchIcon] = useState<boolean>(false);
-  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [deletingNow, setDeletingNow] = useState<boolean>(false);
   const [successNotification, setSuccessNotification] =
     useState<boolean>(false);
@@ -189,7 +184,6 @@ const CredentialsScreen = ({
         styles.container,
         { backgroundColor: isDarkMode ? "#1E272E" : "#fff" },
       ]}
-      // behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View
         style={[

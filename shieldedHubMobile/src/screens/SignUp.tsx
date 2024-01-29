@@ -16,8 +16,8 @@ import { RootStackParams } from "../../types/types";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import { ActivityIndicator } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { Base_URL } from "../../Urls/Urls";
 
 // Signup Screen
 const SignUp = () => {
@@ -55,7 +55,7 @@ const SignUp = () => {
           };
 
           const registerUser = await axios.post(
-            "http://192.168.0.109:3000/auth/register",
+            `${Base_URL}/auth/register`,
             user
           );
 

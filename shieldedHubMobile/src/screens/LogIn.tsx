@@ -19,6 +19,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Base_URL } from "../../Urls/Urls";
 
 // Login Screen
 const LogIn = () => {
@@ -64,19 +65,18 @@ const LogIn = () => {
           password: password,
         };
 
-        const loginUser = await axios.post(
-          "http://192.168.0.109:3000/auth/login",
-          user
-        );
+        const loginUser = await axios.post(`${Base_URL}/auth/login`, user);
 
         if (loginUser.status === 200) {
           const { token, user } = loginUser.data;
           const userEmail = user.email;
           const userName = user.username;
+          const userId = user._id;
 
           AsyncStorage.setItem("authToken", token);
           AsyncStorage.setItem("userName", userName);
           AsyncStorage.setItem("userEmail", userEmail);
+          AsyncStorage.setItem("userId", userId);
           // Reset the navigation stack to only contain "TheTabBarNavigators"
           navigation.reset({
             index: 0,

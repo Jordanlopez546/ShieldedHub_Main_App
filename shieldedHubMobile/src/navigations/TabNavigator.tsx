@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import NewDetail from "../screens/NewDetail";
 import { FontAwesome5, Entypo, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -12,8 +12,6 @@ const Tab = createBottomTabNavigator();
 const TabNavigator = ({
   staticData,
   setStaticData,
-  theme,
-  setTheme,
   isModalVisible,
   setIsModalVisible,
   currentScreen,
@@ -90,8 +88,6 @@ const TabNavigator = ({
               handleScreenChange={handleScreenChange}
               isModalVisible={isModalVisible}
               setIsModalVisible={setIsModalVisible}
-              theme={theme}
-              setTheme={setTheme}
               staticData={staticData}
               setStaticData={setStaticData}
               isDarkMode={isDarkMode}
@@ -117,8 +113,6 @@ const TabNavigator = ({
               handleScreenChange={handleScreenChange}
               isModalVisible={isModalVisible}
               setIsModalVisible={setIsModalVisible}
-              theme={theme}
-              setTheme={setTheme}
               staticData={staticData}
               setStaticData={setStaticData}
               isDarkMode={isDarkMode}
@@ -143,8 +137,6 @@ const TabNavigator = ({
               handleScreenChange={handleScreenChange}
               isModalVisible={isModalVisible}
               setIsModalVisible={setIsModalVisible}
-              theme={theme}
-              setTheme={setTheme}
               isDarkMode={isDarkMode}
               setIsDarkMode={setIsDarkMode}
               currentUser={currentUser}
