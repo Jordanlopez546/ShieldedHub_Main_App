@@ -6,7 +6,8 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const TopBar = ({
   handlePresentModal,
@@ -16,9 +17,24 @@ const TopBar = ({
   // Getting the width of the screen
   const { width, height } = useWindowDimensions();
 
+  const [userL, setUserL] = useState<string | null>(null);
+
   const containerStyles = {
     width: width * 0.82,
   };
+
+  const getUserLetter = async () => {
+    try {
+      const user = await AsyncStorage.getItem("userName");
+      setUserL(user?.charAt(0) || null);
+    } catch (error) {
+      // Nothing
+    }
+  };
+
+  useEffect(() => {
+    getUserLetter();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -33,7 +49,7 @@ const TopBar = ({
           onPress={handlePresentModal}
           style={[styles.logoContainer]}
         >
-          <Text style={styles.userText}>J</Text>
+          <Text style={styles.userText}>{userL}</Text>
         </TouchableOpacity>
       </View>
     </View>

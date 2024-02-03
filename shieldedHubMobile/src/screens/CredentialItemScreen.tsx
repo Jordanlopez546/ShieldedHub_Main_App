@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -7,31 +8,27 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import React, { useLayoutEffect, useState } from "react";
+import React, { useContext, useLayoutEffect, useState } from "react";
 import {
+  CredentialContextProps,
   CredentialItemProps,
-  CredentialItemScreenProps,
-  CredentialItemScreenRouteProp,
-  RootStackParams,
   StackCredentialItemProps,
 } from "../../types/types";
 import SearchInput from "../components/SearchInput";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { StackNavigationProp } from "@react-navigation/stack";
 import ToastNotification from "../../Global/toast";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { Base_URL } from "../../Urls/Urls";
+import { CredentialContext } from "../../Global/CredentialContext";
 
 const CredentialItemScreen = ({
   route,
   navigation,
-  staticData,
-  setStaticData,
   isDarkMode,
-  setIsDarkMode,
-  theme,
-  setTheme,
 }: StackCredentialItemProps) => {
   const {
-    credentialId,
+    credentialId: credentialId,
     credentialTitle: initialTitle,
     credentialEmail: initialEmail,
     credentialPassword: initialPassword,
@@ -45,35 +42,63 @@ const CredentialItemScreen = ({
   const [editableText, setEditableText] = useState(false);
   const [showDetail, setShowDetail] = useState(true);
   const [successNotification, setSuccessNotification] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
 
-  const handleUpdateCredentials = () => {
+  const { credentialList, setCredentialList } = useContext(
+    CredentialContext
+  ) as CredentialContextProps;
+
+  const handleUpdateCredentials = async () => {
     if (
       credentialEmail.trim() !== "" &&
       credentialTitle.trim() !== "" &&
       credentialPassword.trim() !== ""
     ) {
-      // Update the staticData array with the new values
-      const updatedData = staticData.map((item: any) => {
-        if (item.id === credentialId) {
-          return {
-            ...item,
-            title: credentialTitle,
-            email: credentialEmail,
-            password: credentialPassword,
-            notes: credentialNotes,
-          };
-        }
-        return item;
-      });
+      try {
+        setCreateLoading(true);
+        const credential = {
+          credentialTitle: credentialTitle,
+          credentialEmail: credentialEmail,
+          credentialPassword: credentialPassword,
+          credentialNotes: credentialNotes,
+        };
+        const token = await AsyncStorage.getItem("authToken");
+        const { data } = await axios.patch(
+          `${Base_URL}/user/updateCredential/${credentialId}`,
+          credential,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      // Update the state of staticData
-      setStaticData(updatedData);
-      setSuccessNotification(true);
+        const updatedData = credentialList.map((item: CredentialItemProps) => {
+          if (item.credentialId === credentialId) {
+            return {
+              ...item,
+              credentialTitle: credentialTitle,
+              credentialEmail: credentialEmail,
+              credentialPassword: credentialPassword,
+              credentialNotes: credentialNotes,
+            };
+          }
+          return item;
+        });
 
-      // Navigate back to the previous screen
-      setTimeout(() => {
+        setCredentialList(updatedData);
+        console.log(data);
+        setCreateLoading(false);
+
+        setSuccessNotification(true);
+
+        // Navigate back to the previous screen after the notification is shown
+        await new Promise((resolve) => setTimeout(resolve, 1500));
         navigation.goBack();
-      }, 2200);
+      } catch (err) {
+        console.log(err);
+        Alert.alert("Error", "Failed to update credentials.");
+      }
     } else {
       Alert.alert("Instruction", "Please fill in the inputs.", [
         {
@@ -235,19 +260,24 @@ const CredentialItemScreen = ({
                 Cancel
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => handleUpdateCredentials()}
-              activeOpacity={0.3}
-            >
-              <Text
-                style={[
-                  styles.createOrClearText,
-                  { color: isDarkMode ? "#fff" : "#000" },
-                ]}
+
+            {createLoading ? (
+              <ActivityIndicator size={"small"} color={"dodgerblue"} />
+            ) : (
+              <TouchableOpacity
+                onPress={() => handleUpdateCredentials()}
+                activeOpacity={0.3}
               >
-                Update
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={[
+                    styles.createOrClearText,
+                    { color: isDarkMode ? "#fff" : "#000" },
+                  ]}
+                >
+                  Update
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         ) : (
           <View style={[styles.editTextContainer, clearOrCreateContainerWidth]}>

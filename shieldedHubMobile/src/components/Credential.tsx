@@ -1,52 +1,39 @@
+import { memo } from "react";
 import {
-  Alert,
+  ActivityIndicator,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
   useWindowDimensions,
 } from "react-native";
-import React from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { AntDesign, Feather } from "@expo/vector-icons";
 import {
-  CredentialChildProps,
-  CredentialItemProps,
+  CredentialActualProps,
   CredentialItemScreenParams,
   RootStackParams,
-} from "../types/types";
+} from "../../types/types";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { AntDesign, Feather } from "@expo/vector-icons";
 
+// Credential item component
 const Credential = ({
   item,
-  colour,
-  createdText,
-  recoverBtn,
-  setStaticData,
-  staticData,
-  isDarkMode,
   setIsModalVisible,
-}: CredentialChildProps) => {
+  deleteBtn,
+  formatDate,
+  isDarkMode,
+  deletingNowStates,
+}: CredentialActualProps) => {
+  // Getting the width of the screen
+  const { width } = useWindowDimensions();
+  const credentialContainerStyles = {
+    width: width * 0.8, // 80% of the screen
+  };
+
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
-  // Getting the height and width of the screen
-  const { height, width } = useWindowDimensions();
-
-  // Calculate the height and width based on the current screen dimensions
-  const containerStyles = {
-    width: width * 0.8, // 80% of the screen
-    // height: height * 0.08, // 8% of the screen
-  };
-
-  const deleteBtn = (idToDelete: number) => {
-    const newArray = staticData.filter(
-      (item: CredentialItemProps) => item.credentialId !== idToDelete
-    );
-    setStaticData(newArray);
-  };
-
-  const deleteAction = () => deleteBtn(item.credentialId);
-
+  // Navigate to a credential item
   const navigateToCredentialItem = () => {
     if (setIsModalVisible) {
       setIsModalVisible(false);
@@ -61,6 +48,10 @@ const Credential = ({
     } as CredentialItemScreenParams);
   };
 
+  const deleteAction = () => {
+    deleteBtn(item.credentialId);
+  };
+
   return (
     <TouchableOpacity
       key={item.credentialId}
@@ -68,7 +59,7 @@ const Credential = ({
       onPress={() => navigateToCredentialItem()}
       style={[
         styles.credentialContainer,
-        containerStyles,
+        credentialContainerStyles,
         { backgroundColor: isDarkMode ? "#1E272E" : "#FFFFFF" },
       ]}
     >
@@ -83,31 +74,32 @@ const Credential = ({
         <Text
           style={[styles.headerText, { color: isDarkMode ? "#fff" : "#000" }]}
         >
-          {item.credentialTitle.length > 25
-            ? item.credentialTitle.substring(0, 20) + "..."
-            : item.credentialTitle}
+          {item.credentialTitle}
         </Text>
         <Text
           style={[styles.dateText, { color: isDarkMode ? "#fff" : "#000" }]}
         >
-          {createdText ? createdText : "Today, 16:45"}
+          {formatDate(item.createdAt)}
         </Text>
       </View>
       <View style={styles.secondIconContainer}>
-        <TouchableOpacity onPress={deleteAction} activeOpacity={-0.3}>
-          <Feather
-            name="trash-2"
-            size={25}
-            // style={{ marginRight: 10 }}
-            color={isDarkMode ? "#fff" : "#000"}
-          />
-        </TouchableOpacity>
+        {!deletingNowStates[item.credentialId] ? (
+          <TouchableOpacity onPress={deleteAction} activeOpacity={0.3}>
+            <Feather
+              name="trash-2"
+              size={25}
+              color={isDarkMode ? "#fff" : "#000"}
+            />
+          </TouchableOpacity>
+        ) : (
+          <ActivityIndicator color={"dodgerblue"} />
+        )}
       </View>
     </TouchableOpacity>
   );
 };
 
-export default Credential;
+export default memo(Credential);
 
 const styles = StyleSheet.create({
   credentialContainer: {
@@ -118,7 +110,6 @@ const styles = StyleSheet.create({
     padding: 3,
     borderWidth: 1,
     marginBottom: 10,
-    backgroundColor: "white",
   },
   firstIconContainer: {
     width: "10%",

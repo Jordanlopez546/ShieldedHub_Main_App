@@ -10,16 +10,12 @@ import RecycleBinScreen from "../screens/RecycleBinScreen";
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = ({
-  staticData,
-  setStaticData,
   isModalVisible,
   setIsModalVisible,
   currentScreen,
   handleScreenChange,
-  navigation,
   isDarkMode,
   setIsDarkMode,
-  currentUser,
 }: TabNavigatorProps) => {
   return (
     <View
@@ -39,7 +35,7 @@ const TabNavigator = ({
           tabBarStyle: {
             backgroundColor: isDarkMode ? "#1E272E" : "#000",
           },
-          tabBarIcon: ({ focused, color, size }) => {
+          tabBarIcon: ({ focused }) => {
             let iconColor, iconSize;
             iconColor = focused
               ? isDarkMode
@@ -75,9 +71,7 @@ const TabNavigator = ({
           name="Credentials"
           listeners={{
             tabPress: (e) => {
-              if (handleScreenChange) {
-                handleScreenChange("Credentials");
-              }
+              handleScreenChange("Credentials");
             },
           }}
         >
@@ -85,14 +79,11 @@ const TabNavigator = ({
             <CredentialsScreen
               {...props}
               currentScreen={currentScreen}
-              handleScreenChange={handleScreenChange}
               isModalVisible={isModalVisible}
               setIsModalVisible={setIsModalVisible}
-              staticData={staticData}
-              setStaticData={setStaticData}
               isDarkMode={isDarkMode}
               setIsDarkMode={setIsDarkMode}
-              currentUser={currentUser}
+              handleScreenChange={handleScreenChange}
             />
           )}
         </Tab.Screen>
@@ -100,9 +91,7 @@ const TabNavigator = ({
           name="New Detail"
           listeners={{
             tabPress: (e) => {
-              if (handleScreenChange) {
-                handleScreenChange("New Detail");
-              }
+              handleScreenChange("New Detail");
             },
           }}
         >
@@ -110,14 +99,11 @@ const TabNavigator = ({
             <NewDetail
               {...props}
               currentScreen={currentScreen}
-              handleScreenChange={handleScreenChange}
               isModalVisible={isModalVisible}
               setIsModalVisible={setIsModalVisible}
-              staticData={staticData}
-              setStaticData={setStaticData}
               isDarkMode={isDarkMode}
               setIsDarkMode={setIsDarkMode}
-              currentUser={currentUser}
+              handleScreenChange={handleScreenChange}
             />
           )}
         </Tab.Screen>
@@ -125,21 +111,17 @@ const TabNavigator = ({
           name="Recycle Bin"
           listeners={{
             tabPress: (e) => {
-              if (handleScreenChange) {
-                handleScreenChange("Recycle Bin");
-              }
+              handleScreenChange("Recycle Bin");
             },
           }}
         >
           {(props) => (
             <RecycleBinScreen
               currentScreen={currentScreen}
-              handleScreenChange={handleScreenChange}
               isModalVisible={isModalVisible}
               setIsModalVisible={setIsModalVisible}
               isDarkMode={isDarkMode}
               setIsDarkMode={setIsDarkMode}
-              currentUser={currentUser}
               {...props}
             />
           )}

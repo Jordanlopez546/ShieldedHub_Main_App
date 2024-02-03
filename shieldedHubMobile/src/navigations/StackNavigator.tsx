@@ -13,28 +13,24 @@ import CredentialItemScreen from "../screens/CredentialItemScreen";
 const Stack = createStackNavigator<RootStackParams>();
 
 const StackNavigator = ({
-  staticData,
-  setStaticData,
   isModalVisible,
   setIsModalVisible,
   currentScreen,
   handleScreenChange,
   isDarkMode,
   setIsDarkMode,
-  currentUser,
+  userActiveSc,
 }: CredentialItemScreenNavigationOptions) => {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName="GetStarted"
+      initialRouteName={userActiveSc ? "GetStarted" : "TheTabBarNavigators"}
     >
       <Stack.Screen name="GetStarted" component={GetStarted} />
       <Stack.Screen name="CredentialItemScreen" options={{ headerShown: true }}>
         {(props) => (
           <CredentialItemScreen
             {...props}
-            staticData={staticData}
-            setStaticData={setStaticData}
             isDarkMode={isDarkMode}
             setIsDarkMode={setIsDarkMode}
           />
@@ -50,11 +46,8 @@ const StackNavigator = ({
             handleScreenChange={handleScreenChange}
             isModalVisible={isModalVisible}
             setIsModalVisible={setIsModalVisible}
-            setStaticData={setStaticData}
-            staticData={staticData}
             isDarkMode={isDarkMode}
             setIsDarkMode={setIsDarkMode}
-            currentUser={currentUser}
           />
         )}
       </Stack.Screen>

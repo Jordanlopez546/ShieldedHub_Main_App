@@ -2,16 +2,14 @@ import {
   ActivityIndicator,
   Alert,
   FlatList,
-  KeyboardAvoidingView,
   ListRenderItem,
-  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   useWindowDimensions,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { RecycleItemProps, RecycleScreenGlobalProps } from "../../types/types";
 import TopBar from "../components/TopBar";
 import SearchInput from "../components/SearchInput";
@@ -23,7 +21,6 @@ const RecycleBinScreen = ({
   setIsModalVisible,
   isDarkMode,
   setIsDarkMode,
-  currentUser,
 }: RecycleScreenGlobalProps) => {
   const [recyclebinSearch, setRecyclebinSearch] = useState<string>("");
   const [filteredData, setFilteredData] = useState<RecycleItemProps[]>([]);
@@ -84,15 +81,6 @@ const RecycleBinScreen = ({
 
   // Render data
   const renderData = recyclebinSearch ? filteredData : staticData;
-
-  // recycle bin search update functionality
-  useEffect(() => {
-    if (recyclebinSearch) {
-      setClearSearchIcon(true);
-    } else {
-      setClearSearchIcon(false);
-    }
-  }, [recyclebinSearch]);
 
   // Handle the present modal of the bottom sheet
   const handlePresentModal = () => {
@@ -198,7 +186,6 @@ const RecycleBinScreen = ({
         styles.container,
         { backgroundColor: isDarkMode ? "#1E272E" : "#fff" },
       ]}
-      // behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View
         style={[
@@ -249,7 +236,6 @@ const RecycleBinScreen = ({
         onClose={closeBottomSheet}
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
-        currentUser={currentUser}
       />
     </View>
   );

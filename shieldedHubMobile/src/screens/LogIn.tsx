@@ -5,11 +5,10 @@ import {
   View,
   useWindowDimensions,
   ScrollView,
-  StatusBar,
   ActivityIndicator,
   Alert,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import TheDoubleCircles from "../components/TheDoubleCircles";
 import GetStartedAndLoginImageView from "../components/GetStartedAndLoginImageView";
 import CustomButton from "../components/CustomButton";
@@ -38,67 +37,80 @@ const LogIn = () => {
     height: height * 0.05, // 5% of the screen
   };
 
-  // useEffect(() => {
-  //   checkLoginStatus();
-  // }, []);
-
-  const checkLoginStatus = async () => {
-    try {
-      const token = await AsyncStorage.getItem("authToken");
-
-      if (token) {
-        navigation.replace("TheTabBarNavigators");
-      } else {
-        // Token not found, show the login screen itself
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const handleLogIn = async () => {
     setLoading(true);
+
     try {
+      // Check if email and password are not empty after trimming
       if (email.trim() !== "" && password.trim() !== "") {
+        // Create a user object
         const user = {
           email: email,
           password: password,
         };
 
-        const loginUser = await axios.post(`${Base_URL}/auth/login`, user);
+        // Make the login request and set a timeout
+        const loginUserPromise = axios.post(`${Base_URL}/auth/login`, user);
+        const timeoutPromise = new Promise((resolve, reject) => {
+          setTimeout(() => {
+            reject(new Error("Login timeout exceeded"));
+          }, 4000);
+        });
 
+        // Use Promise.race to handle either successful login or timeout
+        const loginUser: any = await Promise.race([
+          loginUserPromise,
+          timeoutPromise,
+        ]);
+
+        // Check the status of the login response
         if (loginUser.status === 200) {
           const { token, user } = loginUser.data;
           const userEmail = user.email;
           const userName = user.username;
           const userId = user._id;
 
-          AsyncStorage.setItem("authToken", token);
-          AsyncStorage.setItem("userName", userName);
-          AsyncStorage.setItem("userEmail", userEmail);
-          AsyncStorage.setItem("userId", userId);
+          // Store user data in AsyncStorage
+          await AsyncStorage.setItem("authToken", token);
+          await AsyncStorage.setItem("userName", userName);
+          await AsyncStorage.setItem("userEmail", userEmail);
+          await AsyncStorage.setItem("userId", userId);
+
           // Reset the navigation stack to only contain "TheTabBarNavigators"
           navigation.reset({
             index: 0,
             routes: [{ name: "TheTabBarNavigators" }],
           });
         } else {
-          Alert.alert("Login Failed", "Invalid Credentials.");
+          // Check if it's due to invalid credentials
+          if (loginUser.status === 400) {
+            Alert.alert("Login Failed", "Invalid email or password.");
+          } else {
+            Alert.alert(
+              "Login Failed",
+              "Something went wrong. Please try again."
+            );
+          }
         }
       } else {
+        // Display an alert for incomplete inputs
         Alert.alert("Instruction", "Fill in the inputs completely.");
       }
     } catch (error: any) {
-      console.log(error.message);
-      Alert.alert("Login Failed", "Invalid Credentials.");
+      // Display different alerts based on the type of error
+      if (error.message === "Login timeout exceeded") {
+        Alert.alert(
+          "Login Failed",
+          "Login timeout exceeded. Please try again."
+        );
+      } else {
+        Alert.alert("Login Failed", "Invalid Credentials.");
+      }
+    } finally {
+      // Set loading to false, regardless of the outcome
+      setLoading(false);
     }
-    setLoading(false);
   };
-
-  useEffect(() => {
-    StatusBar.setBarStyle("dark-content");
-    StatusBar.setBackgroundColor("white");
-  }, []);
 
   return (
     <ScrollView

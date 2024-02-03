@@ -1,9 +1,4 @@
-import {
-  DrawerNavigationState,
-  NavigationProp,
-  ParamListBase,
-  RouteProp,
-} from "@react-navigation/native";
+import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import React, { Dispatch, SetStateAction } from "react";
 
@@ -46,6 +41,7 @@ export type TabNavigatorProps = CredentialItemScreenNavigationOptions & {
   navigation: NavigationProp<TabParamList>;
   isDarkMode?: boolean;
   setIsDarkMode?: React.Dispatch<SetStateAction<boolean>>;
+  handleScreenChange: HandleScreenChangeFunction;
 };
 
 // Search input props types
@@ -64,11 +60,22 @@ export type SearchInputProps = CustomInputProps & {
 
 // Credential detail item props types
 export interface CredentialItemProps {
-  id: number;
-  title: string;
-  email: string;
-  password: string;
-  notes?: string;
+  credentialId: string;
+  credentialTitle: string;
+  credentialEmail: string;
+  credentialPassword: string;
+  credentialNotes?: string;
+  createdAt: string;
+}
+
+// The Credential component items props
+export interface CredentialActualProps {
+  item: CredentialItemProps;
+  setIsModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
+  deleteBtn: Function;
+  formatDate: Function;
+  isDarkMode?: boolean;
+  deletingNowStates: any;
 }
 
 // Recycle bin item props types
@@ -103,7 +110,7 @@ export interface RecycleChildProps {
 
 // Credential item screen params prop types
 export interface CredentialItemScreenParams {
-  credentialId: number;
+  credentialId: string;
   credentialTitle: string;
   credentialEmail: string;
   credentialPassword: string;
@@ -111,6 +118,9 @@ export interface CredentialItemScreenParams {
   setStaticData: Dispatch<SetStateAction<CredentialItemProps[]>>;
   staticData: CredentialItemProps[];
 }
+
+// Handle screen change function type
+export type HandleScreenChangeFunction = (screen: string) => void;
 
 // Credential item screen route prop type
 export type CredentialItemScreenRouteProp = RouteProp<
@@ -126,34 +136,25 @@ export interface CredentialItemScreenProps {
 
 // Recycle Screen Global Props
 export interface RecycleScreenGlobalProps {
-  theme?: string;
-  setTheme?: React.Dispatch<React.SetStateAction<string>>;
   isModalVisible?: boolean;
   setIsModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
   currentScreen?: string;
-  handleScreenChange?: (screen: string) => void;
   isDarkMode?: boolean;
   setIsDarkMode?: React.Dispatch<React.SetStateAction<boolean>>;
-  currentUser?: User;
 }
 // Credential Item screen navigation data(Static data for the app) prop types
 export interface CredentialItemScreenNavigationOptions
   extends RecycleScreenGlobalProps {
-  setStaticData: React.Dispatch<React.SetStateAction<CredentialItemProps[]>>;
-  staticData: CredentialItemProps[];
-  currentUser?: User;
+  userActiveSc?: boolean;
+  handleScreenChange: HandleScreenChangeFunction;
 }
 
 // Stack credential items props types
 export interface StackCredentialItemProps {
   route: CredentialItemScreenRouteProp;
   navigation: StackNavigationProp<RootStackParams, "CredentialItemScreen">;
-  setStaticData: React.Dispatch<React.SetStateAction<CredentialItemProps[]>>;
-  staticData: CredentialItemProps[];
   isDarkMode?: boolean;
   setIsDarkMode?: React.Dispatch<React.SetStateAction<boolean>>;
-  theme?: string;
-  setTheme?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // Home Stack Navigator Props types
@@ -172,7 +173,28 @@ export type ToastNotificationType = {
   setSuccessNotification?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+// User prop
 export interface User {
   userEmail: string;
   userName: string;
+}
+
+// Credential Context props
+export interface CredentialContextProps {
+  credentialList: CredentialItemProps[];
+  setCredentialList: React.Dispatch<
+    React.SetStateAction<CredentialItemProps[]>
+  >;
+}
+
+// Auth context props
+export interface AuthContextProps {
+  userEmail: string;
+  setUserEmail: React.Dispatch<React.SetStateAction<string>>;
+  userId: string;
+  setUserId: React.Dispatch<React.SetStateAction<string>>;
+  userToken: string;
+  setUserToken: React.Dispatch<React.SetStateAction<string>>;
+  userName: string;
+  setUserName: React.Dispatch<React.SetStateAction<string>>;
 }

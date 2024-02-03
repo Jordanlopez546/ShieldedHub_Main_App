@@ -1,18 +1,11 @@
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-  useWindowDimensions,
-} from "react-native";
-import React, { useEffect } from "react";
+import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import React from "react";
 import GetStartedAndLoginImageView from "../components/GetStartedAndLoginImageView";
 import TheDoubleCircles from "../components/TheDoubleCircles";
 import CustomButton from "../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParams } from "../../types/types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Get Started Screen
 const GetStarted = () => {
@@ -32,20 +25,6 @@ const GetStarted = () => {
 
   const handleGetStarted = () => {
     navigation.replace("LogIn");
-  };
-
-  const checkLoginStatus = async () => {
-    try {
-      const token = await AsyncStorage.getItem("authToken");
-
-      if (token) {
-        navigation.navigate("TheTabBarNavigators");
-      } else {
-        // Token not found, show the login screen itself
-      }
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   return (
@@ -88,7 +67,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   firstText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "500",
   },
   firstTextContainer: {

@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Alert,
   StyleSheet,
   Text,
@@ -7,21 +8,26 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import TopBar from "../components/TopBar";
 import SearchInput from "../components/SearchInput";
-import { CredentialItemScreenNavigationOptions } from "../../types/types";
+import {
+  CredentialContextProps,
+  CredentialItemProps,
+  CredentialItemScreenNavigationOptions,
+} from "../../types/types";
 import { BottomSheet } from "../../Global/sheet";
 import ToastNotification from "../../Global/toast";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { Base_URL } from "../../Urls/Urls";
+import { CredentialContext } from "../../Global/CredentialContext";
 
 const NewDetail = ({
-  staticData,
-  setStaticData,
   isModalVisible,
   setIsModalVisible,
   isDarkMode,
   setIsDarkMode,
-  currentUser,
 }: CredentialItemScreenNavigationOptions) => {
   const [title, setTitle] = useState<string>("");
   const [emailOrUsername, setEmailOrUsername] = useState<string>("");
@@ -29,33 +35,47 @@ const NewDetail = ({
   const [notes, setNotes] = useState<string>("");
   const [showPassword, setShowPassword] = useState(true);
   const [successNotification, setSuccessNotification] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
 
-  const handleAddCredentials = () => {
+  const { credentialList, setCredentialList } = useContext(
+    CredentialContext
+  ) as CredentialContextProps;
+
+  const handleAddCredentials = async () => {
     if (
       title.trim() !== "" &&
       emailOrUsername.trim() !== "" &&
       password.trim() !== ""
     ) {
-      // Find the maximum id in the existing data
-      const maxId = staticData.reduce(
-        (max, credential) => Math.max(max, credential.id || 0),
-        0
-      );
-
-      // Create a new credential
-      const newCredential = {
-        id: maxId + 1,
-        title: title,
-        email: emailOrUsername,
-        password: password,
-        notes: notes,
+      setCreateLoading(true);
+      const credentialItem = {
+        credentialTitle: title,
+        credentialEmail: emailOrUsername,
+        credentialPassword: password,
+        credentialNotes: notes,
       };
 
-      // Add the new credential to the staticData array
-      const updatedData = [newCredential, ...staticData];
+      const token = await AsyncStorage.getItem("authToken");
+      const { data } = await axios.post(
+        `${Base_URL}/user/addCredential`,
+        credentialItem,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      // Update the state of staticData
-      setStaticData(updatedData);
+      // Update the credentials state with the new credential
+      setCredentialList((prevCredentials: CredentialItemProps[]) => [
+        data,
+        ...prevCredentials,
+      ]);
+
+      console.log(data);
+
+      setCreateLoading(false);
+
       setSuccessNotification(true);
 
       // Clear the input fields
@@ -63,9 +83,6 @@ const NewDetail = ({
       setTitle("");
       setNotes("");
       setPassword("");
-
-      // Navigate back to the credentials screen
-      // navigation.goBack();
     } else {
       Alert.alert("Instruction", "Please fill in the inputs.", [
         {
@@ -211,19 +228,23 @@ const NewDetail = ({
               Clear
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => handleAddCredentials()}
-            activeOpacity={0.3}
-          >
-            <Text
-              style={[
-                styles.createOrClearText,
-                { color: isDarkMode ? "white" : "black" },
-              ]}
+          {createLoading ? (
+            <ActivityIndicator size={"small"} color={"dodgerblue"} />
+          ) : (
+            <TouchableOpacity
+              onPress={() => handleAddCredentials()}
+              activeOpacity={0.3}
             >
-              Create
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={[
+                  styles.createOrClearText,
+                  { color: isDarkMode ? "white" : "black" },
+                ]}
+              >
+                Create
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 
@@ -242,7 +263,6 @@ const NewDetail = ({
         onClose={closeBottomSheet}
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
-        currentUser={currentUser}
       />
     </View>
   );

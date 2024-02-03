@@ -1,55 +1,56 @@
 import {
   ActivityIndicator,
   FlatList,
-  ListRenderItem,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   useWindowDimensions,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
+  CredentialContextProps,
   CredentialItemProps,
   CredentialItemScreenNavigationOptions,
-  CredentialItemScreenParams,
-  RootStackParams,
 } from "../../types/types";
 import TopBar from "../components/TopBar";
 import SearchInput from "../components/SearchInput";
-import { AntDesign, Feather } from "@expo/vector-icons";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { useNavigation } from "@react-navigation/native";
 import { BottomSheet } from "../../Global/sheet";
 import ToastNotification from "../../Global/toast";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Base_URL } from "../../Urls/Urls";
+import axios from "axios";
+import moment from "moment";
+import { CredentialContext } from "../../Global/CredentialContext";
+import Credential from "../components/Credential";
 
 const CredentialsScreen = ({
-  staticData,
-  setStaticData,
   isModalVisible,
   setIsModalVisible,
   isDarkMode,
   setIsDarkMode,
-  currentUser,
 }: CredentialItemScreenNavigationOptions) => {
   const [credentialSearch, setCredentialSearch] = useState<string>("");
   const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
   const [credentialLoading, setCredentialLoading] = useState<boolean>(false);
   const [clearSearchIcon, setClearSearchIcon] = useState<boolean>(false);
-  const [deletingNow, setDeletingNow] = useState<boolean>(false);
+  const [dataLoading, setDataLoading] = useState<boolean>(true);
   const [successNotification, setSuccessNotification] =
     useState<boolean>(false);
 
-  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
+  // New state to track deletingNow for each item
+  const [deletingNowStates, setDeletingNowStates] = useState<
+    Record<string, boolean>
+  >({});
+
+  const { credentialList, setCredentialList } = useContext(
+    CredentialContext
+  ) as CredentialContextProps;
 
   // Getting the width of the screen
-  const { width, height } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
   const containerStyles = {
     width: width * 1,
-  };
-  const credentialContainerStyles = {
-    width: width * 0.8, // 80% of the screen
   };
 
   // Handle the present modal of the bottom sheet
@@ -71,8 +72,8 @@ const CredentialsScreen = ({
   const searchCredential = (text: string) => {
     setCredentialLoading(true);
     setTimeout(() => {
-      const filteredItems = staticData.filter((item) =>
-        item.title.toLowerCase().includes(text.toLowerCase())
+      const filteredItems = credentialList.filter((item) =>
+        item.credentialTitle.toLowerCase().includes(text.toLowerCase())
       );
       setFilteredData(filteredItems);
       setCredentialLoading(false);
@@ -80,103 +81,76 @@ const CredentialsScreen = ({
   };
 
   // To check which data to render
-  const renderData = credentialSearch ? filteredData : staticData;
-
-  // Clear credential search
-  useEffect(() => {
-    if (credentialSearch) {
-      setClearSearchIcon(true);
-    } else {
-      setClearSearchIcon(false);
-    }
-  }, [credentialSearch]);
+  const renderData = credentialSearch ? filteredData : credentialList;
 
   const closeBottomSheet = () => {
     if (setIsModalVisible) setIsModalVisible(false);
   };
 
-  // Credential item component
-  const renderCredentialItem: ListRenderItem<CredentialItemProps> = ({
-    item,
-  }) => {
-    // Navigate to a credential item
-    const navigateToCredentialItem = () => {
-      if (setIsModalVisible) {
-        setIsModalVisible(false);
-      }
+  // Delete a credential item
+  const deleteBtn = useCallback(async (idToDelete: string) => {
+    try {
+      setDeletingNowStates((prevStates) => ({
+        ...prevStates,
+        [idToDelete]: true,
+      }));
 
-      navigation.navigate("CredentialItemScreen", {
-        credentialId: item.id,
-        credentialTitle: item.title,
-        credentialEmail: item.email,
-        credentialPassword: item.password,
-        credentialNotes: item.notes,
-      } as CredentialItemScreenParams);
-    };
-
-    // Delete a credential item
-    const deleteBtn = (idToDelete: number) => {
-      const newArray = staticData.filter(
-        (item: CredentialItemProps) => item.id !== idToDelete
+      const token = await AsyncStorage.getItem("authToken");
+      const { data } = await axios.delete(
+        `${Base_URL}/user/deleteCredential/${idToDelete}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
-      setStaticData(newArray);
-    };
 
-    const deleteAction = () => {
+      const newArray = credentialList.filter(
+        (item: CredentialItemProps) => item.credentialId !== idToDelete
+      );
+
+      setCredentialList(newArray);
+      console.log(data);
+
       setSuccessNotification(true);
-      setDeletingNow(true);
-      deleteBtn(item.id);
-      setDeletingNow(false);
-    };
+    } catch (error) {
+      // Nothing
+    } finally {
+      setDeletingNowStates((prevStates) => ({
+        ...prevStates,
+        [idToDelete]: false,
+      }));
+    }
+  }, []);
 
-    return (
-      <TouchableOpacity
-        key={item.id}
-        activeOpacity={0.4}
-        onPress={() => navigateToCredentialItem()}
-        style={[
-          styles.credentialContainer,
-          credentialContainerStyles,
-          { backgroundColor: isDarkMode ? "#1E272E" : "#FFFFFF" },
-        ]}
-      >
-        <View style={styles.firstIconContainer}>
-          <AntDesign
-            name="profile"
-            size={25}
-            color={isDarkMode ? "#fff" : "#000"}
-          />
-        </View>
-        <View style={styles.textContainer}>
-          <Text
-            style={[styles.headerText, { color: isDarkMode ? "#fff" : "#000" }]}
-          >
-            {item.title.length > 25
-              ? item.title.substring(0, 20) + "..."
-              : item.title}
-          </Text>
-          <Text
-            style={[styles.dateText, { color: isDarkMode ? "#fff" : "#000" }]}
-          >
-            Today, 16:45
-          </Text>
-        </View>
-        <View style={styles.secondIconContainer}>
-          {!deletingNow ? (
-            <TouchableOpacity onPress={deleteAction} activeOpacity={0.3}>
-              <Feather
-                name="trash-2"
-                size={25}
-                color={isDarkMode ? "#fff" : "#000"}
-              />
-            </TouchableOpacity>
-          ) : (
-            <ActivityIndicator color={"dodgerblue"} />
-          )}
-        </View>
-      </TouchableOpacity>
-    );
+  // Format the date
+  const formatDate = (originalDate: string) => {
+    const formattedDate = moment(originalDate).format("MMMM Do YYYY, h:mm a");
+    return formattedDate;
   };
+
+  // Fetch the credentials data
+  const fetchData = useCallback(async () => {
+    try {
+      const userToken = await AsyncStorage.getItem("authToken");
+      const response = await axios.get(`${Base_URL}/user/credentials`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      response.data
+        ? setCredentialList(response.data.reverse())
+        : setCredentialList([]);
+    } catch (e) {
+      // Nothing
+    } finally {
+      setDataLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [credentialList]);
 
   return (
     <View
@@ -209,23 +183,46 @@ const CredentialsScreen = ({
           isDarkMode={isDarkMode}
         />
       </View>
-      <View style={[styles.credentialsContainer, containerStyles]}>
-        {credentialLoading ? (
-          <ActivityIndicator size={"large"} color={"dodgerblue"} />
-        ) : renderData.length > 0 ? (
-          <FlatList
-            data={renderData}
-            keyExtractor={(index, item) => item.toString() + index}
-            renderItem={renderCredentialItem}
-          />
-        ) : (
-          <Text
-            style={[styles.noDataText, { color: isDarkMode ? "#fff" : "#000" }]}
-          >
-            No available data
-          </Text>
-        )}
-      </View>
+
+      {dataLoading ? (
+        <ActivityIndicator size={100} color={"dodgerblue"} />
+      ) : credentialList.length === 0 ? (
+        <Text
+          style={[styles.noDataText, { color: isDarkMode ? "#fff" : "#000" }]}
+        >
+          No available data
+        </Text>
+      ) : (
+        <View style={[styles.credentialsContainer, containerStyles]}>
+          {credentialLoading ? (
+            <ActivityIndicator size={"large"} color={"dodgerblue"} />
+          ) : renderData.length > 0 ? (
+            <FlatList
+              data={renderData}
+              keyExtractor={(index, item) => item.toString() + index}
+              renderItem={({ item }) => (
+                <Credential
+                  item={item}
+                  setIsModalVisible={setIsModalVisible}
+                  deleteBtn={deleteBtn}
+                  formatDate={formatDate}
+                  isDarkMode={isDarkMode}
+                  deletingNowStates={deletingNowStates}
+                />
+              )}
+            />
+          ) : (
+            <Text
+              style={[
+                styles.noDataText,
+                { color: isDarkMode ? "#fff" : "#000" },
+              ]}
+            >
+              No available data
+            </Text>
+          )}
+        </View>
+      )}
 
       {successNotification ? (
         <ToastNotification
@@ -242,7 +239,6 @@ const CredentialsScreen = ({
         onClose={closeBottomSheet}
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
-        currentUser={currentUser}
       />
     </View>
   );
@@ -264,40 +260,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     color: "black",
-  },
-  credentialContainer: {
-    alignSelf: "center",
-    borderColor: "#1E90FF",
-    borderRadius: 10,
-    flexDirection: "row",
-    padding: 3,
-    borderWidth: 1,
-    marginBottom: 10,
-  },
-  firstIconContainer: {
-    width: "10%",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  secondIconContainer: {
-    width: "10%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  textContainer: {
-    width: "80%",
-    flexDirection: "column",
-    justifyContent: "space-evenly",
-    paddingHorizontal: 10,
-  },
-  headerText: {
-    fontWeight: "400",
-    fontSize: 17,
-    marginBottom: 5,
-  },
-  dateText: {
-    fontWeight: "300",
-    fontSize: 15,
   },
 });

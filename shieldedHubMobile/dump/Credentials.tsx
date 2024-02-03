@@ -25,8 +25,8 @@ import { FlashList } from "@shopify/flash-list";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Credentials = ({
-  staticData,
-  setStaticData,
+  credentials: staticData,
+  setCredentialsData: setStaticData,
   theme,
   setTheme,
   isModalVisible,

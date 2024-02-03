@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   useWindowDimensions,
+  DevSettings,
 } from "react-native";
 import Animated, {
   Easing,
@@ -23,6 +24,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import { PanGestureHandler } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const BottomSheet = ({
   isVisible,
@@ -34,6 +36,8 @@ export const BottomSheet = ({
 }: any) => {
   // Getting the width of the screen
   const { height } = useWindowDimensions();
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
   const sheetHeight = height * 0.4;
 
@@ -93,6 +97,7 @@ export const BottomSheet = ({
 
   // React to changes in isVisible prop
   useEffect(() => {
+    getUser();
     if (isVisible) {
       handleShowSheet();
     } else {
@@ -102,6 +107,19 @@ export const BottomSheet = ({
 
   const handleThemeChange = () => {
     setIsDarkMode(!isDarkMode);
+  };
+
+  const getUser = async () => {
+    try {
+      const name = await AsyncStorage.getItem("userName");
+      const email = await AsyncStorage.getItem("userEmail");
+
+      // Update state with user information
+      setUserName(name);
+      setUserEmail(email);
+    } catch (error) {
+      console.error("Error fetching user information:", error);
+    }
   };
 
   const styles2 = StyleSheet.create({
@@ -170,11 +188,11 @@ export const BottomSheet = ({
       <Animated.View style={[styles2.bottomSheet, bottomSheetStyle]}>
         <View style={styles2.line} />
         <View style={styles2.content}>
-          <Text style={styles2.nameText}>{currentUser.userName}</Text>
+          <Text style={styles2.nameText}>{userName}</Text>
           <FontAwesome5 name="user-alt" size={22} color="#E0E0E0" />
         </View>
         <View style={styles2.content}>
-          <Text style={styles2.nameText}>{currentUser.userEmail}</Text>
+          <Text style={styles2.nameText}>{userEmail}</Text>
           <Entypo name="email" size={22} color="#E0E0E0" />
         </View>
         <View style={styles2.content}>
