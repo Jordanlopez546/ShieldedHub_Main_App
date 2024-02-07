@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   btnText: {
     color: "#FFFFFF",
-    fontSize: 22,
+    fontSize: 19,
     fontWeight: "bold",
   },
 });

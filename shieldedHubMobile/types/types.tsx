@@ -79,9 +79,14 @@ export interface CredentialActualProps {
 }
 
 // Recycle bin item props types
-export interface RecycleItemProps {
-  id: number;
-  title: string;
+export interface RecycleActualProps {
+  item: CredentialItemProps;
+  setIsModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
+  recoverBtn: Function;
+  deleteBtn: Function;
+  isDarkMode?: boolean;
+  formatDate: Function;
+  deletingNowStates: any;
 }
 
 // Credential Child props types
@@ -98,15 +103,15 @@ export interface CredentialChildProps {
 }
 
 // Recycle bin child props types
-export interface RecycleChildProps {
-  item: RecycleItemProps;
-  colour?: string;
-  expireText?: string;
-  recoverBtn?: () => void;
-  deleteBtn?: () => void;
-  isDarkMode?: boolean;
-  setIsModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
-}
+// export interface RecycleChildProps {
+//   item: CredentialItemProps;
+//   colour?: string;
+//   expireText?: string;
+//   recoverBtn?: () => void;
+//   deleteBtn?: () => void;
+//   isDarkMode?: boolean;
+//   setIsModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
+// }
 
 // Credential item screen params prop types
 export interface CredentialItemScreenParams {
@@ -185,6 +190,8 @@ export interface CredentialContextProps {
   setCredentialList: React.Dispatch<
     React.SetStateAction<CredentialItemProps[]>
   >;
+  recycleBList: CredentialItemProps[];
+  setRecycleBList: React.Dispatch<React.SetStateAction<CredentialItemProps[]>>;
 }
 
 // Auth context props

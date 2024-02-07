@@ -9,12 +9,23 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import React, { useState } from "react";
-import { RecycleItemProps, RecycleScreenGlobalProps } from "../../types/types";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import {
+  CredentialContextProps,
+  CredentialItemProps,
+  RecycleScreenGlobalProps,
+} from "../../types/types";
 import TopBar from "../components/TopBar";
 import SearchInput from "../components/SearchInput";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { BottomSheet } from "../../Global/sheet";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Base_URL } from "../../Urls/Urls";
+import axios from "axios";
+import Recycle from "../components/Recycle";
+import moment from "moment";
+import { CredentialContext } from "../../Global/CredentialContext";
+import ToastNotification from "../../Global/toast";
 
 const RecycleBinScreen = ({
   isModalVisible,
@@ -23,9 +34,20 @@ const RecycleBinScreen = ({
   setIsDarkMode,
 }: RecycleScreenGlobalProps) => {
   const [recyclebinSearch, setRecyclebinSearch] = useState<string>("");
-  const [filteredData, setFilteredData] = useState<RecycleItemProps[]>([]);
+  const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
   const [recyclebinLoading, setRecyclebinLoading] = useState<boolean>(false);
   const [clearSearchIcon, setClearSearchIcon] = useState<boolean>(false);
+  const [dataLoading, setDataLoading] = useState<boolean>(true);
+
+  const { recycleBList, setRecycleBList, setCredentialList } = useContext(
+    CredentialContext
+  ) as CredentialContextProps;
+
+  const [deletingNowStates, setDeletingNowStates] = useState<
+    Record<string, boolean>
+  >({});
+  const [successNotification, setSuccessNotification] =
+    useState<boolean>(false);
 
   // Getting the width of the screen
   const { width, height } = useWindowDimensions();
@@ -35,36 +57,35 @@ const RecycleBinScreen = ({
     width: width * 1,
   };
 
-  const recycleContainerStyles = {
-    width: width * 0.8, // 80% of the screen
-  };
+  // Fetch the recycle bin data
+  const fetchData = useCallback(async () => {
+    try {
+      const userToken = await AsyncStorage.getItem("authToken");
+      const response = await axios.get(`${Base_URL}/user/recycleData`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      response.data
+        ? setRecycleBList(response.data.reverse())
+        : setRecycleBList([]);
+    } catch (e) {
+      // Nothing
+    } finally {
+      setDataLoading(false);
+    }
+  }, []);
 
-  // Static data array
-  const staticData: RecycleItemProps[] = [
-    {
-      id: 1,
-      title: "Facebook Login",
-    },
-    {
-      id: 2,
-      title: "Whatsapp Login",
-    },
-    {
-      id: 3,
-      title: "Instagram Login",
-    },
-    {
-      id: 4,
-      title: "Snapchat Login",
-    },
-  ];
+  useEffect(() => {
+    fetchData();
+  }, [recycleBList]);
 
   // Functionality To search for credentials
   const searchRecyclebin = (text: string) => {
     setRecyclebinLoading(true);
     setTimeout(() => {
-      const filteredItems = staticData.filter((item) =>
-        item.title.toLowerCase().includes(text.toLowerCase())
+      const filteredItems = recycleBList.filter((item) =>
+        item.credentialTitle.toLowerCase().includes(text.toLowerCase())
       );
       setFilteredData(filteredItems);
       setRecyclebinLoading(false);
@@ -80,7 +101,7 @@ const RecycleBinScreen = ({
   };
 
   // Render data
-  const renderData = recyclebinSearch ? filteredData : staticData;
+  const renderData = recyclebinSearch ? filteredData : recycleBList;
 
   // Handle the present modal of the bottom sheet
   const handlePresentModal = () => {
@@ -93,91 +114,89 @@ const RecycleBinScreen = ({
     if (setIsModalVisible) setIsModalVisible(false);
   };
 
-  // Recycle item component
-  const renderRecycleItem: ListRenderItem<RecycleItemProps> = ({ item }) => {
-    // Show menu alert after clicked
-    const showAlert = () => {
-      if (setIsModalVisible) {
-        setIsModalVisible(false);
-      }
+  // Delete a recycle bin item
+  const deleteBtn = useCallback(async (idToDelete: string) => {
+    try {
+      setDeletingNowStates((prevStates) => ({
+        ...prevStates,
+        [idToDelete]: true,
+      }));
 
-      {
-        recoverBtn
-          ? Alert.alert("Confirm", "Choose the respective action", [
-              {
-                text: "Recover",
-                onPress: () => recoverBtn && recoverBtn(),
-              },
-              {
-                text: "Delete",
-                onPress: () => deleteBtn && deleteBtn(),
-              },
-              {
-                text: "Cancel",
-                style: "cancel",
-              },
-            ])
-          : Alert.alert("Confirm", "Choose the respective action", [
-              {
-                text: "Delete",
-                onPress: () => deleteBtn && deleteBtn(),
-              },
-              {
-                text: "Cancel",
-                style: "cancel",
-              },
-            ]);
-      }
-    };
+      const token = await AsyncStorage.getItem("authToken");
+      const { data } = await axios.delete(
+        `${Base_URL}/user/deleteReycleData/${idToDelete}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    // recover btn functionality
-    const recoverBtn = () => {
-      console.log("Recovering...");
-    };
+      const newArray = recycleBList.filter(
+        (item: CredentialItemProps) => item.credentialId !== idToDelete
+      );
 
-    // delete btn functionality
-    const deleteBtn = () => {
-      console.log("Deleting...");
-    };
+      setRecycleBList(newArray);
+      console.log(data);
 
-    return (
-      <TouchableOpacity
-        key={item.id}
-        activeOpacity={0.4}
-        style={[
-          styles.recycleContainer,
-          recycleContainerStyles,
-          { backgroundColor: isDarkMode ? "#1E272E" : "#fff" },
-        ]}
-      >
-        <View style={styles.firstIconContainer}>
-          <AntDesign
-            name="profile"
-            size={25}
-            color={isDarkMode ? "#fff" : "#000"}
-          />
-        </View>
-        <View style={styles.textContainer}>
-          <Text style={[styles.headerText, { color: "red" }]}>
-            {item.title.length > 25
-              ? item.title.substring(0, 20) + "..."
-              : item.title}
-          </Text>
-          <Text style={[styles.dateText, { color: "red" }]}>
-            Expires in 30 days
-          </Text>
-        </View>
-        <View style={styles.secondIconContainer}>
-          <TouchableOpacity onPress={showAlert} activeOpacity={0.3}>
-            <Feather
-              name="more-vertical"
-              size={29}
-              color={isDarkMode ? "#fff" : "#000"}
-            />
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
-    );
+      setSuccessNotification(true);
+    } catch (error) {
+      // Nothing
+    } finally {
+      setDeletingNowStates((prevStates) => ({
+        ...prevStates,
+        [idToDelete]: false,
+      }));
+    }
+  }, []);
+
+  // Recover a recycle bin item
+  const recoverBtn = useCallback(async (idToRecover: string) => {
+    try {
+      setDeletingNowStates((prevStates) => ({
+        ...prevStates,
+        [idToRecover]: true,
+      }));
+
+      const token = await AsyncStorage.getItem("authToken");
+      const { data } = await axios.delete(
+        `${Base_URL}/user/recoverReycleData/${idToRecover}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const newArray = recycleBList.filter(
+        (item: CredentialItemProps) => item.credentialId !== idToRecover
+      );
+
+      setRecycleBList(newArray);
+
+      // Update the credentials state with the recovered credential
+      setCredentialList((prevCredentials: CredentialItemProps[]) => [
+        data,
+        ...prevCredentials,
+      ]);
+
+      console.log(data);
+
+      setSuccessNotification(true);
+    } catch (error) {
+      // Nothing
+    } finally {
+      setDeletingNowStates((prevStates) => ({
+        ...prevStates,
+        [idToRecover]: false,
+      }));
+    }
+  }, []);
+
+  // Format the date
+  const formatDate = (originalDate: string) => {
+    const formattedDate = moment(originalDate).format("MMMM Do YYYY, h:mm a");
+    return formattedDate;
   };
 
   return (
@@ -211,23 +230,54 @@ const RecycleBinScreen = ({
           isDarkMode={isDarkMode}
         />
       </View>
-      <View style={styles.recycleBContainer}>
-        {recyclebinLoading ? (
-          <ActivityIndicator size={"large"} color={"dodgerblue"} />
-        ) : renderData.length > 0 ? (
-          <FlatList
-            data={renderData}
-            keyExtractor={(index, item) => item.toString() + index}
-            renderItem={renderRecycleItem}
-          />
-        ) : (
-          <Text
-            style={[styles.noDataText, { color: isDarkMode ? "#fff" : "#000" }]}
-          >
-            No available data
-          </Text>
-        )}
-      </View>
+      {dataLoading ? (
+        <ActivityIndicator size={100} color={"dodgerblue"} />
+      ) : recycleBList.length === 0 ? (
+        <Text
+          style={[styles.noDataText, { color: isDarkMode ? "#fff" : "#000" }]}
+        >
+          No available data
+        </Text>
+      ) : (
+        <View style={[styles.recycleBContainer, containerStyles]}>
+          {recyclebinLoading ? (
+            <ActivityIndicator size={"large"} color={"dodgerblue"} />
+          ) : renderData.length > 0 ? (
+            <FlatList
+              data={renderData}
+              keyExtractor={(index, item) => item.toString() + index}
+              renderItem={({ item }) => (
+                <Recycle
+                  item={item}
+                  setIsModalVisible={setIsModalVisible}
+                  deleteBtn={deleteBtn}
+                  formatDate={formatDate}
+                  isDarkMode={isDarkMode}
+                  recoverBtn={recoverBtn}
+                  deletingNowStates={deletingNowStates}
+                />
+              )}
+            />
+          ) : (
+            <Text
+              style={[
+                styles.noDataText,
+                { color: isDarkMode ? "#fff" : "#000" },
+              ]}
+            >
+              No available data
+            </Text>
+          )}
+        </View>
+      )}
+
+      {successNotification ? (
+        <ToastNotification
+          message={"Request successful."}
+          iconName="done"
+          setSuccessNotification={setSuccessNotification}
+        />
+      ) : null}
 
       {/* Render the BottomSheet component */}
       <BottomSheet
@@ -257,41 +307,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     color: "black",
-  },
-  recycleContainer: {
-    alignSelf: "center",
-    borderColor: "#1E90FF",
-    borderRadius: 10,
-    flexDirection: "row",
-    padding: 3,
-    borderWidth: 1,
-    marginBottom: 10,
-    backgroundColor: "white",
-  },
-  firstIconContainer: {
-    width: "10%",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  secondIconContainer: {
-    width: "10%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  textContainer: {
-    width: "80%",
-    flexDirection: "column",
-    justifyContent: "space-evenly",
-    paddingHorizontal: 10,
-  },
-  headerText: {
-    fontWeight: "400",
-    fontSize: 17,
-    marginBottom: 5,
-  },
-  dateText: {
-    fontWeight: "300",
-    fontSize: 15,
   },
 });

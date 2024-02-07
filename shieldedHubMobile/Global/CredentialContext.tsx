@@ -21,9 +21,17 @@ const CredentialProvider: React.FC<{ children: ReactNode }> = ({
   const [credentialList, setCredentialList] = useState<CredentialItemProps[]>(
     []
   );
+  const [recycleBList, setRecycleBList] = useState<CredentialItemProps[]>([]);
 
   return (
-    <CredentialContext.Provider value={{ credentialList, setCredentialList }}>
+    <CredentialContext.Provider
+      value={{
+        credentialList,
+        setCredentialList,
+        recycleBList,
+        setRecycleBList,
+      }}
+    >
       {children}
     </CredentialContext.Provider>
   );

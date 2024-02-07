@@ -1,62 +1,44 @@
 import { memo } from "react";
 import {
   ActivityIndicator,
-  Alert,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   useWindowDimensions,
 } from "react-native";
-import {
-  CredentialActualProps,
-  CredentialItemScreenParams,
-  RootStackParams,
-} from "../../types/types";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { RecycleActualProps } from "../../types/types";
 import { AntDesign, Feather } from "@expo/vector-icons";
+import { Alert } from "react-native";
 
-// Credential item component
-const Credential = ({
+// Recycle bin item component
+const Recycle = ({
   item,
   setIsModalVisible,
   deleteBtn,
-  formatDate,
   isDarkMode,
+  recoverBtn,
+  formatDate,
   deletingNowStates,
-}: CredentialActualProps) => {
+}: RecycleActualProps) => {
   // Getting the width of the screen
   const { width } = useWindowDimensions();
-  const credentialContainerStyles = {
+  const recycleContainerStyles = {
     width: width * 0.8, // 80% of the screen
   };
 
-  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
-
-  // Navigate to a credential item
-  const navigateToCredentialItem = () => {
-    if (setIsModalVisible) {
-      setIsModalVisible(false);
-    }
-
-    navigation.navigate("CredentialItemScreen", {
-      credentialId: item.credentialId,
-      credentialTitle: item.credentialTitle,
-      credentialEmail: item.credentialEmail,
-      credentialPassword: item.credentialPassword,
-      credentialNotes: item.credentialNotes,
-    } as CredentialItemScreenParams);
-  };
-
-  // Confirm deletion before deleting
+  // Show menu alert after clicked
   const showAlert = () => {
     if (setIsModalVisible) {
       setIsModalVisible(false);
     }
 
     {
-      Alert.alert("Confirm Delete", "Are you sure you want to delete?", [
+      Alert.alert("Confirm", "Choose the respective action", [
+        {
+          text: "Recover",
+          onPress: () => recoverBtn(item.credentialId),
+        },
         {
           text: "Delete",
           onPress: () => deleteBtn(item.credentialId),
@@ -70,13 +52,11 @@ const Credential = ({
   };
 
   return (
-    <TouchableOpacity
+    <View
       key={item.credentialId}
-      activeOpacity={0.4}
-      onPress={() => navigateToCredentialItem()}
       style={[
-        styles.credentialContainer,
-        credentialContainerStyles,
+        styles.recycleContainer,
+        recycleContainerStyles,
         { backgroundColor: isDarkMode ? "#1E272E" : "#FFFFFF" },
       ]}
     >
@@ -103,8 +83,8 @@ const Credential = ({
         {!deletingNowStates[item.credentialId] ? (
           <TouchableOpacity onPress={showAlert} activeOpacity={0.3}>
             <Feather
-              name="trash-2"
-              size={25}
+              name="more-vertical"
+              size={29}
               color={isDarkMode ? "#fff" : "#000"}
             />
           </TouchableOpacity>
@@ -112,14 +92,20 @@ const Credential = ({
           <ActivityIndicator color={"dodgerblue"} />
         )}
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
-export default memo(Credential);
+/*
+
+
+
+*/
+
+export default memo(Recycle);
 
 const styles = StyleSheet.create({
-  credentialContainer: {
+  recycleContainer: {
     alignSelf: "center",
     borderColor: "#1E90FF",
     borderRadius: 10,
@@ -127,6 +113,7 @@ const styles = StyleSheet.create({
     padding: 3,
     borderWidth: 1,
     marginBottom: 10,
+    backgroundColor: "white",
   },
   firstIconContainer: {
     width: "10%",
