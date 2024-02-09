@@ -195,7 +195,22 @@ const RecycleBinScreen = ({
 
   // Format the date
   const formatDate = (originalDate: string) => {
-    const formattedDate = moment(originalDate).format("MMMM Do YYYY, h:mm a");
+    const expirationDate = moment(originalDate);
+    const currentDate = moment();
+    const daysRemaining = expirationDate.diff(currentDate, "days");
+
+    let formattedDate = "";
+
+    if (daysRemaining > 0) {
+      formattedDate = `Expires in ${daysRemaining} ${
+        daysRemaining > 1 ? "days" : "day"
+      }`;
+    } else if (daysRemaining === 0) {
+      formattedDate = "Expires Today";
+    } else {
+      formattedDate = "Expired";
+    }
+
     return formattedDate;
   };
 
