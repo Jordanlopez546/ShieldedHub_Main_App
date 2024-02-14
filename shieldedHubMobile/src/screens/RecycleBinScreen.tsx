@@ -14,6 +14,7 @@ import {
   CredentialContextProps,
   CredentialItemProps,
   RecycleScreenGlobalProps,
+  ThemeContextProps,
 } from "../../types/types";
 import TopBar from "../components/TopBar";
 import SearchInput from "../components/SearchInput";
@@ -26,12 +27,12 @@ import Recycle from "../components/Recycle";
 import moment from "moment";
 import { CredentialContext } from "../../Global/CredentialContext";
 import ToastNotification from "../../Global/toast";
+import { FlashList } from "@shopify/flash-list";
+import { ThemeContext } from "../../Global/ThemeContext";
 
 const RecycleBinScreen = ({
   isModalVisible,
   setIsModalVisible,
-  isDarkMode,
-  setIsDarkMode,
 }: RecycleScreenGlobalProps) => {
   const [recyclebinSearch, setRecyclebinSearch] = useState<string>("");
   const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
@@ -43,6 +44,8 @@ const RecycleBinScreen = ({
     CredentialContext
   ) as CredentialContextProps;
 
+  const { isDarkMode } = useContext(ThemeContext) as ThemeContextProps;
+
   const [deletingNowStates, setDeletingNowStates] = useState<
     Record<string, boolean>
   >({});
@@ -50,9 +53,9 @@ const RecycleBinScreen = ({
     useState<boolean>(false);
 
   // Getting the width of the screen
-  const { width, height } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
-  // Calculate the height and width based on the current screen dimensions
+  // Calculate the width based on the current screen dimensions
   const containerStyles = {
     width: width * 1,
   };
@@ -102,17 +105,6 @@ const RecycleBinScreen = ({
 
   // Render data
   const renderData = recyclebinSearch ? filteredData : recycleBList;
-
-  // Handle the present modal of the bottom sheet
-  const handlePresentModal = () => {
-    if (setIsModalVisible) {
-      setIsModalVisible(!isModalVisible);
-    }
-  };
-
-  const closeBottomSheet = () => {
-    if (setIsModalVisible) setIsModalVisible(false);
-  };
 
   // Delete a recycle bin item
   const deleteBtn = useCallback(async (idToDelete: string) => {
@@ -218,7 +210,7 @@ const RecycleBinScreen = ({
     <View
       style={[
         styles.container,
-        { backgroundColor: isDarkMode ? "#1E272E" : "#fff" },
+        { backgroundColor: isDarkMode ? "#1E272E" : "#fff", paddingTop: 10 },
       ]}
     >
       <View
@@ -228,7 +220,6 @@ const RecycleBinScreen = ({
           { backgroundColor: isDarkMode ? "#1E272E" : "#fff" },
         ]}
       >
-        <TopBar handlePresentModal={handlePresentModal} />
         <SearchInput
           autoFocus={false}
           value={recyclebinSearch}
@@ -242,7 +233,6 @@ const RecycleBinScreen = ({
           clearSearch={clearSearch}
           clearSearchIcon={clearSearchIcon}
           setIsModalVisible={setIsModalVisible}
-          isDarkMode={isDarkMode}
         />
       </View>
       {dataLoading ? (
@@ -258,7 +248,8 @@ const RecycleBinScreen = ({
           {recyclebinLoading ? (
             <ActivityIndicator size={"large"} color={"dodgerblue"} />
           ) : renderData.length > 0 ? (
-            <FlatList
+            <FlashList
+              estimatedItemSize={3000}
               data={renderData}
               keyExtractor={(index, item) => item.toString() + index}
               renderItem={({ item }) => (
@@ -267,7 +258,6 @@ const RecycleBinScreen = ({
                   setIsModalVisible={setIsModalVisible}
                   deleteBtn={deleteBtn}
                   formatDate={formatDate}
-                  isDarkMode={isDarkMode}
                   recoverBtn={recoverBtn}
                   deletingNowStates={deletingNowStates}
                 />
@@ -293,15 +283,6 @@ const RecycleBinScreen = ({
           setSuccessNotification={setSuccessNotification}
         />
       ) : null}
-
-      {/* Render the BottomSheet component */}
-      <BottomSheet
-        isVisible={isModalVisible}
-        setIsModalVisible={setIsModalVisible}
-        onClose={closeBottomSheet}
-        isDarkMode={isDarkMode}
-        setIsDarkMode={setIsDarkMode}
-      />
     </View>
   );
 };

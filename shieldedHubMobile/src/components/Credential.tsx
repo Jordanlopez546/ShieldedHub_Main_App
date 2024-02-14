@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useContext } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -12,10 +12,12 @@ import {
   CredentialActualProps,
   CredentialItemScreenParams,
   RootStackParams,
+  ThemeContextProps,
 } from "../../types/types";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { AntDesign, Feather } from "@expo/vector-icons";
+import { ThemeContext } from "../../Global/ThemeContext";
 
 // Credential item component
 const Credential = ({
@@ -23,14 +25,15 @@ const Credential = ({
   setIsModalVisible,
   deleteBtn,
   formatDate,
-  isDarkMode,
   deletingNowStates,
 }: CredentialActualProps) => {
   // Getting the width of the screen
   const { width } = useWindowDimensions();
   const credentialContainerStyles = {
-    width: width * 0.8, // 80% of the screen
+    width: width * 0.85, // 85% of the screen
   };
+
+  const { isDarkMode } = useContext(ThemeContext) as ThemeContextProps;
 
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 

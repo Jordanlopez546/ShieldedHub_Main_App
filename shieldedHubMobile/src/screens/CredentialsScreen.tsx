@@ -11,6 +11,7 @@ import {
   CredentialContextProps,
   CredentialItemProps,
   CredentialItemScreenNavigationOptions,
+  ThemeContextProps,
 } from "../../types/types";
 import TopBar from "../components/TopBar";
 import SearchInput from "../components/SearchInput";
@@ -22,12 +23,12 @@ import axios from "axios";
 import moment from "moment";
 import { CredentialContext } from "../../Global/CredentialContext";
 import Credential from "../components/Credential";
+import { FlashList } from "@shopify/flash-list";
+import { ThemeContext } from "../../Global/ThemeContext";
 
 const CredentialsScreen = ({
   isModalVisible,
   setIsModalVisible,
-  isDarkMode,
-  setIsDarkMode,
 }: CredentialItemScreenNavigationOptions) => {
   const [credentialSearch, setCredentialSearch] = useState<string>("");
   const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
@@ -46,18 +47,13 @@ const CredentialsScreen = ({
     CredentialContext
   ) as CredentialContextProps;
 
+  const { isDarkMode } = useContext(ThemeContext) as ThemeContextProps;
+
   // Getting the width of the screen
   const { width } = useWindowDimensions();
 
   const containerStyles = {
     width: width * 1,
-  };
-
-  // Handle the present modal of the bottom sheet
-  const handlePresentModal = () => {
-    if (setIsModalVisible) {
-      setIsModalVisible(!isModalVisible);
-    }
   };
 
   // Clear the search input
@@ -82,10 +78,6 @@ const CredentialsScreen = ({
 
   // To check which data to render
   const renderData = credentialSearch ? filteredData : credentialList;
-
-  const closeBottomSheet = () => {
-    if (setIsModalVisible) setIsModalVisible(false);
-  };
 
   // Delete a credential item
   const deleteBtn = useCallback(async (idToDelete: string) => {
@@ -156,7 +148,7 @@ const CredentialsScreen = ({
     <View
       style={[
         styles.container,
-        { backgroundColor: isDarkMode ? "#1E272E" : "#fff" },
+        { backgroundColor: isDarkMode ? "#1E272E" : "#fff", paddingTop: 10 },
       ]}
     >
       <View
@@ -166,7 +158,6 @@ const CredentialsScreen = ({
           { backgroundColor: isDarkMode ? "#1E272E" : "#fff" },
         ]}
       >
-        <TopBar handlePresentModal={handlePresentModal} />
         <SearchInput
           autoFocus={false}
           value={credentialSearch}
@@ -180,7 +171,6 @@ const CredentialsScreen = ({
           clearSearch={clearSearch}
           clearSearchIcon={clearSearchIcon}
           setIsModalVisible={setIsModalVisible}
-          isDarkMode={isDarkMode}
         />
       </View>
 
@@ -197,7 +187,8 @@ const CredentialsScreen = ({
           {credentialLoading ? (
             <ActivityIndicator size={"large"} color={"dodgerblue"} />
           ) : renderData.length > 0 ? (
-            <FlatList
+            <FlashList
+              estimatedItemSize={3000}
               data={renderData}
               keyExtractor={(index, item) => item.toString() + index}
               renderItem={({ item }) => (
@@ -206,7 +197,6 @@ const CredentialsScreen = ({
                   setIsModalVisible={setIsModalVisible}
                   deleteBtn={deleteBtn}
                   formatDate={formatDate}
-                  isDarkMode={isDarkMode}
                   deletingNowStates={deletingNowStates}
                 />
               )}
@@ -223,7 +213,6 @@ const CredentialsScreen = ({
           )}
         </View>
       )}
-
       {successNotification ? (
         <ToastNotification
           message="Credential Deleted."
@@ -231,15 +220,6 @@ const CredentialsScreen = ({
           setSuccessNotification={setSuccessNotification}
         />
       ) : null}
-
-      {/* Render the BottomSheet component */}
-      <BottomSheet
-        isVisible={isModalVisible}
-        setIsModalVisible={setIsModalVisible}
-        onClose={closeBottomSheet}
-        isDarkMode={isDarkMode}
-        setIsDarkMode={setIsDarkMode}
-      />
     </View>
   );
 };

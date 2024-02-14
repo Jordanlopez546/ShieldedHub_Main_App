@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useContext } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -7,16 +7,16 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { RecycleActualProps } from "../../types/types";
+import { RecycleActualProps, ThemeContextProps } from "../../types/types";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { Alert } from "react-native";
+import { ThemeContext } from "../../Global/ThemeContext";
 
 // Recycle bin item component
 const Recycle = ({
   item,
   setIsModalVisible,
   deleteBtn,
-  isDarkMode,
   recoverBtn,
   formatDate,
   deletingNowStates,
@@ -24,8 +24,10 @@ const Recycle = ({
   // Getting the width of the screen
   const { width } = useWindowDimensions();
   const recycleContainerStyles = {
-    width: width * 0.8, // 80% of the screen
+    width: width * 0.85, // 85% of the screen
   };
+
+  const { isDarkMode } = useContext(ThemeContext) as ThemeContextProps;
 
   // Show menu alert after clicked
   const showAlert = () => {

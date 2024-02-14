@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   useWindowDimensions,
-  DevSettings,
 } from "react-native";
 import Animated, {
   Easing,
@@ -25,21 +24,20 @@ import {
 } from "@expo/vector-icons";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ThemeContext } from "./ThemeContext";
+import { ThemeContextProps } from "../types/types";
 
-export const BottomSheet = ({
-  isVisible,
-  onClose,
-  setIsModalVisible,
-  isDarkMode,
-  setIsDarkMode,
-  currentUser,
-}: any) => {
+export const BottomSheet = ({ isVisible, onClose, setIsModalVisible }: any) => {
   // Getting the width of the screen
   const { height } = useWindowDimensions();
   const [userName, setUserName] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
   const sheetHeight = height * 0.4;
+
+  const { isDarkMode, setIsDarkMode } = useContext(
+    ThemeContext
+  ) as ThemeContextProps;
 
   const translateY = useSharedValue(sheetHeight);
 
@@ -163,17 +161,6 @@ export const BottomSheet = ({
       maxWidth: "90%",
       color: "#E0E0E0",
     },
-    closeModalView: {
-      position: "absolute",
-      bottom: 10,
-      backgroundColor: "#fff",
-      alignItems: "center",
-      width: 80,
-      height: 30,
-      justifyContent: "center",
-      borderRadius: 7,
-      alignSelf: "center",
-    },
     logOutDarkMView: {
       flexDirection: "row",
       width: "40%",
@@ -214,9 +201,6 @@ export const BottomSheet = ({
             />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={onClose} style={styles2.closeModalView}>
-          <Text style={[styles2.nameText, { color: "black" }]}>Close</Text>
-        </TouchableOpacity>
       </Animated.View>
     </PanGestureHandler>
   );

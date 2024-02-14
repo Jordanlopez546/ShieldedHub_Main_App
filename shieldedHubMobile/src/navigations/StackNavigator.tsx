@@ -7,8 +7,8 @@ import {
   CredentialItemScreenNavigationOptions,
   RootStackParams,
 } from "../../types/types";
-import TabNavigator from "./TabNavigator";
 import CredentialItemScreen from "../screens/CredentialItemScreen";
+import TopTabNavigator from "./TopTabNavigator";
 
 const Stack = createStackNavigator<RootStackParams>();
 
@@ -17,8 +17,6 @@ const StackNavigator = ({
   setIsModalVisible,
   currentScreen,
   handleScreenChange,
-  isDarkMode,
-  setIsDarkMode,
   userActiveSc,
 }: CredentialItemScreenNavigationOptions) => {
   return (
@@ -28,26 +26,18 @@ const StackNavigator = ({
     >
       <Stack.Screen name="GetStarted" component={GetStarted} />
       <Stack.Screen name="CredentialItemScreen" options={{ headerShown: true }}>
-        {(props) => (
-          <CredentialItemScreen
-            {...props}
-            isDarkMode={isDarkMode}
-            setIsDarkMode={setIsDarkMode}
-          />
-        )}
+        {(props) => <CredentialItemScreen {...props} />}
       </Stack.Screen>
       <Stack.Screen name="LogIn" component={LogIn} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="TheTabBarNavigators">
         {(props) => (
-          <TabNavigator
+          <TopTabNavigator
             {...props}
             currentScreen={currentScreen}
             handleScreenChange={handleScreenChange}
             isModalVisible={isModalVisible}
             setIsModalVisible={setIsModalVisible}
-            isDarkMode={isDarkMode}
-            setIsDarkMode={setIsDarkMode}
           />
         )}
       </Stack.Screen>

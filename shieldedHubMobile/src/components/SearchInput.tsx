@@ -5,9 +5,10 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import React from "react";
-import { SearchInputProps } from "../../types/types";
+import React, { useContext } from "react";
+import { SearchInputProps, ThemeContextProps } from "../../types/types";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import { ThemeContext } from "../../Global/ThemeContext";
 
 // Create the input
 const SearchInput = ({
@@ -23,15 +24,16 @@ const SearchInput = ({
   showDetail,
   editable,
   setIsModalVisible,
-  isDarkMode,
 }: SearchInputProps) => {
   // Getting the height and width of the screen
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
   // Calculate the height and width based on the current screen dimensions
   const inputContainerStyles = {
-    width: width * 0.8, // 80% of the screen
+    width: width * 0.85, // 85% of the screen
   };
+
+  const { isDarkMode } = useContext(ThemeContext) as ThemeContextProps;
 
   return (
     <View style={[inputContainerStyles, styles.inputMainCont]}>

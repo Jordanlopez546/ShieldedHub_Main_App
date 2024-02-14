@@ -15,6 +15,7 @@ import {
   CredentialContextProps,
   CredentialItemProps,
   CredentialItemScreenNavigationOptions,
+  ThemeContextProps,
 } from "../../types/types";
 import { BottomSheet } from "../../Global/sheet";
 import ToastNotification from "../../Global/toast";
@@ -22,12 +23,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { Base_URL } from "../../Urls/Urls";
 import { CredentialContext } from "../../Global/CredentialContext";
+import { ThemeContext } from "../../Global/ThemeContext";
 
 const NewDetail = ({
   isModalVisible,
   setIsModalVisible,
-  isDarkMode,
-  setIsDarkMode,
 }: CredentialItemScreenNavigationOptions) => {
   const [title, setTitle] = useState<string>("");
   const [emailOrUsername, setEmailOrUsername] = useState<string>("");
@@ -37,9 +37,11 @@ const NewDetail = ({
   const [successNotification, setSuccessNotification] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
 
-  const { credentialList, setCredentialList } = useContext(
+  const { setCredentialList } = useContext(
     CredentialContext
   ) as CredentialContextProps;
+
+  const { isDarkMode } = useContext(ThemeContext) as ThemeContextProps;
 
   const handleAddCredentials = async () => {
     if (
@@ -96,12 +98,8 @@ const NewDetail = ({
   // Getting the width of the screen
   const { width, height } = useWindowDimensions();
 
-  const containerStyles = {
-    width: width * 1,
-  };
-
   const noteInputContainerStyles = {
-    width: width * 0.8,
+    width: width * 0.85,
     height: height * 0.16,
   };
 
@@ -118,27 +116,13 @@ const NewDetail = ({
 
   const responsiveMargin = width * 0.12;
 
-  // Handle the present modal of the bottom sheet
-  const handlePresentModal = () => {
-    if (setIsModalVisible) {
-      setIsModalVisible(!isModalVisible);
-    }
-  };
-
-  const closeBottomSheet = () => {
-    if (setIsModalVisible) setIsModalVisible(false);
-  };
-
   return (
     <View
       style={[
         styles.container,
-        { backgroundColor: isDarkMode ? "#1E272E" : "#FFFFFF" },
+        { backgroundColor: isDarkMode ? "#1E272E" : "#FFFFFF", paddingTop: 10 },
       ]}
     >
-      <View style={[styles.topBarContainer, containerStyles]}>
-        <TopBar handlePresentModal={handlePresentModal} />
-      </View>
       <View>
         <View style={[styles.inputMargin]}>
           <SearchInput
@@ -146,7 +130,6 @@ const NewDetail = ({
             value={title}
             onChangeText={(text) => setTitle(text)}
             text="Title of Credential"
-            isDarkMode={isDarkMode}
             setIsModalVisible={setIsModalVisible}
           />
         </View>
@@ -157,7 +140,6 @@ const NewDetail = ({
             onChangeText={(text) => setEmailOrUsername(text)}
             autoFocus={false}
             text="Email/Username"
-            isDarkMode={isDarkMode}
             setIsModalVisible={setIsModalVisible}
           />
         </View>
@@ -169,7 +151,6 @@ const NewDetail = ({
             autoFocus={false}
             text="Password"
             showDetail={showPassword}
-            isDarkMode={isDarkMode}
             setIsModalVisible={setIsModalVisible}
           />
           {password && (
@@ -255,15 +236,6 @@ const NewDetail = ({
           setSuccessNotification={setSuccessNotification}
         />
       ) : null}
-
-      {/* Render the BottomSheet component */}
-      <BottomSheet
-        isVisible={isModalVisible}
-        setIsModalVisible={setIsModalVisible}
-        onClose={closeBottomSheet}
-        isDarkMode={isDarkMode}
-        setIsDarkMode={setIsDarkMode}
-      />
     </View>
   );
 };

@@ -194,6 +194,12 @@ export interface CredentialContextProps {
   setRecycleBList: React.Dispatch<React.SetStateAction<CredentialItemProps[]>>;
 }
 
+// Theme Context props
+export interface ThemeContextProps {
+  isDarkMode: boolean;
+  setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 // Auth context props
 export interface AuthContextProps {
   userEmail: string;

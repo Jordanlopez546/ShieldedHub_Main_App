@@ -13,6 +13,7 @@ import {
   CredentialContextProps,
   CredentialItemProps,
   StackCredentialItemProps,
+  ThemeContextProps,
 } from "../../types/types";
 import SearchInput from "../components/SearchInput";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
@@ -21,11 +22,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { Base_URL } from "../../Urls/Urls";
 import { CredentialContext } from "../../Global/CredentialContext";
+import { ThemeContext } from "../../Global/ThemeContext";
 
 const CredentialItemScreen = ({
   route,
   navigation,
-  isDarkMode,
 }: StackCredentialItemProps) => {
   const {
     credentialId: credentialId,
@@ -47,6 +48,8 @@ const CredentialItemScreen = ({
   const { credentialList, setCredentialList } = useContext(
     CredentialContext
   ) as CredentialContextProps;
+
+  const { isDarkMode } = useContext(ThemeContext) as ThemeContextProps;
 
   const handleUpdateCredentials = async () => {
     if (
@@ -130,7 +133,7 @@ const CredentialItemScreen = ({
   }, [navigation, credentialTitle]);
 
   const noteInputContainerStyles = {
-    width: width * 0.8,
+    width: width * 0.85,
     height: height * 0.16,
   };
 
@@ -186,7 +189,6 @@ const CredentialItemScreen = ({
             showDetail={showDetail}
             editable={editableText}
             onChangeText={(text) => setCredentialTitle(text)}
-            isDarkMode={isDarkMode}
           />
         </View>
         <View style={styles.inputMargin}>
@@ -198,7 +200,6 @@ const CredentialItemScreen = ({
             showDetail={showDetail}
             editable={editableText}
             onChangeText={(text) => setCredentialEmail(text)}
-            isDarkMode={isDarkMode}
           />
         </View>
         <View style={styles.inputMargin}>
@@ -210,7 +211,6 @@ const CredentialItemScreen = ({
             showDetail={showDetail}
             editable={editableText}
             onChangeText={(text) => setCredentialPassword(text)}
-            isDarkMode={isDarkMode}
           />
         </View>
         <TextInput
