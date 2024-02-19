@@ -26,7 +26,7 @@ const TopBar = ({
   const getUserLetter = async () => {
     try {
       const user = await AsyncStorage.getItem("userName");
-      setUserL(user?.charAt(0) || null);
+      setUserL(user?.charAt(0).toUpperCase() || null);
     } catch (error) {
       // Nothing
     }

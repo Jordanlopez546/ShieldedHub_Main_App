@@ -29,6 +29,8 @@ export type RootStackParams = {
   DrawerStackNavigator: undefined;
 };
 
+export type RootStackNavigationProp = StackNavigationProp<RootStackParams>;
+
 // Tab Bar Navigator screen props types
 export type TabParamList = {
   Credentials: undefined;
@@ -179,9 +181,21 @@ export type ToastNotificationType = {
 };
 
 // User prop
-export interface User {
+export interface IAuthenicatedUser {
   userEmail: string;
   userName: string;
+  userToken: string;
+}
+
+export interface IUser {
+  email: string;
+  name: string;
+  password: string;
+}
+
+export interface IUserGlobalStore {
+  user: IAuthenicatedUser | null;
+  updateUser: (user: IAuthenicatedUser | null) => void;
 }
 
 // Credential Context props

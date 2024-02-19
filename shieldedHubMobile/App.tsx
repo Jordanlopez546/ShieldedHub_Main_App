@@ -1,4 +1,11 @@
-import { Platform, SafeAreaView, StatusBar, StyleSheet } from "react-native";
+import {
+  ActivityIndicator,
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  View,
+} from "react-native";
 import "react-native-gesture-handler";
 import { ModalContext } from "./Global/UISettings";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -14,7 +21,9 @@ export default function App() {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(modalVal);
 
   const [currentScreen, setCurrentScreen] = useState<string>("Credentials");
-  const [userActiveSc, setUserActiveSc] = useState<boolean>(false);
+  const [userToken, setUserToken] = useState<string>("");
+
+  const [loading, setLoading] = useState<boolean>(true);
 
   const { isDarkMode } = useContext(ThemeContext) as ThemeContextProps;
 
@@ -37,17 +46,25 @@ export default function App() {
       backgroundColor: isDarkMode ? "#1E272E" : "#fff",
       marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
   });
 
   const fetchUserToken = async () => {
     try {
-      const userToken = await AsyncStorage.getItem("authToken");
-
-      if (userToken) {
-        setUserActiveSc(true);
+      const token = await AsyncStorage.getItem("authToken");
+      if (token !== null) {
+        setUserToken(token);
+      } else {
+        setUserToken(""); // or any other default value you prefer
       }
     } catch (err) {
       // Nothing
+    } finally {
+      setLoading(false); // Set loading to false after fetching token
     }
   };
 
@@ -55,6 +72,15 @@ export default function App() {
     fetchUserToken();
     changeStatusBarColourAndTheme();
   }, []);
+
+  // Show loading indicator until the token is fetched
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size={100} color="dodgerblue" />
+      </View>
+    );
+  }
 
   return (
     <ThemeProvider>
@@ -66,7 +92,9 @@ export default function App() {
               setIsModalVisible={setIsModalVisible}
               currentScreen={currentScreen}
               handleScreenChange={handleScreenChange}
-              userActiveSc={userActiveSc}
+              initialRouteName={
+                !userToken ? "GetStarted" : "TheTabBarNavigators"
+              }
             />
           </NavigationContainer>
         </SafeAreaView>

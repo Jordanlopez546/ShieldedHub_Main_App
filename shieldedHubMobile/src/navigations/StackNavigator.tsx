@@ -18,11 +18,14 @@ const StackNavigator = ({
   currentScreen,
   handleScreenChange,
   userActiveSc,
-}: CredentialItemScreenNavigationOptions) => {
+  initialRouteName,
+}: CredentialItemScreenNavigationOptions & {
+  initialRouteName: keyof RootStackParams;
+}) => {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName={userActiveSc ? "GetStarted" : "TheTabBarNavigators"}
+      initialRouteName={initialRouteName}
     >
       <Stack.Screen name="GetStarted" component={GetStarted} />
       <Stack.Screen name="CredentialItemScreen" options={{ headerShown: true }}>

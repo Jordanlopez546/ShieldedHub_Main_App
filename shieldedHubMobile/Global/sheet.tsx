@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import {
+  Alert,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -25,13 +26,17 @@ import {
 import { PanGestureHandler } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemeContext } from "./ThemeContext";
-import { ThemeContextProps } from "../types/types";
+import { RootStackParams, ThemeContextProps } from "../types/types";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 export const BottomSheet = ({ isVisible, onClose, setIsModalVisible }: any) => {
   // Getting the width of the screen
   const { height } = useWindowDimensions();
   const [userName, setUserName] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
   const sheetHeight = height * 0.4;
 
@@ -120,6 +125,29 @@ export const BottomSheet = ({ isVisible, onClose, setIsModalVisible }: any) => {
     }
   };
 
+  const handleLogOut = async () => {
+    try {
+      // Remove user data from AsyncStorage
+      await AsyncStorage.removeItem("authToken");
+      await AsyncStorage.removeItem("userName");
+      await AsyncStorage.removeItem("userEmail");
+      await AsyncStorage.removeItem("userId");
+
+      // Reset the navigation stack to only contain the login screen
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "LogIn" }],
+      });
+    } catch (error) {
+      // Handle any errors that occur during logout
+      console.error("Error logging out:", error);
+      Alert.alert(
+        "Logout Failed",
+        "An error occurred while logging out. Please try again."
+      );
+    }
+  };
+
   const styles2 = StyleSheet.create({
     bottomSheet: {
       position: "absolute",
@@ -183,7 +211,10 @@ export const BottomSheet = ({ isVisible, onClose, setIsModalVisible }: any) => {
           <Entypo name="email" size={22} color="#E0E0E0" />
         </View>
         <View style={styles2.content}>
-          <TouchableOpacity style={[styles2.logOutDarkMView, { width: "32%" }]}>
+          <TouchableOpacity
+            onPress={handleLogOut}
+            style={[styles2.logOutDarkMView, { width: "32%" }]}
+          >
             <Text style={styles2.nameText}>Log Out</Text>
             <AntDesign name="logout" size={22} color="#E0E0E0" />
           </TouchableOpacity>
