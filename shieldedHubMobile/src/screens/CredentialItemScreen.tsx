@@ -80,17 +80,17 @@ const CredentialItemScreen = ({
           if (item.credentialId === credentialId) {
             return {
               ...item,
-              credentialTitle: credentialTitle,
-              credentialEmail: credentialEmail,
-              credentialPassword: credentialPassword,
-              credentialNotes: credentialNotes,
+              credentialTitle: data.credentialTitle,
+              credentialEmail: data.credentialEmail,
+              credentialPassword: data.credentialPassword,
+              credentialNotes: data.credentialNotes,
+              createdAt: data.createdAt,
             };
           }
           return item;
         });
 
         setCredentialList(updatedData);
-        console.log(data);
         setCreateLoading(false);
 
         setSuccessNotification(true);

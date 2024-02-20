@@ -81,7 +81,7 @@ const RecycleBinScreen = ({
 
   useEffect(() => {
     fetchData();
-  }, [recycleBList]);
+  }, []);
 
   // Functionality To search for credentials
   const searchRecyclebin = (text: string) => {
@@ -107,7 +107,7 @@ const RecycleBinScreen = ({
   const renderData = recyclebinSearch ? filteredData : recycleBList;
 
   // Delete a recycle bin item
-  const deleteBtn = useCallback(async (idToDelete: string) => {
+  const deleteBtn = async (idToDelete: string) => {
     try {
       setDeletingNowStates((prevStates) => ({
         ...prevStates,
@@ -129,7 +129,6 @@ const RecycleBinScreen = ({
       );
 
       setRecycleBList(newArray);
-      console.log(data);
 
       setSuccessNotification(true);
     } catch (error) {
@@ -140,10 +139,10 @@ const RecycleBinScreen = ({
         [idToDelete]: false,
       }));
     }
-  }, []);
+  };
 
   // Recover a recycle bin item
-  const recoverBtn = useCallback(async (idToRecover: string) => {
+  const recoverBtn = async (idToRecover: string) => {
     try {
       setDeletingNowStates((prevStates) => ({
         ...prevStates,
@@ -172,8 +171,6 @@ const RecycleBinScreen = ({
         ...prevCredentials,
       ]);
 
-      console.log(data);
-
       setSuccessNotification(true);
     } catch (error) {
       // Nothing
@@ -183,7 +180,7 @@ const RecycleBinScreen = ({
         [idToRecover]: false,
       }));
     }
-  }, []);
+  };
 
   // Format the date
   const formatDate = (originalDate: string) => {
@@ -205,6 +202,10 @@ const RecycleBinScreen = ({
 
     return formattedDate;
   };
+  // const formatDate = (originalDate: string) => {
+  //   const formattedDate = moment(originalDate).format("MMMM Do YYYY, h:mm a");
+  //   return formattedDate;
+  // };
 
   return (
     <View
@@ -248,8 +249,7 @@ const RecycleBinScreen = ({
           {recyclebinLoading ? (
             <ActivityIndicator size={"large"} color={"dodgerblue"} />
           ) : renderData.length > 0 ? (
-            <FlashList
-              estimatedItemSize={3000}
+            <FlatList
               data={renderData}
               keyExtractor={(index, item) => item.toString() + index}
               renderItem={({ item }) => (

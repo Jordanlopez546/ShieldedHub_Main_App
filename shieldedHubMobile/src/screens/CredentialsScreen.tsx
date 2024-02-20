@@ -43,7 +43,7 @@ const CredentialsScreen = ({
     Record<string, boolean>
   >({});
 
-  const { credentialList, setCredentialList } = useContext(
+  const { credentialList, setCredentialList, setRecycleBList } = useContext(
     CredentialContext
   ) as CredentialContextProps;
 
@@ -80,7 +80,7 @@ const CredentialsScreen = ({
   const renderData = credentialSearch ? filteredData : credentialList;
 
   // Delete a credential item
-  const deleteBtn = useCallback(async (idToDelete: string) => {
+  const deleteBtn = async (idToDelete: string) => {
     try {
       setDeletingNowStates((prevStates) => ({
         ...prevStates,
@@ -102,7 +102,12 @@ const CredentialsScreen = ({
       );
 
       setCredentialList(newArray);
-      console.log(data);
+
+      // Update the credentials state with the recovered credential
+      setRecycleBList((prevCredentials: CredentialItemProps[]) => [
+        data,
+        ...prevCredentials,
+      ]);
 
       setSuccessNotification(true);
     } catch (error) {
@@ -113,7 +118,7 @@ const CredentialsScreen = ({
         [idToDelete]: false,
       }));
     }
-  }, []);
+  };
 
   // Format the date
   const formatDate = (originalDate: string) => {
@@ -122,7 +127,7 @@ const CredentialsScreen = ({
   };
 
   // Fetch the credentials data
-  const fetchData = useCallback(async () => {
+  const fetchData = async () => {
     try {
       const userToken = await AsyncStorage.getItem("authToken");
       const response = await axios.get(`${Base_URL}/user/credentials`, {
@@ -138,11 +143,11 @@ const CredentialsScreen = ({
     } finally {
       setDataLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     fetchData();
-  }, [credentialList]);
+  }, []);
 
   return (
     <View
@@ -187,8 +192,7 @@ const CredentialsScreen = ({
           {credentialLoading ? (
             <ActivityIndicator size={"large"} color={"dodgerblue"} />
           ) : renderData.length > 0 ? (
-            <FlashList
-              estimatedItemSize={3000}
+            <FlatList
               data={renderData}
               keyExtractor={(index, item) => item.toString() + index}
               renderItem={({ item }) => (
