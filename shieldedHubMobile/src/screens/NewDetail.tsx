@@ -15,6 +15,7 @@ import {
   CredentialContextProps,
   CredentialItemProps,
   CredentialItemScreenNavigationOptions,
+  RootStackParams,
   ThemeContextProps,
 } from "../../types/types";
 import { BottomSheet } from "../../Global/sheet";
@@ -24,10 +25,15 @@ import axios from "axios";
 import { Base_URL } from "../../Urls/Urls";
 import { CredentialContext } from "../../Global/CredentialContext";
 import { ThemeContext } from "../../Global/ThemeContext";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const NewDetail = ({
   isModalVisible,
   setIsModalVisible,
+  setIsDarkMode,
+  isDarkMode,
+  token,
 }: CredentialItemScreenNavigationOptions) => {
   const [title, setTitle] = useState<string>("");
   const [emailOrUsername, setEmailOrUsername] = useState<string>("");
@@ -41,58 +47,57 @@ const NewDetail = ({
     CredentialContext
   ) as CredentialContextProps;
 
-  const { isDarkMode } = useContext(ThemeContext) as ThemeContextProps;
-
   const handleAddCredentials = async () => {
-    if (
-      title.trim() !== "" &&
-      emailOrUsername.trim() !== "" &&
-      password.trim() !== ""
-    ) {
-      setCreateLoading(true);
-      const credentialItem = {
-        credentialTitle: title,
-        credentialEmail: emailOrUsername,
-        credentialPassword: password,
-        credentialNotes: notes,
-      };
+    try {
+      if (
+        title.trim() !== "" &&
+        emailOrUsername.trim() !== "" &&
+        password.trim() !== ""
+      ) {
+        setCreateLoading(true);
+        const credentialItem = {
+          credentialTitle: title,
+          credentialEmail: emailOrUsername,
+          credentialPassword: password,
+          credentialNotes: notes,
+        };
 
-      const token = await AsyncStorage.getItem("authToken");
-      const { data } = await axios.post(
-        `${Base_URL}/user/addCredential`,
-        credentialItem,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const { data } = await axios.post(
+          `${Base_URL}/user/addCredential`,
+          credentialItem,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Update the credentials state with the new credential
+        setCredentialList((prevCredentials: CredentialItemProps[]) => [
+          data,
+          ...prevCredentials,
+        ]);
+
+        console.log(data);
+
+        setCreateLoading(false);
+
+        setSuccessNotification(true);
+
+        // Clear the input fields
+        setEmailOrUsername("");
+        setTitle("");
+        setNotes("");
+        setPassword("");
+      } else {
+        Alert.alert("Instruction", "Please fill in the inputs.", [
+          {
+            text: "Okay",
+            style: "cancel",
           },
-        }
-      );
-
-      // Update the credentials state with the new credential
-      setCredentialList((prevCredentials: CredentialItemProps[]) => [
-        data,
-        ...prevCredentials,
-      ]);
-
-      console.log(data);
-
-      setCreateLoading(false);
-
-      setSuccessNotification(true);
-
-      // Clear the input fields
-      setEmailOrUsername("");
-      setTitle("");
-      setNotes("");
-      setPassword("");
-    } else {
-      Alert.alert("Instruction", "Please fill in the inputs.", [
-        {
-          text: "Okay",
-          style: "cancel",
-        },
-      ]);
-    }
+        ]);
+      }
+    } catch (e) {}
   };
 
   // Getting the width of the screen
@@ -131,6 +136,7 @@ const NewDetail = ({
             onChangeText={(text) => setTitle(text)}
             text="Title of Credential"
             setIsModalVisible={setIsModalVisible}
+            isDarkMode={isDarkMode}
           />
         </View>
         <View style={styles.inputMargin}>
@@ -141,6 +147,7 @@ const NewDetail = ({
             autoFocus={false}
             text="Email/Username"
             setIsModalVisible={setIsModalVisible}
+            isDarkMode={isDarkMode}
           />
         </View>
         <View style={styles.inputMargin}>
@@ -152,6 +159,7 @@ const NewDetail = ({
             text="Password"
             showDetail={showPassword}
             setIsModalVisible={setIsModalVisible}
+            isDarkMode={isDarkMode}
           />
           {password && (
             <TouchableOpacity

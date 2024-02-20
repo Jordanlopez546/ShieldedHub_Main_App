@@ -20,14 +20,13 @@ const Recycle = ({
   recoverBtn,
   formatDate,
   deletingNowStates,
+  isDarkMode,
 }: RecycleActualProps) => {
   // Getting the width of the screen
   const { width } = useWindowDimensions();
   const recycleContainerStyles = {
     width: width * 0.85, // 85% of the screen
   };
-
-  const { isDarkMode } = useContext(ThemeContext) as ThemeContextProps;
 
   // Show menu alert after clicked
   const showAlert = () => {

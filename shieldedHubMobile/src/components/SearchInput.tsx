@@ -24,6 +24,7 @@ const SearchInput = ({
   showDetail,
   editable,
   setIsModalVisible,
+  isDarkMode,
 }: SearchInputProps) => {
   // Getting the height and width of the screen
   const { width } = useWindowDimensions();
@@ -32,8 +33,6 @@ const SearchInput = ({
   const inputContainerStyles = {
     width: width * 0.85, // 85% of the screen
   };
-
-  const { isDarkMode } = useContext(ThemeContext) as ThemeContextProps;
 
   return (
     <View style={[inputContainerStyles, styles.inputMainCont]}>

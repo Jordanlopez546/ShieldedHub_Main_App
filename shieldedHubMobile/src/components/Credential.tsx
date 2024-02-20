@@ -26,14 +26,13 @@ const Credential = ({
   deleteBtn,
   formatDate,
   deletingNowStates,
+  isDarkMode,
 }: CredentialActualProps) => {
   // Getting the width of the screen
   const { width } = useWindowDimensions();
   const credentialContainerStyles = {
     width: width * 0.85, // 85% of the screen
   };
-
-  const { isDarkMode } = useContext(ThemeContext) as ThemeContextProps;
 
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 

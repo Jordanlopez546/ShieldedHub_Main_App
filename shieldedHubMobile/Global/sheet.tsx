@@ -25,12 +25,17 @@ import {
 } from "@expo/vector-icons";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ThemeContext } from "./ThemeContext";
-import { RootStackParams, ThemeContextProps } from "../types/types";
+import { RootStackParams } from "../types/types";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-export const BottomSheet = ({ isVisible, onClose, setIsModalVisible }: any) => {
+export const BottomSheet = ({
+  isVisible,
+  onClose,
+  setIsModalVisible,
+  setIsDarkMode,
+  isDarkMode,
+}: any) => {
   // Getting the width of the screen
   const { height } = useWindowDimensions();
   const [userName, setUserName] = useState<string | null>(null);
@@ -39,10 +44,6 @@ export const BottomSheet = ({ isVisible, onClose, setIsModalVisible }: any) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
   const sheetHeight = height * 0.4;
-
-  const { isDarkMode, setIsDarkMode } = useContext(
-    ThemeContext
-  ) as ThemeContextProps;
 
   const translateY = useSharedValue(sheetHeight);
 

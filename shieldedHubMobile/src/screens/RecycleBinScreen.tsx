@@ -14,6 +14,7 @@ import {
   CredentialContextProps,
   CredentialItemProps,
   RecycleScreenGlobalProps,
+  RootStackParams,
   ThemeContextProps,
 } from "../../types/types";
 import TopBar from "../components/TopBar";
@@ -29,22 +30,26 @@ import { CredentialContext } from "../../Global/CredentialContext";
 import ToastNotification from "../../Global/toast";
 import { FlashList } from "@shopify/flash-list";
 import { ThemeContext } from "../../Global/ThemeContext";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const RecycleBinScreen = ({
   isModalVisible,
   setIsModalVisible,
+  isDarkMode,
+  setIsDarkMode,
+  token,
 }: RecycleScreenGlobalProps) => {
   const [recyclebinSearch, setRecyclebinSearch] = useState<string>("");
   const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
   const [recyclebinLoading, setRecyclebinLoading] = useState<boolean>(false);
   const [clearSearchIcon, setClearSearchIcon] = useState<boolean>(false);
   const [dataLoading, setDataLoading] = useState<boolean>(true);
+  const [isRecovered, setIsRecovered] = useState<boolean>(false);
 
   const { recycleBList, setRecycleBList, setCredentialList } = useContext(
     CredentialContext
   ) as CredentialContextProps;
-
-  const { isDarkMode } = useContext(ThemeContext) as ThemeContextProps;
 
   const [deletingNowStates, setDeletingNowStates] = useState<
     Record<string, boolean>
@@ -63,17 +68,15 @@ const RecycleBinScreen = ({
   // Fetch the recycle bin data
   const fetchData = useCallback(async () => {
     try {
-      const userToken = await AsyncStorage.getItem("authToken");
       const response = await axios.get(`${Base_URL}/user/recycleData`, {
         headers: {
-          Authorization: `Bearer ${userToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       response.data
         ? setRecycleBList(response.data.reverse())
         : setRecycleBList([]);
     } catch (e) {
-      // Nothing
     } finally {
       setDataLoading(false);
     }
@@ -108,13 +111,13 @@ const RecycleBinScreen = ({
 
   // Delete a recycle bin item
   const deleteBtn = async (idToDelete: string) => {
+    setIsRecovered(false);
     try {
       setDeletingNowStates((prevStates) => ({
         ...prevStates,
         [idToDelete]: true,
       }));
 
-      const token = await AsyncStorage.getItem("authToken");
       const { data } = await axios.delete(
         `${Base_URL}/user/deleteReycleData/${idToDelete}`,
         {
@@ -132,7 +135,6 @@ const RecycleBinScreen = ({
 
       setSuccessNotification(true);
     } catch (error) {
-      // Nothing
     } finally {
       setDeletingNowStates((prevStates) => ({
         ...prevStates,
@@ -143,13 +145,13 @@ const RecycleBinScreen = ({
 
   // Recover a recycle bin item
   const recoverBtn = async (idToRecover: string) => {
+    setIsRecovered(true);
     try {
       setDeletingNowStates((prevStates) => ({
         ...prevStates,
         [idToRecover]: true,
       }));
 
-      const token = await AsyncStorage.getItem("authToken");
       const { data } = await axios.delete(
         `${Base_URL}/user/recoverReycleData/${idToRecover}`,
         {
@@ -173,7 +175,6 @@ const RecycleBinScreen = ({
 
       setSuccessNotification(true);
     } catch (error) {
-      // Nothing
     } finally {
       setDeletingNowStates((prevStates) => ({
         ...prevStates,
@@ -202,10 +203,6 @@ const RecycleBinScreen = ({
 
     return formattedDate;
   };
-  // const formatDate = (originalDate: string) => {
-  //   const formattedDate = moment(originalDate).format("MMMM Do YYYY, h:mm a");
-  //   return formattedDate;
-  // };
 
   return (
     <View
@@ -234,6 +231,7 @@ const RecycleBinScreen = ({
           clearSearch={clearSearch}
           clearSearchIcon={clearSearchIcon}
           setIsModalVisible={setIsModalVisible}
+          isDarkMode={isDarkMode}
         />
       </View>
       {dataLoading ? (
@@ -260,6 +258,7 @@ const RecycleBinScreen = ({
                   formatDate={formatDate}
                   recoverBtn={recoverBtn}
                   deletingNowStates={deletingNowStates}
+                  isDarkMode={isDarkMode}
                 />
               )}
             />
@@ -278,7 +277,11 @@ const RecycleBinScreen = ({
 
       {successNotification ? (
         <ToastNotification
-          message={"Request successful."}
+          message={
+            isRecovered
+              ? "Credential recovered successfully."
+              : "Credential deleted successfully."
+          }
           iconName="done"
           setSuccessNotification={setSuccessNotification}
         />

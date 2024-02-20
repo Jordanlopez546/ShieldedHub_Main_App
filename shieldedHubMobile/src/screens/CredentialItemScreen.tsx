@@ -12,6 +12,7 @@ import React, { useContext, useLayoutEffect, useState } from "react";
 import {
   CredentialContextProps,
   CredentialItemProps,
+  RootStackParams,
   StackCredentialItemProps,
   ThemeContextProps,
 } from "../../types/types";
@@ -23,10 +24,14 @@ import axios from "axios";
 import { Base_URL } from "../../Urls/Urls";
 import { CredentialContext } from "../../Global/CredentialContext";
 import { ThemeContext } from "../../Global/ThemeContext";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation } from "@react-navigation/native";
 
 const CredentialItemScreen = ({
   route,
   navigation,
+  isDarkMode,
+  token,
 }: StackCredentialItemProps) => {
   const {
     credentialId: credentialId,
@@ -49,8 +54,6 @@ const CredentialItemScreen = ({
     CredentialContext
   ) as CredentialContextProps;
 
-  const { isDarkMode } = useContext(ThemeContext) as ThemeContextProps;
-
   const handleUpdateCredentials = async () => {
     if (
       credentialEmail.trim() !== "" &&
@@ -65,7 +68,7 @@ const CredentialItemScreen = ({
           credentialPassword: credentialPassword,
           credentialNotes: credentialNotes,
         };
-        const token = await AsyncStorage.getItem("authToken");
+
         const { data } = await axios.patch(
           `${Base_URL}/user/updateCredential/${credentialId}`,
           credential,
@@ -189,6 +192,7 @@ const CredentialItemScreen = ({
             showDetail={showDetail}
             editable={editableText}
             onChangeText={(text) => setCredentialTitle(text)}
+            isDarkMode={isDarkMode}
           />
         </View>
         <View style={styles.inputMargin}>
@@ -200,6 +204,7 @@ const CredentialItemScreen = ({
             showDetail={showDetail}
             editable={editableText}
             onChangeText={(text) => setCredentialEmail(text)}
+            isDarkMode={isDarkMode}
           />
         </View>
         <View style={styles.inputMargin}>
@@ -211,6 +216,7 @@ const CredentialItemScreen = ({
             showDetail={showDetail}
             editable={editableText}
             onChangeText={(text) => setCredentialPassword(text)}
+            isDarkMode={isDarkMode}
           />
         </View>
         <TextInput

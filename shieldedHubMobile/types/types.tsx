@@ -147,6 +147,7 @@ export interface RecycleScreenGlobalProps {
   setIsModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
   currentScreen?: string;
   isDarkMode?: boolean;
+  token: string | null;
   setIsDarkMode?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 // Credential Item screen navigation data(Static data for the app) prop types
@@ -161,7 +162,7 @@ export interface StackCredentialItemProps {
   route: CredentialItemScreenRouteProp;
   navigation: StackNavigationProp<RootStackParams, "CredentialItemScreen">;
   isDarkMode?: boolean;
-  setIsDarkMode?: React.Dispatch<React.SetStateAction<boolean>>;
+  token: string | null;
 }
 
 // Home Stack Navigator Props types

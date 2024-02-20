@@ -11,6 +11,7 @@ import {
   CredentialContextProps,
   CredentialItemProps,
   CredentialItemScreenNavigationOptions,
+  RootStackParams,
   ThemeContextProps,
 } from "../../types/types";
 import TopBar from "../components/TopBar";
@@ -25,10 +26,15 @@ import { CredentialContext } from "../../Global/CredentialContext";
 import Credential from "../components/Credential";
 import { FlashList } from "@shopify/flash-list";
 import { ThemeContext } from "../../Global/ThemeContext";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const CredentialsScreen = ({
   isModalVisible,
   setIsModalVisible,
+  isDarkMode,
+  setIsDarkMode,
+  token,
 }: CredentialItemScreenNavigationOptions) => {
   const [credentialSearch, setCredentialSearch] = useState<string>("");
   const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
@@ -47,14 +53,16 @@ const CredentialsScreen = ({
     CredentialContext
   ) as CredentialContextProps;
 
-  const { isDarkMode } = useContext(ThemeContext) as ThemeContextProps;
-
   // Getting the width of the screen
   const { width } = useWindowDimensions();
 
   const containerStyles = {
     width: width * 1,
   };
+
+  useEffect(() => {
+    fetchData();
+  }, [token]);
 
   // Clear the search input
   const clearSearch = () => {
@@ -87,7 +95,7 @@ const CredentialsScreen = ({
         [idToDelete]: true,
       }));
 
-      const token = await AsyncStorage.getItem("authToken");
+      // const userToken = await AsyncStorage.getItem("authToken");
       const { data } = await axios.delete(
         `${Base_URL}/user/deleteCredential/${idToDelete}`,
         {
@@ -111,7 +119,6 @@ const CredentialsScreen = ({
 
       setSuccessNotification(true);
     } catch (error) {
-      // Nothing
     } finally {
       setDeletingNowStates((prevStates) => ({
         ...prevStates,
@@ -122,32 +129,27 @@ const CredentialsScreen = ({
 
   // Format the date
   const formatDate = (originalDate: string) => {
-    const formattedDate = moment(originalDate).format("MMMM Do YYYY, h:mm a");
+    const formattedDate = moment(originalDate).format("MMM Do YYYY, h:mm a");
     return formattedDate;
   };
 
   // Fetch the credentials data
   const fetchData = async () => {
     try {
-      const userToken = await AsyncStorage.getItem("authToken");
+      // const userToken = await AsyncStorage.getItem("authToken");
       const response = await axios.get(`${Base_URL}/user/credentials`, {
         headers: {
-          Authorization: `Bearer ${userToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       response.data
         ? setCredentialList(response.data.reverse())
         : setCredentialList([]);
     } catch (e) {
-      // Nothing
     } finally {
       setDataLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   return (
     <View
@@ -176,6 +178,7 @@ const CredentialsScreen = ({
           clearSearch={clearSearch}
           clearSearchIcon={clearSearchIcon}
           setIsModalVisible={setIsModalVisible}
+          isDarkMode={isDarkMode}
         />
       </View>
 
@@ -202,6 +205,7 @@ const CredentialsScreen = ({
                   deleteBtn={deleteBtn}
                   formatDate={formatDate}
                   deletingNowStates={deletingNowStates}
+                  isDarkMode={isDarkMode}
                 />
               )}
             />
