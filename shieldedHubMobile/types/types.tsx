@@ -147,7 +147,8 @@ export interface RecycleScreenGlobalProps {
   setIsModalVisible?: React.Dispatch<React.SetStateAction<boolean>>;
   currentScreen?: string;
   isDarkMode?: boolean;
-  token: string | null;
+  userToken: string;
+  setUserToken: React.Dispatch<SetStateAction<string>>;
   setIsDarkMode?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 // Credential Item screen navigation data(Static data for the app) prop types
@@ -162,7 +163,7 @@ export interface StackCredentialItemProps {
   route: CredentialItemScreenRouteProp;
   navigation: StackNavigationProp<RootStackParams, "CredentialItemScreen">;
   isDarkMode?: boolean;
-  token: string | null;
+  userToken: string;
 }
 
 // Home Stack Navigator Props types
@@ -181,24 +182,6 @@ export type ToastNotificationType = {
   setSuccessNotification?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-// User prop
-export interface IAuthenicatedUser {
-  userEmail: string;
-  userName: string;
-  userToken: string;
-}
-
-export interface IUser {
-  email: string;
-  name: string;
-  password: string;
-}
-
-export interface IUserGlobalStore {
-  user: IAuthenicatedUser | null;
-  updateUser: (user: IAuthenicatedUser | null) => void;
-}
-
 // Credential Context props
 export interface CredentialContextProps {
   credentialList: CredentialItemProps[];
@@ -213,16 +196,4 @@ export interface CredentialContextProps {
 export interface ThemeContextProps {
   isDarkMode: boolean;
   setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-// Auth context props
-export interface AuthContextProps {
-  userEmail: string;
-  setUserEmail: React.Dispatch<React.SetStateAction<string>>;
-  userId: string;
-  setUserId: React.Dispatch<React.SetStateAction<string>>;
-  userToken: string;
-  setUserToken: React.Dispatch<React.SetStateAction<string>>;
-  userName: string;
-  setUserName: React.Dispatch<React.SetStateAction<string>>;
 }

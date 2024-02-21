@@ -31,7 +31,7 @@ const CredentialItemScreen = ({
   route,
   navigation,
   isDarkMode,
-  token,
+  userToken,
 }: StackCredentialItemProps) => {
   const {
     credentialId: credentialId,
@@ -74,7 +74,7 @@ const CredentialItemScreen = ({
           credential,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${userToken}`,
             },
           }
         );

@@ -28,13 +28,14 @@ import { FlashList } from "@shopify/flash-list";
 import { ThemeContext } from "../../Global/ThemeContext";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import * as SecureStore from "expo-secure-store";
 
 const CredentialsScreen = ({
   isModalVisible,
   setIsModalVisible,
   isDarkMode,
   setIsDarkMode,
-  token,
+  userToken,
 }: CredentialItemScreenNavigationOptions) => {
   const [credentialSearch, setCredentialSearch] = useState<string>("");
   const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
@@ -62,7 +63,7 @@ const CredentialsScreen = ({
 
   useEffect(() => {
     fetchData();
-  }, [token]);
+  }, []);
 
   // Clear the search input
   const clearSearch = () => {
@@ -100,7 +101,7 @@ const CredentialsScreen = ({
         `${Base_URL}/user/deleteCredential/${idToDelete}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${userToken}`,
           },
         }
       );
@@ -136,10 +137,11 @@ const CredentialsScreen = ({
   // Fetch the credentials data
   const fetchData = async () => {
     try {
-      // const userToken = await AsyncStorage.getItem("authToken");
+      const myToken = await AsyncStorage.getItem("authToken");
+      const token = await SecureStore.getItemAsync("userToken");
       const response = await axios.get(`${Base_URL}/user/credentials`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${myToken}`,
         },
       });
       response.data

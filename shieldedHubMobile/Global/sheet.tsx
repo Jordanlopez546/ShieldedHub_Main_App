@@ -28,6 +28,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootStackParams } from "../types/types";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import * as SecureStore from "expo-secure-store";
 
 export const BottomSheet = ({
   isVisible,
@@ -35,6 +36,7 @@ export const BottomSheet = ({
   setIsModalVisible,
   setIsDarkMode,
   isDarkMode,
+  setUserToken,
 }: any) => {
   // Getting the width of the screen
   const { height } = useWindowDimensions();
@@ -126,28 +128,34 @@ export const BottomSheet = ({
     }
   };
 
-  const handleLogOut = async () => {
-    try {
-      // Remove user data from AsyncStorage
-      await AsyncStorage.removeItem("authToken");
-      await AsyncStorage.removeItem("userName");
-      await AsyncStorage.removeItem("userEmail");
-      await AsyncStorage.removeItem("userId");
+  // const handleLogOut = async () => {
+  //   try {
+  //     setUserToken(null);
 
-      // Reset the navigation stack to only contain the login screen
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "LogIn" }],
-      });
-    } catch (error) {
-      // Handle any errors that occur during logout
-      console.error("Error logging out:", error);
-      Alert.alert(
-        "Logout Failed",
-        "An error occurred while logging out. Please try again."
-      );
-    }
-  };
+  //     await SecureStore.deleteItemAsync("userToken");
+
+  //     // Remove user data from AsyncStorage
+  //     await AsyncStorage.removeItem("authToken");
+  //     await AsyncStorage.removeItem("userName");
+  //     await AsyncStorage.removeItem("userEmail");
+  //     await AsyncStorage.removeItem("userId");
+
+  //     await AsyncStorage.clear();
+
+  //     // Reset the navigation stack to only contain the login screen
+  //     navigation.reset({
+  //       index: 0,
+  //       routes: [{ name: "LogIn" }],
+  //     });
+  //   } catch (error) {
+  //     // Handle any errors that occur during logout
+  //     console.error("Error logging out:", error);
+  //     Alert.alert(
+  //       "Logout Failed",
+  //       "An error occurred while logging out. Please try again."
+  //     );
+  //   }
+  // };
 
   const styles2 = StyleSheet.create({
     bottomSheet: {
@@ -192,7 +200,7 @@ export const BottomSheet = ({
     },
     logOutDarkMView: {
       flexDirection: "row",
-      width: "40%",
+      width: "100%",
       alignItems: "center",
       justifyContent: "space-between",
       height: "100%",
@@ -212,13 +220,13 @@ export const BottomSheet = ({
           <Entypo name="email" size={22} color="#E0E0E0" />
         </View>
         <View style={styles2.content}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={handleLogOut}
             style={[styles2.logOutDarkMView, { width: "32%" }]}
           >
             <Text style={styles2.nameText}>Log Out</Text>
             <AntDesign name="logout" size={22} color="#E0E0E0" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             onPress={handleThemeChange}
             style={styles2.logOutDarkMView}

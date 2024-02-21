@@ -38,7 +38,7 @@ const RecycleBinScreen = ({
   setIsModalVisible,
   isDarkMode,
   setIsDarkMode,
-  token,
+  userToken,
 }: RecycleScreenGlobalProps) => {
   const [recyclebinSearch, setRecyclebinSearch] = useState<string>("");
   const [filteredData, setFilteredData] = useState<CredentialItemProps[]>([]);
@@ -70,7 +70,7 @@ const RecycleBinScreen = ({
     try {
       const response = await axios.get(`${Base_URL}/user/recycleData`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${userToken}`,
         },
       });
       response.data
@@ -84,7 +84,7 @@ const RecycleBinScreen = ({
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [userToken]);
 
   // Functionality To search for credentials
   const searchRecyclebin = (text: string) => {
@@ -122,7 +122,7 @@ const RecycleBinScreen = ({
         `${Base_URL}/user/deleteReycleData/${idToDelete}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${userToken}`,
           },
         }
       );
@@ -156,7 +156,7 @@ const RecycleBinScreen = ({
         `${Base_URL}/user/recoverReycleData/${idToRecover}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${userToken}`,
           },
         }
       );

@@ -19,7 +19,8 @@ const TopTabNavigator = ({
   handleScreenChange,
   isDarkMode,
   setIsDarkMode,
-  token,
+  userToken,
+  setUserToken,
 }: TabNavigatorProps) => {
   // Handle the present modal of the bottom sheet
   const handlePresentModal = () => {
@@ -70,7 +71,8 @@ const TopTabNavigator = ({
               handleScreenChange={handleScreenChange}
               isDarkMode={isDarkMode}
               setIsDarkMode={setIsDarkMode}
-              token={token}
+              userToken={userToken}
+              setUserToken={setUserToken}
             />
           )}
         </Tab.Screen>
@@ -87,11 +89,12 @@ const TopTabNavigator = ({
               {...props}
               currentScreen={currentScreen}
               isModalVisible={isModalVisible}
-              token={token}
+              userToken={userToken}
               setIsModalVisible={setIsModalVisible}
               handleScreenChange={handleScreenChange}
               isDarkMode={isDarkMode}
               setIsDarkMode={setIsDarkMode}
+              setUserToken={setUserToken}
             />
           )}
         </Tab.Screen>
@@ -107,10 +110,11 @@ const TopTabNavigator = ({
             <RecycleBinScreen
               currentScreen={currentScreen}
               isModalVisible={isModalVisible}
-              token={token}
+              userToken={userToken}
               setIsModalVisible={setIsModalVisible}
               isDarkMode={isDarkMode}
               setIsDarkMode={setIsDarkMode}
+              setUserToken={setUserToken}
               {...props}
             />
           )}
@@ -124,6 +128,7 @@ const TopTabNavigator = ({
         onClose={closeBottomSheet}
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
+        setUserToken={setUserToken}
       />
     </View>
   );

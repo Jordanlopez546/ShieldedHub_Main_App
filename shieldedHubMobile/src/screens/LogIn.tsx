@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { SetStateAction, useState } from "react";
 import TheDoubleCircles from "../components/TheDoubleCircles";
 import GetStartedAndLoginImageView from "../components/GetStartedAndLoginImageView";
 import CustomButton from "../components/CustomButton";
@@ -19,9 +19,14 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Base_URL } from "../../Urls/Urls";
+import * as SecureStore from "expo-secure-store";
 
 // Login Screen
-const LogIn = () => {
+const LogIn = ({
+  setUserToken,
+}: {
+  setUserToken: React.Dispatch<SetStateAction<string>>;
+}) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
   const [email, setEmail] = useState<string>("");
@@ -69,6 +74,9 @@ const LogIn = () => {
           const userEmail = user.email;
           const userName = user.username;
           const userId = user._id;
+
+          setUserToken(token);
+          await SecureStore.setItemAsync("userToken", token);
 
           // Store user data in AsyncStorage
           await AsyncStorage.setItem("authToken", token);

@@ -20,7 +20,8 @@ const StackNavigator = ({
   isDarkMode,
   setIsDarkMode,
   initialRouteName,
-  token,
+  userToken,
+  setUserToken,
 }: CredentialItemScreenNavigationOptions & {
   initialRouteName: keyof RootStackParams;
 }) => {
@@ -33,13 +34,15 @@ const StackNavigator = ({
       <Stack.Screen name="CredentialItemScreen" options={{ headerShown: true }}>
         {(props) => (
           <CredentialItemScreen
-            token={token}
+            userToken={userToken}
             isDarkMode={isDarkMode}
             {...props}
           />
         )}
       </Stack.Screen>
-      <Stack.Screen name="LogIn" component={LogIn} />
+      <Stack.Screen name="LogIn">
+        {(props) => <LogIn setUserToken={setUserToken} />}
+      </Stack.Screen>
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="TheTabBarNavigators">
         {(props) => (
@@ -51,7 +54,8 @@ const StackNavigator = ({
             setIsModalVisible={setIsModalVisible}
             isDarkMode={isDarkMode}
             setIsDarkMode={setIsDarkMode}
-            token={token}
+            userToken={userToken}
+            setUserToken={setUserToken}
           />
         )}
       </Stack.Screen>

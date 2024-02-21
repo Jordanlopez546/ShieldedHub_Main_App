@@ -33,7 +33,7 @@ const NewDetail = ({
   setIsModalVisible,
   setIsDarkMode,
   isDarkMode,
-  token,
+  userToken: token,
 }: CredentialItemScreenNavigationOptions) => {
   const [title, setTitle] = useState<string>("");
   const [emailOrUsername, setEmailOrUsername] = useState<string>("");
